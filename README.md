@@ -1,5 +1,7 @@
 # LISA vigIA
 
+**Ver en línea: https://fjpino84.github.io/lisa-vigia-mockup/**
+
 Prototipo navegable de la plataforma con la que un analista de siniestros revisa
 la evidencia de fraude de los casos que llegan a su compañía de seguros.
 
@@ -7,10 +9,19 @@ Es un **mockup funcional**: la interfaz responde por completo (navegación,
 filtros, gráficos, modales, decisiones), pero no existe servidor ni base de
 datos detrás. Todos los datos son ficticios y viven en `src/js/data/casos.js`.
 
-## Cómo ejecutarlo
+## Cómo verlo
 
-La aplicación usa módulos ES, que el navegador no carga desde `file://`. Hace
-falta un servidor estático:
+**En línea.** El prototipo está publicado en
+<https://fjpino84.github.io/lisa-vigia-mockup/>. No requiere instalar nada ni
+tener cuenta de ningún servicio.
+
+**Sin servidor, en local.** El archivo `lisa-vigia.html` reúne todo el proyecto
+en una sola página y se abre con doble clic. Es también el archivo apto para
+enviar por correo. Se regenera con `node empaquetar.js` cada vez que cambia el
+código fuente.
+
+**Con servidor, para desarrollar.** El `index.html` del proyecto usa módulos ES,
+que el navegador no carga desde `file://`. Hace falta un servidor estático:
 
 ```bash
 # Con Node instalado, desde la carpeta del proyecto
@@ -20,7 +31,8 @@ npx serve .
 python -m http.server 4173
 ```
 
-Después se abre `http://localhost:4173` en el navegador.
+Después se abre `http://localhost:4173` en el navegador. En Windows, el archivo
+`abrir-lisa.bat` hace ambos pasos con doble clic.
 
 ## Recorrido sugerido
 
@@ -40,6 +52,9 @@ ficha y el scoring, tal como corresponde a un prototipo.
 
 ```
 index.html              Punto de entrada; solo enlaza estilos y el módulo raíz
+lisa-vigia.html         Todo el proyecto en una página, generado y autocontenido
+empaquetar.js           Genera lisa-vigia.html a partir del código fuente
+abrir-lisa.bat          Lanzador local para Windows
 assets/                 Logotipo y boleta empleados por la interfaz
 Design/                 Referencias visuales de partida
 Logo/                   Logotipo original
