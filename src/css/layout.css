@@ -1,0 +1,459 @@
+/* =========================================================================
+   LISA vigIA — Armazón de la aplicación: barra lateral, cabecera superior
+   y contenedor de vistas. Grid de dos columnas que colapsa en móvil.
+   ========================================================================= */
+
+.app {
+  display: grid;
+  grid-template-columns: var(--ancho-sidebar) 1fr;
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------------ */
+/* Barra lateral                                                       */
+/* ------------------------------------------------------------------ */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-lg);
+  padding: var(--espacio-lg) var(--espacio-md);
+  background-color: var(--color-fondo);
+  border-right: 0.1rem solid var(--color-borde-suave);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+}
+
+/* El PNG del logotipo trae un amplio margen transparente: se recorta con
+   un contenedor de menor alto y un escalado que aprovecha ese espacio. */
+.sidebar__logo {
+  width: 5.6rem;
+  height: 3.6rem;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.9);
+  flex-shrink: 0;
+}
+
+.sidebar__marca {
+  overflow: hidden;
+}
+
+.sidebar__nombre {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.sidebar__nombre span {
+  background: linear-gradient(
+    90deg,
+    var(--color-marca-turquesa),
+    var(--color-marca-violeta)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sidebar__estado {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  font-size: 1.2rem;
+  color: var(--color-texto-medio);
+}
+
+.sidebar__punto {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background-color: var(--color-critico);
+  box-shadow: 0 0 0.8rem var(--color-critico);
+}
+
+.sidebar__accion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-sm);
+  width: 100%;
+  padding: 1.2rem;
+  background-color: var(--color-accion);
+  color: #14141a;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: var(--radio-md);
+  transition: filter var(--transicion);
+}
+
+.sidebar__accion:hover {
+  filter: brightness(1.08);
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-xs);
+}
+
+.sidebar__enlace {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  width: 100%;
+  padding: 1.2rem var(--espacio-md);
+  font-size: 1.4rem;
+  color: var(--color-texto-medio);
+  border-radius: var(--radio-md);
+  text-align: left;
+  transition: background-color var(--transicion), color var(--transicion);
+}
+
+.sidebar__enlace:hover {
+  background-color: var(--color-superficie-alta);
+  color: var(--color-texto);
+}
+
+.sidebar__enlace[aria-current="page"] {
+  background-color: var(--color-superficie-suave);
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+.sidebar__enlace .icono {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.sidebar__pie {
+  margin-top: auto;
+  padding-top: var(--espacio-md);
+  border-top: 0.1rem solid var(--color-borde-suave);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-xs);
+}
+
+/* ------------------------------------------------------------------ */
+/* Cabecera superior                                                   */
+/* ------------------------------------------------------------------ */
+
+.principal {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* permite que las tablas internas hagan scroll */
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-lg);
+  height: var(--alto-topbar);
+  padding: 0 var(--espacio-lg);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+  background-color: var(--color-fondo);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar__titulo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.topbar__buscador {
+  position: relative;
+  flex: 1;
+  max-width: 52rem;
+}
+
+.topbar__buscador .icono {
+  position: absolute;
+  left: 1.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-texto-tenue);
+  pointer-events: none;
+}
+
+.topbar__input {
+  width: 100%;
+  padding: 1.1rem 1.4rem 1.1rem 4.4rem;
+  font-family: inherit;
+  font-size: 1.4rem;
+  color: var(--color-texto);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-md);
+  transition: border-color var(--transicion);
+}
+
+.topbar__input::placeholder {
+  color: var(--color-texto-tenue);
+}
+
+.topbar__input:focus {
+  outline: none;
+  border-color: var(--color-borde-acento);
+}
+
+.topbar__acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.topbar__boton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.8rem;
+  height: 3.8rem;
+  color: var(--color-texto-medio);
+  border-radius: 50%;
+  transition: background-color var(--transicion), color var(--transicion);
+}
+
+.topbar__boton:hover {
+  background-color: var(--color-superficie-alta);
+  color: var(--color-texto);
+}
+
+.topbar__notificacion {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.8rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background-color: var(--color-critico-fuerte);
+  border: 0.2rem solid var(--color-fondo);
+}
+
+.topbar__avatar {
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--color-marca-turquesa),
+    var(--color-marca-violeta)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------ */
+/* Contenedor de vistas                                                */
+/* ------------------------------------------------------------------ */
+
+.vista {
+  flex: 1;
+  padding: var(--espacio-xl) var(--espacio-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-lg);
+}
+
+.vista__cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-md);
+  flex-wrap: wrap;
+}
+
+.vista__titulo {
+  font-size: 3.6rem;
+  letter-spacing: -0.02em;
+}
+
+.vista__subtitulo {
+  margin-top: var(--espacio-xs);
+  font-size: 1.5rem;
+  color: var(--color-texto-medio);
+}
+
+.vista__meta {
+  text-align: right;
+  font-size: 1.2rem;
+}
+
+.vista__meta-titulo {
+  font-weight: 700;
+  color: var(--color-texto-medio);
+  letter-spacing: 0.04em;
+}
+
+.vista__meta-estado {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--espacio-xs);
+  margin-top: var(--espacio-xs);
+  font-family: var(--fuente-mono);
+  color: var(--color-texto);
+  letter-spacing: 0.06em;
+}
+
+.vista__meta-punto {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background-color: var(--color-ok);
+  animation: latido 2s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Botón de menú (solo móvil)                                          */
+/* ------------------------------------------------------------------ */
+
+.menu-movil {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  color: var(--color-texto);
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-md);
+}
+
+.sidebar__cerrar {
+  display: none;
+  position: absolute;
+  top: var(--espacio-md);
+  right: var(--espacio-md);
+  width: 3.6rem;
+  height: 3.6rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-texto-medio);
+  border-radius: 50%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Adaptación a pantallas menores                                      */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1100px) {
+  .vista__titulo {
+    font-size: 2.8rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    width: min(30rem, 85vw);
+    transform: translateX(-100%);
+    transition: transform var(--transicion);
+    box-shadow: var(--sombra-panel);
+  }
+
+  .sidebar.esta-abierta {
+    transform: translateX(0);
+  }
+
+  .sidebar__cerrar {
+    display: flex;
+  }
+
+  .menu-movil {
+    display: flex;
+  }
+
+  .topbar {
+    gap: var(--espacio-md);
+    padding: 0 var(--espacio-md);
+  }
+
+  .topbar__titulo {
+    font-size: 1.3rem;
+  }
+
+  .vista {
+    padding: var(--espacio-lg) var(--espacio-md);
+  }
+}
+
+@media (max-width: 620px) {
+  .topbar__buscador {
+    display: none;
+  }
+
+  /* La cabecera conserva solo las notificaciones y el avatar: el resto de
+     accesos permanece disponible desde el menú lateral. */
+  .topbar__boton:not(:first-child) {
+    display: none;
+  }
+
+  .topbar {
+    gap: var(--espacio-sm);
+    padding: 0 var(--espacio-sm);
+  }
+
+  .topbar__titulo {
+    font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar__acciones {
+    gap: var(--espacio-xs);
+  }
+}
+
+/* Velo que oscurece el contenido cuando el menú móvil está abierto. */
+.velo-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transicion), visibility var(--transicion);
+}
+
+.velo-menu.esta-visible {
+  opacity: 1;
+  visibility: visible;
+}

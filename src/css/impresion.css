@@ -1,0 +1,155 @@
+/* =========================================================================
+   LISA vigIA — Hoja de impresión. Convierte el reporte en pantalla en un
+   documento apto para "Guardar como PDF" desde el diálogo del navegador:
+   fondo claro, sin navegación y sin cortes a mitad de sección.
+   ========================================================================= */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  :root {
+    --color-fondo: #ffffff;
+    --color-superficie: #ffffff;
+    --color-superficie-alta: #f5f5f7;
+    --color-superficie-suave: #eeeef2;
+    --color-panel-datos: #f5f7fa;
+    --color-borde: #c8c8d0;
+    --color-borde-suave: #dcdce2;
+    --color-borde-acento: #a8a8b4;
+    --color-texto: #101014;
+    --color-texto-medio: #3c3c46;
+    --color-texto-tenue: #62626e;
+    --color-critico: #c0272d;
+    --color-critico-fuerte: #c0272d;
+    --color-critico-fondo: #fdeaea;
+    --color-medio: #8a6100;
+    --color-medio-fondo: #fdf3e0;
+    --color-bajo: #1f5f8f;
+    --color-bajo-fondo: #e8f1f8;
+    --color-ok: #1c6b4e;
+  }
+
+  body {
+    background-color: #fff;
+    color: #101014;
+    font-size: 1.15rem;
+  }
+
+  /* Fuerza el pintado de fondos y bordes de color en la impresión. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Cromo de la aplicación que no pertenece al documento impreso. */
+  .sidebar,
+  .topbar,
+  .menu-movil,
+  .velo-menu,
+  .avisos,
+  .modal,
+  .decision,
+  .volver,
+  .grafico__ayuda,
+  .no-imprimir {
+    display: none !important;
+  }
+
+  .app {
+    display: block;
+  }
+
+  .vista {
+    padding: 0;
+    gap: 1.6rem;
+  }
+
+  /* Encabezado propio del documento impreso. */
+  .encabezado-impresion {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding-bottom: 1.2rem;
+    margin-bottom: 1.6rem;
+    border-bottom: 0.2rem solid #101014;
+  }
+
+  .encabezado-impresion__marca {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .encabezado-impresion__logo {
+    width: 3.2rem;
+    height: 3.2rem;
+    object-fit: contain;
+  }
+
+  .encabezado-impresion__meta {
+    text-align: right;
+    font-size: 1.1rem;
+    color: #3c3c46;
+    font-family: var(--fuente-mono);
+  }
+
+  /* Evita que una sección quede partida entre dos páginas. */
+  .panel,
+  .ficha,
+  .grafico,
+  .hallazgo,
+  .relacionado {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+  }
+
+  .panel + .panel {
+    margin-top: 1.6rem;
+  }
+
+  .seccion__doble {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ficha {
+    grid-template-columns: 1fr auto;
+  }
+
+  /* Los listados del panel inicial se imprimen apilados. */
+  .listados {
+    grid-template-columns: 1fr;
+  }
+
+  .tabla-envoltura {
+    overflow: visible;
+  }
+
+  .tabla-casos {
+    min-width: 0;
+  }
+
+  /* Los gráficos conservan tamaño legible en papel. */
+  .grafico__lienzo {
+    max-height: 24rem;
+  }
+
+  .tooltip {
+    display: none !important;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+/* Fuera de impresión el encabezado del documento permanece oculto. */
+.encabezado-impresion {
+  display: none;
+}

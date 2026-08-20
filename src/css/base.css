@@ -1,0 +1,154 @@
+/* =========================================================================
+   LISA vigIA — Fundaciones: reset, tokens de diseño y tipografía base.
+   El font-size raíz es 62.5% para que 1rem = 10px y las medidas del
+   maquetado se lean directamente en decenas de píxel.
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* --- Superficies -------------------------------------------------- */
+  --color-fondo: #0a0a0c;
+  --color-superficie: #121215;
+  --color-superficie-alta: #17171c;
+  --color-superficie-suave: #1c1c22;
+  --color-panel-datos: #1a2130;
+
+  /* --- Bordes y separadores ----------------------------------------- */
+  --color-borde: #26262e;
+  --color-borde-suave: #1e1e24;
+  --color-borde-acento: #3a3a46;
+
+  /* --- Texto --------------------------------------------------------- */
+  --color-texto: #f2f2f5;
+  --color-texto-medio: #a0a0ae;
+  --color-texto-tenue: #6e6e7c;
+
+  /* --- Semáforo de riesgo -------------------------------------------- */
+  --color-critico: #f2857f;
+  --color-critico-fuerte: #e5484d;
+  --color-critico-fondo: rgba(242, 133, 127, 0.12);
+  --color-medio: #e5b567;
+  --color-medio-fondo: rgba(229, 181, 103, 0.12);
+  --color-bajo: #6ea8d8;
+  --color-bajo-fondo: rgba(110, 168, 216, 0.12);
+  --color-ok: #5fc9a0;
+
+  /* --- Marca LISA ----------------------------------------------------- */
+  --color-marca-turquesa: #3aa9b8;
+  --color-marca-azul: #2f8fc7;
+  --color-marca-violeta: #4a3a99;
+  --color-accion: #c3cbf0;
+
+  /* --- Tipografía ------------------------------------------------------ */
+  --fuente-base: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --fuente-mono: "Cascadia Mono", "Consolas", "SF Mono", "Menlo", monospace;
+
+  /* --- Ritmo espacial --------------------------------------------------- */
+  --espacio-xs: 0.4rem;
+  --espacio-sm: 0.8rem;
+  --espacio-md: 1.6rem;
+  --espacio-lg: 2.4rem;
+  --espacio-xl: 3.2rem;
+
+  --radio-sm: 0.4rem;
+  --radio-md: 0.8rem;
+  --radio-lg: 1.2rem;
+
+  --ancho-sidebar: 26rem;
+  --alto-topbar: 7rem;
+
+  --sombra-panel: 0 0.2rem 1.6rem rgba(0, 0, 0, 0.45);
+  --transicion: 160ms ease;
+}
+
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-base);
+  font-size: 1.4rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  /* Ningún contenido ancho debe desplazar la página en horizontal: los
+     bloques que lo necesitan gestionan su propio scroll interno. */
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+:focus-visible {
+  outline: 0.2rem solid var(--color-accion);
+  outline-offset: 0.2rem;
+}
+
+/* Texto reservado a lectores de pantalla. */
+.solo-lectores {
+  position: absolute;
+  width: 0.1rem;
+  height: 0.1rem;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Utilidades tipográficas de uso transversal. */
+.dato-mono {
+  font-family: var(--fuente-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.etiqueta-campo {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}

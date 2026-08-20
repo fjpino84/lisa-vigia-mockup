@@ -1,0 +1,737 @@
+/* =========================================================================
+   LISA vigIA — Vista de reporte de caso: ficha del siniestro, secciones
+   de evidencia, visor del documento y gráficos de patrones.
+   ========================================================================= */
+
+/* ------------------------------------------------------------------ */
+/* Ficha superior del caso                                             */
+/* ------------------------------------------------------------------ */
+
+.ficha {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--espacio-lg);
+  padding: var(--espacio-lg) var(--espacio-lg) var(--espacio-lg) var(--espacio-xl);
+  background-color: var(--color-panel-datos);
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+}
+
+/* Franja lateral cuyo color refleja la criticidad del caso. */
+.ficha::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.5rem;
+  height: 100%;
+  background-color: var(--color-critico);
+}
+
+.ficha--leve::before {
+  background-color: var(--color-bajo);
+}
+
+.ficha__identidad {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+  flex-wrap: wrap;
+}
+
+.ficha__nombre {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  font-size: 3.2rem;
+  letter-spacing: -0.02em;
+}
+
+.ficha__rut {
+  padding: 0.6rem 1.2rem;
+  font-family: var(--fuente-mono);
+  font-size: 1.4rem;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radio-sm);
+}
+
+.ficha__siniestro {
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.ficha__siniestro strong {
+  font-family: var(--fuente-mono);
+  color: var(--color-texto);
+  letter-spacing: 0.04em;
+}
+
+/* Cuadrícula de datos del siniestro. */
+.ficha__datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--espacio-md);
+  margin-top: var(--espacio-lg);
+}
+
+.ficha__dato-valor {
+  margin-top: 0.4rem;
+  font-size: 1.6rem;
+  color: var(--color-texto);
+}
+
+.ficha__dato-valor--monto {
+  font-family: var(--fuente-mono);
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.ficha__dato-secundario {
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+  margin-top: 0.2rem;
+}
+
+/* Sello circular de probabilidad de fraude. */
+.sello {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-sm);
+  align-self: start;
+  min-width: 22rem;
+  padding: var(--espacio-lg);
+  border: 0.1rem solid var(--color-critico);
+  border-radius: var(--radio-md);
+  background-color: var(--color-critico-fondo);
+  text-align: center;
+}
+
+.sello--leve {
+  border-color: var(--color-bajo);
+  background-color: var(--color-bajo-fondo);
+}
+
+.sello__circulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  background-color: var(--color-critico);
+  color: #2a0d0d;
+  font-family: var(--fuente-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  box-shadow: 0 0 2.4rem rgba(242, 133, 127, 0.4);
+}
+
+.sello--leve .sello__circulo {
+  background-color: var(--color-bajo);
+  color: #0b1a26;
+  box-shadow: 0 0 2.4rem rgba(110, 168, 216, 0.35);
+}
+
+.sello__texto {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-critico);
+}
+
+.sello--leve .sello__texto {
+  color: var(--color-bajo);
+}
+
+.sello__escala {
+  font-size: 1.1rem;
+  color: var(--color-texto-medio);
+}
+
+/* ------------------------------------------------------------------ */
+/* Secciones de evidencia                                              */
+/* ------------------------------------------------------------------ */
+
+.seccion__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: var(--espacio-md) var(--espacio-lg);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+  background-color: var(--color-superficie-alta);
+}
+
+.seccion__titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  font-size: 1.9rem;
+}
+
+.seccion__distintivo {
+  margin-left: auto;
+}
+
+/* Documento a la izquierda, hallazgos a la derecha. */
+.seccion__doble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.seccion__columna {
+  padding: var(--espacio-lg);
+  min-width: 0;
+}
+
+.seccion__columna + .seccion__columna {
+  border-left: 0.1rem solid var(--color-borde-suave);
+}
+
+@media (max-width: 1000px) {
+  .seccion__doble {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .seccion__columna + .seccion__columna {
+    border-left: none;
+    border-top: 0.1rem solid var(--color-borde-suave);
+  }
+
+  .ficha {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sello {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  /* Las acciones de cierre pasan a ocupar el ancho completo, en columna. */
+  .decision__acciones {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .decision__acciones .boton {
+    width: 100%;
+  }
+
+  .ficha {
+    padding: var(--espacio-md) var(--espacio-md) var(--espacio-md) var(--espacio-lg);
+  }
+
+  .ficha__nombre {
+    font-size: 2.4rem;
+  }
+
+  .ficha__identidad {
+    gap: var(--espacio-sm);
+  }
+
+  .seccion__columna {
+    padding: var(--espacio-md);
+  }
+
+  .seccion__cabecera {
+    flex-wrap: wrap;
+    padding: var(--espacio-md);
+  }
+
+  .seccion__distintivo {
+    margin-left: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Visor del documento con marcas de anomalía                          */
+/* ------------------------------------------------------------------ */
+
+.documento {
+  position: relative;
+  background-color: #ffffff;
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-md);
+  overflow: hidden;
+  line-height: 0;
+}
+
+.documento__imagen {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Capa transparente que aloja las marcas sobre la imagen. */
+.documento__capa {
+  position: absolute;
+  inset: 0;
+}
+
+.documento__marca {
+  position: absolute;
+  border: 0.2rem solid var(--color-critico-fuerte);
+  border-radius: 0.3rem;
+  cursor: help;
+  padding: 0;
+  transition: box-shadow var(--transicion), transform var(--transicion);
+  animation: marca-late 2.8s ease-in-out infinite;
+}
+
+.documento__marca:hover,
+.documento__marca:focus-visible {
+  animation: none;
+  transform: scale(1.03);
+  box-shadow: 0 0 0 0.3rem rgba(229, 72, 77, 0.25);
+  z-index: 2;
+}
+
+.documento__marca--metadato:hover,
+.documento__marca--metadato:focus-visible {
+  box-shadow: 0 0 0 0.3rem rgba(124, 108, 224, 0.25);
+}
+
+@keyframes marca-late {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.35);
+  }
+}
+
+/* Rótulo flotante sobre cada zona marcada. */
+.documento__etiqueta {
+  position: absolute;
+  top: -1.9rem;
+  left: -0.2rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--fuente-mono);
+  line-height: 1.5;
+  color: #fff;
+  border-radius: 0.3rem;
+  white-space: nowrap;
+}
+
+/* La etiqueta de la primera marca cae hacia dentro para no salirse. */
+.documento__marca:first-child .documento__etiqueta {
+  top: auto;
+  bottom: -1.9rem;
+}
+
+.documento__pie {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+  margin-top: var(--espacio-sm);
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+  flex-wrap: wrap;
+  line-height: 1.5;
+}
+
+.documento__origen {
+  margin-left: auto;
+  font-family: var(--fuente-mono);
+}
+
+/* Texto que describe la marca activa. */
+.documento__detalle {
+  margin-top: var(--espacio-sm);
+  padding: 1.2rem;
+  min-height: 6.4rem;
+  font-size: 1.25rem;
+  color: var(--color-texto-tenue);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  transition: color var(--transicion), border-color var(--transicion);
+}
+
+.documento__detalle.esta-activo {
+  color: var(--color-texto);
+  border-color: rgba(242, 133, 127, 0.4);
+}
+
+.documento__leyenda {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+}
+
+.documento__muestra {
+  width: 1.2rem;
+  height: 0.8rem;
+  border-radius: 0.2rem;
+  border: 0.1rem solid var(--color-critico);
+  background-color: var(--color-critico-fondo);
+}
+
+.documento__muestra--meta {
+  border-color: #7c6ce0;
+  background-color: rgba(124, 108, 224, 0.18);
+}
+
+/* ------------------------------------------------------------------ */
+/* Hallazgos                                                           */
+/* ------------------------------------------------------------------ */
+
+.hallazgos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+}
+
+.hallazgos__grupo-titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: var(--espacio-sm);
+}
+
+.hallazgo {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 1.4rem;
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  font-size: 1.35rem;
+  color: var(--color-texto-medio);
+}
+
+.hallazgo + .hallazgo {
+  margin-top: var(--espacio-sm);
+}
+
+.hallazgo--critico {
+  border-color: rgba(242, 133, 127, 0.3);
+}
+
+.hallazgo__icono {
+  flex-shrink: 0;
+  color: var(--color-critico);
+  margin-top: 0.2rem;
+}
+
+.hallazgo__icono--medio {
+  color: var(--color-medio);
+}
+
+.hallazgo__icono--ok {
+  color: var(--color-ok);
+}
+
+.hallazgo__titulo {
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: 0.2rem;
+}
+
+.hallazgo strong {
+  color: var(--color-texto);
+}
+
+/* Bloque de metadatos con aspecto de consola. */
+.metadatos {
+  padding: 1.6rem;
+  background-color: var(--color-fondo);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  font-family: var(--fuente-mono);
+  font-size: 1.3rem;
+  line-height: 1.9;
+  /* Las rutas y marcas de tiempo largas se parten en vez de desbordar. */
+  overflow-wrap: anywhere;
+}
+
+.metadatos__linea {
+  color: var(--color-texto-medio);
+}
+
+.metadatos__clave {
+  color: var(--color-texto-tenue);
+}
+
+.metadatos__separador {
+  height: 0.1rem;
+  background-color: var(--color-borde-suave);
+  margin: var(--espacio-sm) 0;
+}
+
+.metadatos__alerta {
+  color: var(--color-critico);
+}
+
+/* ------------------------------------------------------------------ */
+/* Gráficos                                                            */
+/* ------------------------------------------------------------------ */
+
+.grafico {
+  position: relative;
+  margin-top: var(--espacio-md);
+  background-color: var(--color-fondo);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  padding: var(--espacio-md);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.grafico__lienzo {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* En pantallas estrechas el lienzo conserva un ancho mínimo legible y el
+   desplazamiento se resuelve dentro del propio gráfico. */
+@media (max-width: 760px) {
+  .grafico {
+    overflow-x: auto;
+  }
+
+  .grafico__lienzo {
+    min-width: 60rem;
+  }
+}
+
+.grafico__titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: var(--espacio-xs);
+}
+
+.grafico__ayuda {
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+  margin-bottom: var(--espacio-md);
+}
+
+.grafico__leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-md);
+  margin-top: var(--espacio-md);
+  font-size: 1.2rem;
+  color: var(--color-texto-medio);
+}
+
+.grafico__leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+}
+
+.grafico__muestra {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+}
+
+/* Elementos interactivos dentro de los SVG. */
+.punto-dato {
+  cursor: pointer;
+  transition: r 120ms ease, opacity 120ms ease;
+}
+
+.punto-dato:hover {
+  opacity: 0.85;
+}
+
+.nodo-red {
+  cursor: pointer;
+}
+
+.nodo-red:hover .nodo-red__circulo {
+  stroke-width: 3;
+}
+
+/* Globo informativo compartido por ambos gráficos. */
+.tooltip {
+  position: absolute;
+  z-index: 20;
+  min-width: 22rem;
+  padding: 1.2rem;
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-acento);
+  border-radius: var(--radio-md);
+  box-shadow: var(--sombra-panel);
+  font-size: 1.2rem;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 120ms ease, visibility 120ms ease;
+}
+
+.tooltip.esta-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip__titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: var(--espacio-xs);
+  padding-bottom: var(--espacio-xs);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+}
+
+.tooltip__fila {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espacio-md);
+  line-height: 1.8;
+}
+
+.tooltip__clave {
+  color: var(--color-texto-tenue);
+}
+
+.tooltip__valor {
+  font-family: var(--fuente-mono);
+  color: var(--color-texto);
+  text-align: right;
+}
+
+/* ------------------------------------------------------------------ */
+/* Casos relacionados                                                  */
+/* ------------------------------------------------------------------ */
+
+.relacionados {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  margin-top: var(--espacio-md);
+}
+
+.relacionado {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  text-align: left;
+  transition: border-color var(--transicion), background-color var(--transicion);
+}
+
+.relacionado:hover {
+  border-color: var(--color-borde-acento);
+  background-color: var(--color-superficie-suave);
+}
+
+.relacionado__datos {
+  flex: 1;
+  min-width: 0;
+}
+
+.relacionado__nombre {
+  font-family: var(--fuente-mono);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.relacionado__meta {
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+  margin-top: 0.2rem;
+}
+
+.relacionado__monto {
+  font-family: var(--fuente-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-critico);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Barra de decisión del analista                                      */
+/* ------------------------------------------------------------------ */
+
+.decision {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  flex-wrap: wrap;
+}
+
+.decision__texto {
+  flex: 1;
+  min-width: min(24rem, 100%);
+}
+
+.decision__titulo {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.decision__ayuda {
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+  margin-top: 0.2rem;
+}
+
+.decision__acciones {
+  display: flex;
+  gap: var(--espacio-sm);
+  flex-wrap: wrap;
+}
+
+/* Resultado mostrado una vez tomada la decisión. */
+.resuelto {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-md);
+  border-radius: var(--radio-md);
+  font-size: 1.4rem;
+}
+
+.resuelto--fraude {
+  background-color: var(--color-critico-fondo);
+  border: 0.1rem solid var(--color-critico);
+  color: var(--color-critico);
+}
+
+.resuelto--liquidacion {
+  background-color: rgba(95, 201, 160, 0.1);
+  border: 0.1rem solid var(--color-ok);
+  color: var(--color-ok);
+}
+
+/* Enlace de regreso al panel. */
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+  transition: color var(--transicion);
+}
+
+.volver:hover {
+  color: var(--color-texto);
+}

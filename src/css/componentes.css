@@ -1,0 +1,649 @@
+/* =========================================================================
+   LISA vigIA — Componentes reutilizables: paneles, indicadores KPI,
+   semáforos de riesgo, tablas de casos, distintivos y botones.
+   ========================================================================= */
+
+/* ------------------------------------------------------------------ */
+/* Panel genérico                                                      */
+/* ------------------------------------------------------------------ */
+
+.panel {
+  background-color: var(--color-superficie);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.panel__cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-md) var(--espacio-lg);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+}
+
+.panel__titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  font-size: 1.9rem;
+  font-weight: 600;
+}
+
+.panel__cuerpo {
+  padding: var(--espacio-lg);
+}
+
+/* ------------------------------------------------------------------ */
+/* Distintivos                                                         */
+/* ------------------------------------------------------------------ */
+
+.distintivo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  padding: 0.6rem 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radio-sm);
+  white-space: nowrap;
+}
+
+.distintivo--critico {
+  background-color: var(--color-critico-fuerte);
+  color: #fff;
+}
+
+.distintivo--critico-suave {
+  background-color: var(--color-critico-fondo);
+  color: var(--color-critico);
+  border: 0.1rem solid var(--color-critico);
+}
+
+.distintivo--neutro {
+  background-color: var(--color-superficie-suave);
+  color: var(--color-texto-medio);
+}
+
+.distintivo--medio {
+  background-color: var(--color-medio-fondo);
+  color: var(--color-medio);
+  border: 0.1rem solid var(--color-medio);
+}
+
+.distintivo--ok {
+  background-color: rgba(95, 201, 160, 0.12);
+  color: var(--color-ok);
+  border: 0.1rem solid var(--color-ok);
+}
+
+/* ------------------------------------------------------------------ */
+/* Botones                                                             */
+/* ------------------------------------------------------------------ */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-sm);
+  padding: 1.2rem 2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-radius: var(--radio-md);
+  border: 0.1rem solid transparent;
+  transition: background-color var(--transicion), border-color var(--transicion),
+    filter var(--transicion);
+}
+
+.boton--primario {
+  background-color: var(--color-accion);
+  color: #14141a;
+}
+
+.boton--primario:hover {
+  filter: brightness(1.08);
+}
+
+.boton--peligro {
+  background-color: var(--color-critico-fuerte);
+  color: #fff;
+}
+
+.boton--peligro:hover {
+  filter: brightness(1.08);
+}
+
+.boton--exito {
+  background-color: rgba(95, 201, 160, 0.14);
+  color: var(--color-ok);
+  border-color: var(--color-ok);
+}
+
+.boton--exito:hover {
+  background-color: rgba(95, 201, 160, 0.24);
+}
+
+.boton--fantasma {
+  background-color: transparent;
+  color: var(--color-texto-medio);
+  border-color: var(--color-borde);
+}
+
+.boton--fantasma:hover {
+  background-color: var(--color-superficie-alta);
+  color: var(--color-texto);
+}
+
+.boton[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tarjetas de indicadores (KPI)                                       */
+/* ------------------------------------------------------------------ */
+
+/* Cinco indicadores en una sola línea: el monto en riesgo ocupa el doble,
+   de modo que la fila se reparte en seis fracciones iguales. */
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--espacio-md);
+  align-items: stretch;
+}
+
+@media (max-width: 1500px) {
+  .indicadores {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1000px) {
+  .indicadores {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 620px) {
+  .indicadores {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+}
+
+.kpi--alerta {
+  border-color: rgba(242, 133, 127, 0.35);
+}
+
+.kpi--ancho {
+  grid-column: span 2;
+}
+
+.kpi__cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-sm);
+}
+
+.kpi__titulo {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-texto-medio);
+}
+
+.kpi__icono {
+  color: var(--color-texto-tenue);
+  flex-shrink: 0;
+}
+
+.kpi__icono--alerta {
+  color: var(--color-critico);
+}
+
+.kpi__valor {
+  font-size: 4.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.kpi__valor--critico {
+  color: var(--color-critico);
+}
+
+.kpi__valor--monto {
+  font-size: 3.6rem;
+  font-family: var(--fuente-mono);
+}
+
+.kpi__nota {
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.kpi__nota--alerta {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  color: var(--color-critico);
+}
+
+/* Fila que combina porcentaje y barra de progreso. */
+.kpi__medida {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+}
+
+.kpi__porcentaje {
+  font-size: 3.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.barra {
+  flex: 1;
+  height: 0.6rem;
+  background-color: var(--color-superficie-suave);
+  border-radius: 999rem;
+  overflow: hidden;
+}
+
+.barra__relleno {
+  height: 100%;
+  background-color: var(--color-critico);
+  border-radius: 999rem;
+  transition: width 600ms ease;
+}
+
+/* ------------------------------------------------------------------ */
+/* Semáforo de riesgo                                                  */
+/* ------------------------------------------------------------------ */
+
+.semaforo {
+  display: inline-flex;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  border: 0.2rem solid currentColor;
+}
+
+.semaforo--alto {
+  color: var(--color-critico);
+  background-color: var(--color-critico-fondo);
+}
+
+.semaforo--medio {
+  color: var(--color-medio);
+  background-color: var(--color-medio-fondo);
+}
+
+.semaforo--bajo {
+  color: var(--color-bajo);
+  background-color: var(--color-bajo-fondo);
+}
+
+/* Versión grande usada en las cabeceras de sección del reporte. */
+.semaforo--grande {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 0;
+  background-color: currentColor;
+  box-shadow: 0 0 0.8rem currentColor;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tablas de casos                                                     */
+/* ------------------------------------------------------------------ */
+
+/* El scroll queda contenido aquí: min-width:0 impide que el ancho mínimo
+   de la tabla empuje al panel y provoque scroll horizontal en la página. */
+.tabla-envoltura {
+  overflow-x: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tabla-casos {
+  min-width: 52rem;
+}
+
+/* La variante compacta cabe en la columna estrecha de casos leves. */
+.tabla-casos--compacta {
+  min-width: 34rem;
+}
+
+.tabla-casos--compacta thead th,
+.tabla-casos--compacta td {
+  padding-left: var(--espacio-md);
+  padding-right: var(--espacio-md);
+}
+
+.tabla-casos thead th {
+  padding: 1.2rem var(--espacio-lg);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-texto-medio);
+  text-align: left;
+  background-color: var(--color-superficie-alta);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+  white-space: nowrap;
+}
+
+.tabla-casos th.col-centro,
+.tabla-casos td.col-centro {
+  text-align: center;
+}
+
+.tabla-casos th.col-derecha,
+.tabla-casos td.col-derecha {
+  text-align: right;
+}
+
+.tabla-casos tbody tr {
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+  cursor: pointer;
+  transition: background-color var(--transicion);
+}
+
+.tabla-casos tbody tr:hover,
+.tabla-casos tbody tr:focus-visible {
+  background-color: var(--color-superficie-alta);
+}
+
+.tabla-casos tbody tr.esta-destacada {
+  background-color: rgba(242, 133, 127, 0.07);
+}
+
+.tabla-casos tbody tr.esta-destacada:hover {
+  background-color: rgba(242, 133, 127, 0.12);
+}
+
+.tabla-casos td {
+  padding: 1.4rem var(--espacio-lg);
+  vertical-align: middle;
+}
+
+.celda-beneficiario__nombre {
+  font-family: var(--fuente-mono);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.celda-beneficiario__rut {
+  font-family: var(--fuente-mono);
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+  margin-top: 0.2rem;
+}
+
+.puntaje {
+  font-family: var(--fuente-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.puntaje--alto {
+  color: var(--color-critico);
+}
+
+.puntaje--medio {
+  color: var(--color-medio);
+}
+
+.puntaje--bajo {
+  color: var(--color-texto-medio);
+}
+
+/* Recuadro que enmarca el puntaje del caso más grave. */
+.puntaje--marcado {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border: 0.1rem solid var(--color-critico-fuerte);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-critico-fondo);
+}
+
+/* Cuadrícula que reparte las dos listas de casos del panel inicial.
+   minmax(0,·) evita que el contenido ancho estire las columnas. */
+.listados {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: var(--espacio-md);
+  align-items: start;
+}
+
+@media (max-width: 1250px) {
+  .listados {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 620px) {
+  .kpi--ancho {
+    grid-column: span 1;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Modales                                                             */
+/* ------------------------------------------------------------------ */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espacio-md);
+  background-color: rgba(4, 4, 6, 0.72);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transicion), visibility var(--transicion);
+}
+
+.modal.esta-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal__caja {
+  width: min(56rem, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--color-superficie);
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-panel);
+  transform: translateY(1.2rem);
+  transition: transform var(--transicion);
+}
+
+.modal.esta-visible .modal__caja {
+  transform: translateY(0);
+}
+
+.modal__cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-lg);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+}
+
+.modal__titulo {
+  font-size: 1.9rem;
+}
+
+.modal__cerrar {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  color: var(--color-texto-medio);
+  border-radius: 50%;
+}
+
+.modal__cerrar:hover {
+  background-color: var(--color-superficie-alta);
+  color: var(--color-texto);
+}
+
+.modal__cuerpo {
+  padding: var(--espacio-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+  font-size: 1.4rem;
+  color: var(--color-texto-medio);
+}
+
+.modal__pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-lg);
+  border-top: 0.1rem solid var(--color-borde-suave);
+  flex-wrap: wrap;
+}
+
+/* Campos de formulario dentro de modales. */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-xs);
+}
+
+.campo__control {
+  width: 100%;
+  padding: 1.1rem 1.4rem;
+  font-family: inherit;
+  font-size: 1.4rem;
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-md);
+  resize: vertical;
+}
+
+.campo__control:focus {
+  outline: none;
+  border-color: var(--color-borde-acento);
+}
+
+.campo__error {
+  font-size: 1.2rem;
+  color: var(--color-critico);
+  min-height: 1.6rem;
+}
+
+/* Resumen de adjuntos dentro del modal de correo. */
+.adjunto {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  padding: 1.2rem;
+  background-color: var(--color-fondo);
+  border: 0.1rem dashed var(--color-borde);
+  border-radius: var(--radio-md);
+  font-family: var(--fuente-mono);
+  font-size: 1.3rem;
+  color: var(--color-texto);
+}
+
+/* ------------------------------------------------------------------ */
+/* Avisos flotantes (sustituyen a alert)                               */
+/* ------------------------------------------------------------------ */
+
+.avisos {
+  position: fixed;
+  right: var(--espacio-lg);
+  bottom: var(--espacio-lg);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  max-width: min(38rem, calc(100vw - 3.2rem));
+}
+
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-md);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde);
+  border-left: 0.3rem solid var(--color-accion);
+  border-radius: var(--radio-md);
+  box-shadow: var(--sombra-panel);
+  font-size: 1.3rem;
+  animation: aviso-entra 200ms ease;
+}
+
+.aviso--exito {
+  border-left-color: var(--color-ok);
+}
+
+.aviso--exito .aviso__icono {
+  color: var(--color-ok);
+}
+
+.aviso--alerta {
+  border-left-color: var(--color-critico);
+}
+
+.aviso--alerta .aviso__icono {
+  color: var(--color-critico);
+}
+
+.aviso__icono {
+  flex-shrink: 0;
+  color: var(--color-accion);
+  margin-top: 0.1rem;
+}
+
+.aviso__titulo {
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.aviso__texto {
+  color: var(--color-texto-medio);
+  margin-top: 0.2rem;
+}
+
+@keyframes aviso-entra {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estado vacío para listados sin resultados. */
+.estado-vacio {
+  padding: var(--espacio-xl);
+  text-align: center;
+  color: var(--color-texto-tenue);
+  font-size: 1.4rem;
+}
