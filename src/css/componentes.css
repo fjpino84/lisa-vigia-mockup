@@ -75,7 +75,7 @@
 }
 
 .distintivo--ok {
-  background-color: rgba(95, 201, 160, 0.12);
+  background-color: var(--color-ok-fondo);
   color: var(--color-ok);
   border: 0.1rem solid var(--color-ok);
 }
@@ -100,7 +100,7 @@
 
 .boton--primario {
   background-color: var(--color-accion);
-  color: #14141a;
+  color: var(--color-sobre-accion);
 }
 
 .boton--primario:hover {
@@ -117,13 +117,13 @@
 }
 
 .boton--exito {
-  background-color: rgba(95, 201, 160, 0.14);
+  background-color: var(--color-ok-fondo);
   color: var(--color-ok);
   border-color: var(--color-ok);
 }
 
 .boton--exito:hover {
-  background-color: rgba(95, 201, 160, 0.24);
+  background-color: var(--color-ok-fondo-fuerte);
 }
 
 .boton--fantasma {
@@ -184,7 +184,7 @@
 }
 
 .kpi--alerta {
-  border-color: rgba(242, 133, 127, 0.35);
+  border-color: var(--color-borde-alerta);
 }
 
 .kpi--ancho {
@@ -365,11 +365,11 @@
 }
 
 .tabla-casos tbody tr.esta-destacada {
-  background-color: rgba(242, 133, 127, 0.07);
+  background-color: var(--color-fila-critica);
 }
 
 .tabla-casos tbody tr.esta-destacada:hover {
-  background-color: rgba(242, 133, 127, 0.12);
+  background-color: var(--color-fila-critica-fuerte);
 }
 
 .tabla-casos td {

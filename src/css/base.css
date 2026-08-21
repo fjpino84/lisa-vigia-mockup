@@ -44,12 +44,21 @@
   --color-bajo: #6ea8d8;
   --color-bajo-fondo: rgba(110, 168, 216, 0.12);
   --color-ok: #5fc9a0;
+  --color-ok-fondo: rgba(95, 201, 160, 0.12);
+  --color-ok-fondo-fuerte: rgba(95, 201, 160, 0.24);
+  /* Realce de la fila destacada en los listados. */
+  --color-fila-critica: rgba(242, 133, 127, 0.07);
+  --color-fila-critica-fuerte: rgba(242, 133, 127, 0.12);
+  --color-borde-alerta: rgba(242, 133, 127, 0.35);
 
   /* --- Marca LISA ----------------------------------------------------- */
   --color-marca-turquesa: #3aa9b8;
   --color-marca-azul: #2f8fc7;
   --color-marca-violeta: #4a3a99;
   --color-accion: #c3cbf0;
+  /* Texto que se apoya sobre el color de acento. Cada tema lo define según
+     la luminosidad de su propio acento: aquí es lavanda claro. */
+  --color-sobre-accion: #14141a;
 
   /* --- Tipografía ------------------------------------------------------ */
   --fuente-base: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
@@ -117,12 +126,20 @@
   --color-bajo: #2b6ea8;
   --color-bajo-fondo: rgba(43, 110, 168, 0.12);
   --color-ok: #157a56;
+  --color-ok-fondo: rgba(21, 122, 86, 0.1);
+  --color-ok-fondo-fuerte: rgba(21, 122, 86, 0.18);
+  --color-fila-critica: rgba(200, 50, 47, 0.05);
+  --color-fila-critica-fuerte: rgba(200, 50, 47, 0.09);
+  --color-borde-alerta: rgba(200, 50, 47, 0.3);
 
   /* --- Marca LISA ----------------------------------------------------- */
   --color-marca-turquesa: #2f8f92;
   --color-marca-azul: #2b7ea6;
   --color-marca-violeta: #4f439b;
   --color-accion: #4f439b;
+  /* El acento diurno es el violeta oscuro de LISA, así que el texto que se
+     apoya sobre él va en blanco. */
+  --color-sobre-accion: #ffffff;
 
   --sombra-panel: 0 0.2rem 1.6rem rgba(22, 35, 58, 0.1);
 }

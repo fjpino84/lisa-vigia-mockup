@@ -53,7 +53,7 @@
   padding: 0.6rem 1.2rem;
   font-family: var(--fuente-mono);
   font-size: 1.4rem;
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: var(--color-superficie-suave);
   border-radius: var(--radio-sm);
 }
 
@@ -123,7 +123,7 @@
   height: 7rem;
   border-radius: 50%;
   background-color: var(--color-critico);
-  color: #2a0d0d;
+  color: var(--color-superficie);
   font-family: var(--fuente-mono);
   font-size: 2rem;
   font-weight: 700;
@@ -132,7 +132,7 @@
 
 .sello--leve .sello__circulo {
   background-color: var(--color-bajo);
-  color: #0b1a26;
+  color: var(--color-superficie);
   box-shadow: 0 0 2.4rem rgba(110, 168, 216, 0.35);
 }
 
@@ -359,7 +359,7 @@
 
 .documento__detalle.esta-activo {
   color: var(--color-texto);
-  border-color: rgba(242, 133, 127, 0.4);
+  border-color: var(--color-borde-alerta);
 }
 
 .documento__leyenda {
@@ -415,7 +415,7 @@
 }
 
 .hallazgo--critico {
-  border-color: rgba(242, 133, 127, 0.3);
+  border-color: var(--color-borde-alerta);
 }
 
 .hallazgo__icono {
@@ -730,7 +730,7 @@
 }
 
 .resuelto--liquidacion {
-  background-color: rgba(95, 201, 160, 0.1);
+  background-color: var(--color-ok-fondo);
   border: 0.1rem solid var(--color-ok);
   color: var(--color-ok);
 }
