@@ -567,16 +567,21 @@
 }
 
 /* Globo informativo compartido por ambos gráficos. */
+/* El globo informativo se mantiene oscuro en ambos temas: al flotar sobre
+   el gráfico necesita separarse de él, y en el tema diurno una tarjeta
+   clara sobre panel claro perdería ese despegue. Sus colores son fijos,
+   no tokens, precisamente para no seguir al tema. */
 .tooltip {
   position: absolute;
   z-index: 20;
   min-width: 22rem;
   padding: 1.2rem;
-  background-color: var(--color-superficie-alta);
-  border: 0.1rem solid var(--color-borde-acento);
+  background-color: #1c1f28;
+  border: 0.1rem solid #3a3f4d;
   border-radius: var(--radio-md);
-  box-shadow: var(--sombra-panel);
+  box-shadow: 0 0.4rem 2rem rgba(8, 10, 16, 0.45);
   font-size: 1.2rem;
+  color: #f2f2f5;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -591,10 +596,10 @@
 .tooltip__titulo {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--color-texto);
+  color: #ffffff;
   margin-bottom: var(--espacio-xs);
   padding-bottom: var(--espacio-xs);
-  border-bottom: 0.1rem solid var(--color-borde-suave);
+  border-bottom: 0.1rem solid #3a3f4d;
 }
 
 .tooltip__fila {
@@ -605,12 +610,12 @@
 }
 
 .tooltip__clave {
-  color: var(--color-texto-tenue);
+  color: #a3aab8;
 }
 
 .tooltip__valor {
   font-family: var(--fuente-mono);
-  color: var(--color-texto);
+  color: #ffffff;
   text-align: right;
 }
 
