@@ -36,32 +36,35 @@ const NOCTURNA = {
   barraLiberados: "#2f4f45",
 };
 
+/* La paleta diurna se apoya en los colores de los logotipos: el violeta y el
+   cian de la onda de LISA. Los tonos del semáforo —crítico, medio, bajo y
+   correcto— quedan fuera de esa armonía porque comunican estado de riesgo. */
 const DIURNA = {
   critico: "#c8322f",
   criticoFuerte: "#b3231f",
   medio: "#9a6800",
-  bajo: "#2b6ea8",
+  bajo: "#2b7ea6",
   ok: "#157a56",
-  acento: "#3d3f8f",
-  violeta: "#5b4bc4",
-  violetaClaro: "#3d3092",
+  acento: "#4f439b",
+  violeta: "#4f439b",
+  violetaClaro: "#3a3178",
 
-  texto: "#14161d",
-  textoMedio: "#4d5364",
-  textoTenue: "#757c8f",
+  texto: "#16233a",
+  textoMedio: "#48576f",
+  textoTenue: "#64728c",
 
   fondo: "#ffffff",
-  rejilla: "#e2e5ee",
-  trazoTenue: "#b3b9c9",
+  rejilla: "#dde4f0",
+  trazoTenue: "#a8b6cd",
 
   /* En tema claro los rellenos son tintes suaves del propio color. */
-  nodoNeutro: "#e6e9f1",
-  nodoBorde: "#a8afc2",
-  nodoVioleta: "#ebe8fa",
+  nodoNeutro: "#e4ebf6",
+  nodoBorde: "#a2b1c9",
+  nodoVioleta: "#e9e6f8",
   nodoCritico: "#fbe9e8",
-  nodoPrestador: "#e8e4fa",
+  nodoPrestador: "#e5e1f6",
   nucleo: "#ffffff",
-  puntoPoblacion: "#cddced",
+  puntoPoblacion: "#c7dcea",
   barraLiberados: "#a7d4c2",
 };
 

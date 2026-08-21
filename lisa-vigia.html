@@ -29,6 +29,11 @@
   --color-borde-suave: #1e1e24;
   --color-borde-acento: #3a3a46;
 
+  /* Franjas de navegación. En el tema nocturno se confunden con el fondo,
+     que es justo el efecto buscado allí. */
+  --color-cromo: #0a0a0c;
+  --color-cromo-borde: #1e1e24;
+
   /* --- Texto --------------------------------------------------------- */
   --color-texto: #f2f2f5;
   --color-texto-medio: #a0a0ae;
@@ -74,31 +79,40 @@
 
 /* =========================================================================
    Tema diurno.
-   Solo se redefinen los tokens: ningún componente conoce el tema activo.
-   Los colores del semáforo se oscurecen para conservar el contraste sobre
-   fondo claro, ya que los tonos pensados para el modo nocturno pierden
-   legibilidad al invertir la superficie.
+   La paleta se deriva de los logotipos: el violeta #4f439b y el cian #2fa2cd
+   de la onda de LISA, y el azul #365e91 del retrato del vigía. Los neutros
+   llevan un sesgo hacia ese azul en lugar de ser grises puros, de modo que
+   el conjunto se lea como una sola familia cromática.
+
+   El semáforo de riesgo queda fuera de esa armonía: rojo, ámbar y verde
+   comunican estado, no marca, así que solo se oscurecen lo justo para
+   conservar el contraste sobre fondo claro.
    ========================================================================= */
 
 :root[data-tema="claro"] {
-  /* --- Superficies -------------------------------------------------- */
-  --color-fondo: #f2f3f7;
+  /* --- Superficies, teñidas con el azul de marca --------------------- */
+  --color-fondo: #eaeef7;
   --color-superficie: #ffffff;
-  --color-superficie-alta: #f7f8fb;
-  --color-superficie-suave: #eceef4;
-  --color-panel-datos: #e9edf5;
+  --color-superficie-alta: #f3f6fc;
+  --color-superficie-suave: #e2e8f5;
+  --color-panel-datos: #e1e9f7;
+
+  /* Franjas de navegación: llevan el azul de marca más marcado, para que
+     el armazón de la aplicación se distinga del área de trabajo. */
+  --color-cromo: #e3e9f6;
+  --color-cromo-borde: #ccd6e9;
 
   /* --- Bordes y separadores ----------------------------------------- */
-  --color-borde: #d3d7e2;
-  --color-borde-suave: #e2e5ee;
-  --color-borde-acento: #b3b9c9;
+  --color-borde: #ccd6e6;
+  --color-borde-suave: #dde4f0;
+  --color-borde-acento: #a8b6cd;
 
-  /* --- Texto --------------------------------------------------------- */
-  --color-texto: #14161d;
-  --color-texto-medio: #4d5364;
-  --color-texto-tenue: #757c8f;
+  /* --- Texto: azul muy oscuro en lugar de negro ---------------------- */
+  --color-texto: #16233a;
+  --color-texto-medio: #48576f;
+  --color-texto-tenue: #64728c;
 
-  /* --- Semáforo de riesgo -------------------------------------------- */
+  /* --- Semáforo de riesgo. Ajeno a la marca: comunica estado. -------- */
   --color-critico: #c8322f;
   --color-critico-fuerte: #b3231f;
   --color-critico-fondo: rgba(200, 50, 47, 0.1);
@@ -109,9 +123,12 @@
   --color-ok: #157a56;
 
   /* --- Marca LISA ----------------------------------------------------- */
-  --color-accion: #3d3f8f;
+  --color-marca-turquesa: #2f8f92;
+  --color-marca-azul: #2b7ea6;
+  --color-marca-violeta: #4f439b;
+  --color-accion: #4f439b;
 
-  --sombra-panel: 0 0.2rem 1.6rem rgba(20, 22, 29, 0.12);
+  --sombra-panel: 0 0.2rem 1.6rem rgba(22, 35, 58, 0.1);
 }
 
 html {
@@ -222,8 +239,8 @@ table {
   flex-direction: column;
   gap: var(--espacio-lg);
   padding: var(--espacio-lg) var(--espacio-md);
-  background-color: var(--color-fondo);
-  border-right: 0.1rem solid var(--color-borde-suave);
+  background-color: var(--color-cromo);
+  border-right: 0.1rem solid var(--color-cromo-borde);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -347,14 +364,16 @@ table {
 }
 
 .sidebar__enlace:hover {
-  background-color: var(--color-superficie-alta);
+  background-color: var(--color-superficie);
   color: var(--color-texto);
 }
 
+/* La sección activa se marca con el acento de LISA. */
 .sidebar__enlace[aria-current="page"] {
-  background-color: var(--color-superficie-suave);
+  background-color: var(--color-superficie);
   color: var(--color-texto);
   font-weight: 600;
+  box-shadow: inset 0.3rem 0 0 var(--color-accion);
 }
 
 .sidebar__enlace .icono {
@@ -387,8 +406,8 @@ table {
   gap: var(--espacio-lg);
   height: var(--alto-topbar);
   padding: 0 var(--espacio-lg);
-  border-bottom: 0.1rem solid var(--color-borde-suave);
-  background-color: var(--color-fondo);
+  border-bottom: 0.1rem solid var(--color-cromo-borde);
+  background-color: var(--color-cromo);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -423,7 +442,8 @@ table {
   font-family: inherit;
   font-size: 1.4rem;
   color: var(--color-texto);
-  background-color: var(--color-superficie-alta);
+  /* El campo se apoya en la superficie para separarse de la franja. */
+  background-color: var(--color-superficie);
   border: 0.1rem solid var(--color-borde);
   border-radius: var(--radio-md);
   transition: border-color var(--transicion);
@@ -5253,32 +5273,35 @@ const NOCTURNA = {
   barraLiberados: "#2f4f45",
 };
 
+/* La paleta diurna se apoya en los colores de los logotipos: el violeta y el
+   cian de la onda de LISA. Los tonos del semáforo —crítico, medio, bajo y
+   correcto— quedan fuera de esa armonía porque comunican estado de riesgo. */
 const DIURNA = {
   critico: "#c8322f",
   criticoFuerte: "#b3231f",
   medio: "#9a6800",
-  bajo: "#2b6ea8",
+  bajo: "#2b7ea6",
   ok: "#157a56",
-  acento: "#3d3f8f",
-  violeta: "#5b4bc4",
-  violetaClaro: "#3d3092",
+  acento: "#4f439b",
+  violeta: "#4f439b",
+  violetaClaro: "#3a3178",
 
-  texto: "#14161d",
-  textoMedio: "#4d5364",
-  textoTenue: "#757c8f",
+  texto: "#16233a",
+  textoMedio: "#48576f",
+  textoTenue: "#64728c",
 
   fondo: "#ffffff",
-  rejilla: "#e2e5ee",
-  trazoTenue: "#b3b9c9",
+  rejilla: "#dde4f0",
+  trazoTenue: "#a8b6cd",
 
   /* En tema claro los rellenos son tintes suaves del propio color. */
-  nodoNeutro: "#e6e9f1",
-  nodoBorde: "#a8afc2",
-  nodoVioleta: "#ebe8fa",
+  nodoNeutro: "#e4ebf6",
+  nodoBorde: "#a2b1c9",
+  nodoVioleta: "#e9e6f8",
   nodoCritico: "#fbe9e8",
-  nodoPrestador: "#e8e4fa",
+  nodoPrestador: "#e5e1f6",
   nucleo: "#ffffff",
-  puntoPoblacion: "#cddced",
+  puntoPoblacion: "#c7dcea",
   barraLiberados: "#a7d4c2",
 };
 

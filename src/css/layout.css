@@ -18,8 +18,8 @@
   flex-direction: column;
   gap: var(--espacio-lg);
   padding: var(--espacio-lg) var(--espacio-md);
-  background-color: var(--color-fondo);
-  border-right: 0.1rem solid var(--color-borde-suave);
+  background-color: var(--color-cromo);
+  border-right: 0.1rem solid var(--color-cromo-borde);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -143,14 +143,16 @@
 }
 
 .sidebar__enlace:hover {
-  background-color: var(--color-superficie-alta);
+  background-color: var(--color-superficie);
   color: var(--color-texto);
 }
 
+/* La sección activa se marca con el acento de LISA. */
 .sidebar__enlace[aria-current="page"] {
-  background-color: var(--color-superficie-suave);
+  background-color: var(--color-superficie);
   color: var(--color-texto);
   font-weight: 600;
+  box-shadow: inset 0.3rem 0 0 var(--color-accion);
 }
 
 .sidebar__enlace .icono {
@@ -183,8 +185,8 @@
   gap: var(--espacio-lg);
   height: var(--alto-topbar);
   padding: 0 var(--espacio-lg);
-  border-bottom: 0.1rem solid var(--color-borde-suave);
-  background-color: var(--color-fondo);
+  border-bottom: 0.1rem solid var(--color-cromo-borde);
+  background-color: var(--color-cromo);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -219,7 +221,8 @@
   font-family: inherit;
   font-size: 1.4rem;
   color: var(--color-texto);
-  background-color: var(--color-superficie-alta);
+  /* El campo se apoya en la superficie para separarse de la franja. */
+  background-color: var(--color-superficie);
   border: 0.1rem solid var(--color-borde);
   border-radius: var(--radio-md);
   transition: border-color var(--transicion);
