@@ -1878,15 +1878,17 @@ table {
   overflow: visible;
 }
 
-/* En pantallas estrechas el lienzo conserva un ancho mínimo legible y el
-   desplazamiento se resuelve dentro del propio gráfico. */
+/* En pantallas estrechas el lienzo se ajusta al ancho disponible en lugar
+   de forzar desplazamiento: los componentes agrandan su tipografía y
+   aligeran los rótulos para seguir siendo legibles a ese tamaño. */
 @media (max-width: 760px) {
   .grafico {
-    overflow-x: auto;
+    padding: var(--espacio-sm);
   }
 
-  .grafico__lienzo {
-    min-width: 60rem;
+  .grafico__leyenda {
+    gap: var(--espacio-sm);
+    font-size: 1.1rem;
   }
 }
 
@@ -3366,6 +3368,62 @@ function iniciarTema() {
 }
 
   Object.assign(REGISTRO, { obtenerTema, esTemaClaro, alternarTema, alCambiarTema, iniciarTema });
+})();
+
+/* ===== src/js/utils/escalaGrafico.js ===== */
+(() => {
+/* =========================================================================
+   LISA vigIA — Escalado tipográfico de los gráficos.
+
+   Los SVG se dibujan sobre un lienzo de tamaño fijo y el navegador los
+   ajusta al ancho disponible. En pantallas estrechas esa reducción encoge
+   también los textos, que quedan por debajo del umbral legible.
+
+   Este módulo devuelve un factor que compensa la reducción: multiplica los
+   tamaños declarados en el lienzo para que su medida real en pantalla se
+   mantenga estable, sea cual sea el ancho del dispositivo.
+   ========================================================================= */
+
+/* Ancho por debajo del cual los gráficos adoptan su versión compacta. */
+const ANCHO_ESTRECHO = 760;
+
+/* Espacio que consumen la barra lateral y los rellenos del panel; se resta
+   del ancho de ventana para estimar el que recibe realmente el lienzo. */
+const CROMO_ESCRITORIO = 118;
+const CROMO_MOVIL = 100;
+
+/** Indica si la ventana está por debajo del umbral compacto. */
+function esPantallaEstrecha() {
+  return window.innerWidth <= ANCHO_ESTRECHO;
+}
+
+/**
+ * Factor de corrección tipográfica para un lienzo dado.
+ * @param {number} anchoLienzo Ancho del viewBox, en unidades de usuario.
+ * @returns {number} Multiplicador para los tamaños de fuente y separaciones.
+ */
+function factorEscala(anchoLienzo) {
+  const cromo = window.innerWidth <= 620 ? CROMO_MOVIL : CROMO_ESCRITORIO;
+  const anchoDisponible = Math.max(window.innerWidth - cromo, 240);
+  const razon = anchoDisponible / anchoLienzo;
+
+  /* Solo se corrige a la baja: cuando el lienzo se muestra más grande que
+     su tamaño nominal, los textos ya son legibles y no conviene inflarlos.
+     El tope evita factores desmedidos en pantallas muy pequeñas. */
+  return Math.min(Math.max(1 / razon, 1), 3.2);
+}
+
+/**
+ * Construye la función que escala medidas dentro de un gráfico.
+ * @param {number} anchoLienzo
+ * @returns {(base: number) => number}
+ */
+function escaladorDe(anchoLienzo) {
+  const factor = factorEscala(anchoLienzo);
+  return (base) => +(base * factor).toFixed(1);
+}
+
+  Object.assign(REGISTRO, { ANCHO_ESTRECHO, esPantallaEstrecha, factorEscala, escaladorDe });
 })();
 
 /* ===== src/js/data/casos.js ===== */
@@ -5361,13 +5419,14 @@ function paleta() {
 
 /* ===== src/js/components/graficoDesviacion.js ===== */
 (() => {
-  const { crear, crearSVG, vaciar, comoMoneda, paleta } = REGISTRO;
+  const { crear, crearSVG, vaciar, comoMoneda, paleta, escaladorDe } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Gráfico de dispersión de montos.
    Sitúa cada siniestro sobre la banda de ±1σ y ±2σ del promedio histórico
    para que los cuatro casos atípicos queden visualmente fuera del rango.
    El globo informativo se muestra al posar el puntero sobre cada punto.
    ========================================================================= */
+
 
 
 
@@ -5403,6 +5462,7 @@ function crearGraficoDesviacion({
   alElegirCaso,
 }) {
   const COLOR = paleta();
+  const px = escaladorDe(ANCHO);
   const estadisticos = calcularEstadisticos(poblacion.map((dato) => dato.monto));
   const { desviacion } = estadisticos;
 
@@ -5489,7 +5549,7 @@ function crearGraficoDesviacion({
         x: 6,
         y: escalaY(media) - 8,
         fill: COLOR.bajo,
-        "font-size": 11,
+        "font-size": px(11),
         "font-family": "monospace",
       },
     })
@@ -5525,7 +5585,7 @@ function crearGraficoDesviacion({
           x: -12,
           y: y + 4,
           fill: COLOR.textoTenue,
-          "font-size": 11,
+          "font-size": px(11),
           "font-family": "monospace",
           "text-anchor": "end",
         },
@@ -5730,13 +5790,14 @@ function crearItemLeyenda(color, texto, esBanda = false) {
 
 /* ===== src/js/components/graficoCoalicion.js ===== */
 (() => {
-  const { crear, crearSVG, vaciar, comoMoneda, paleta } = REGISTRO;
+  const { crear, crearSVG, vaciar, comoMoneda, paleta, escaladorDe } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Grafo de coalición.
    Dispone el prestador en el centro y a su alrededor los pacientes que
    repiten visitas. El grosor de cada arista refleja el número de visitas,
    de modo que la concentración del patrón se aprecia de un vistazo.
    ========================================================================= */
+
 
 
 
@@ -5758,6 +5819,7 @@ const RADIO_ORBITA = 150;
  */
 function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
   const COLOR = paleta();
+  const px = escaladorDe(ANCHO);
   const contenedor = crear("div", { clase: "grafico" });
 
   const svg = crearSVG("svg", {
@@ -5901,7 +5963,7 @@ function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x: medioXAjustado + desvioX,
           y: medioYAjustado + desvioY,
           fill: COLOR.textoMedio,
-          "font-size": 10,
+          "font-size": px(10),
           "font-family": "monospace",
           "text-anchor": "middle",
           "dominant-baseline": "middle",
@@ -5946,7 +6008,7 @@ function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         x: CENTRO_X,
         y: CENTRO_Y + 4,
         fill: COLOR.violetaClaro,
-        "font-size": 10,
+        "font-size": px(10),
         "font-weight": "700",
         "font-family": "monospace",
         "text-anchor": "middle",
@@ -5980,7 +6042,7 @@ function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         x: CENTRO_X,
         y: CENTRO_Y + 56,
         fill: COLOR.texto,
-        "font-size": 13,
+        "font-size": px(13),
         "font-weight": "600",
         "text-anchor": "middle",
       },
@@ -5994,7 +6056,7 @@ function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         x: CENTRO_X,
         y: CENTRO_Y + 70,
         fill: COLOR.textoTenue,
-        "font-size": 11,
+        "font-size": px(11),
         "font-family": "monospace",
         "text-anchor": "middle",
       },
@@ -6043,7 +6105,7 @@ function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x,
           y: y + 4,
           fill: color,
-          "font-size": 12,
+          "font-size": px(12),
           "font-weight": "700",
           "font-family": "monospace",
           "text-anchor": "middle",
@@ -6059,7 +6121,7 @@ function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x,
           y: y < CENTRO_Y ? y - 32 : y + 40,
           fill: paciente.esCasoActual ? COLOR.critico : COLOR.textoMedio,
-          "font-size": 11,
+          "font-size": px(11),
           "font-weight": paciente.esCasoActual ? "700" : "400",
           "text-anchor": "middle",
         },
@@ -8008,6 +8070,20 @@ const ACHATADO = 0.68;
 /* Radio de la órbita de beneficiarios en torno a un núcleo. */
 const radioOrbita = (cantidad) => Math.min(40 + cantidad * 4, 76);
 
+/* Columnas de la retícula según el ancho disponible. Cada núcleo necesita
+   unos 300 px reales para que su cartel se lea sin solaparse. */
+function columnasSegunAncho() {
+  const ancho = window.innerWidth;
+
+  if (ancho <= 620) {
+    return 1;
+  }
+  if (ancho <= 1000) {
+    return 2;
+  }
+  return 3;
+}
+
 /**
  * Dibuja la red de prestadores y beneficiarios de toda la cartera.
  * @param {object} opciones
@@ -8022,19 +8098,24 @@ function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirCaso }) 
   const contenedor = crear("div", { clase: "grafico" });
 
   /* Los prestadores se reparten en una retícula holgada, ordenados de mayor
-     a menor concentración para que el foco principal quede a la izquierda. */
+     a menor concentración para que el foco principal quede a la izquierda.
+     En pantallas estrechas se usan menos columnas: apilar los núcleos es
+     preferible a comprimirlos hasta que sus carteles se solapen. */
   const ordenados = [...nodosPrestador].sort((uno, otro) => otro.casos - uno.casos);
-  const columnas = Math.min(ordenados.length, 3);
+  const columnas = Math.min(ordenados.length, columnasSegunAncho());
   const filas = Math.ceil(ordenados.length / columnas);
 
-  const anchoCelda = ANCHO / columnas;
+  /* El lienzo se estrecha con la retícula: una sola columna no necesita el
+     ancho de tres, y así los núcleos conservan su tamaño relativo. */
+  const anchoLienzo = columnas === 3 ? ANCHO : columnas * 300;
+  const anchoCelda = anchoLienzo / columnas;
   const altoCelda = ALTO_FILA;
   const alto = filas * ALTO_FILA;
 
   const svg = crearSVG("svg", {
     clase: "grafico__lienzo",
     atributos: {
-      viewBox: `0 0 ${ANCHO} ${alto}`,
+      viewBox: `0 0 ${anchoLienzo} ${alto}`,
       role: "img",
       "aria-label": `Red de la cartera: ${nodosPrestador.length} prestadores y ${nodosBeneficiario.length} beneficiarios.`,
     },
@@ -8975,7 +9056,7 @@ function crearVistaForense({ alAbrirCaso }) {
 
 /* ===== src/js/components/graficoAprendizaje.js ===== */
 (() => {
-  const { crear, crearSVG, vaciar, paleta } = REGISTRO;
+  const { crear, crearSVG, vaciar, paleta, escaladorDe, esPantallaEstrecha } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Curva de aprendizaje del modelo.
    Traza cómo subió la precisión mientras caían los falsos positivos, con el
@@ -8989,11 +9070,11 @@ function crearVistaForense({ alAbrirCaso }) {
    ========================================================================= */
 
 
+
 const ANCHO = 860;
 const ALTO = 400;
 const MARGEN = { arriba: 52, derecha: 32, abajo: 58, izquierda: 52 };
 
-const ANCHO_TRAMA = ANCHO - MARGEN.izquierda - MARGEN.derecha;
 const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
 
 /* Identificadores únicos por instancia: el gráfico puede dibujarse más de
@@ -9062,6 +9143,12 @@ function curvaSuave(puntos, tension = 0.18) {
  */
 function crearGraficoAprendizaje({ historial, hitos }) {
   const COLOR = paleta();
+  const estrecha = esPantallaEstrecha();
+
+  /* Compensa la reducción del lienzo para que los textos conserven su
+     tamaño real en pantalla. */
+  const px = escaladorDe(ANCHO);
+
   const contenedor = crear("div", { clase: "grafico" });
 
   contador += 1;
@@ -9138,20 +9225,28 @@ function crearGraficoAprendizaje({ historial, hitos }) {
 
   svg.appendChild(defs);
 
+  /* Con la tipografía agrandada, los ejes necesitan más margen alrededor. */
+  const margenIzq = estrecha ? MARGEN.izquierda + 16 : MARGEN.izquierda;
+
   const trama = crearSVG("g", {
-    atributos: { transform: `translate(${MARGEN.izquierda}, ${MARGEN.arriba})` },
+    atributos: { transform: `translate(${margenIzq}, ${MARGEN.arriba})` },
   });
 
-  const paso = ANCHO_TRAMA / (historial.length - 1);
+  /* Ancho útil una vez descontado el margen que consumen los ejes. */
+  const anchoTrama = ANCHO - margenIzq - MARGEN.derecha;
+
+  const paso = anchoTrama / (historial.length - 1);
   const escalaX = (indice) => paso * indice;
   const escalaY = (porcentaje) => ALTO_TRAMA - (porcentaje / 100) * ALTO_TRAMA;
 
   /* --- Escala del ahorro mensual ------------------------------------- */
 
   /* El techo deja holgura sobre la barra más alta para que ninguna llegue
-     al borde superior de la trama. */
+     al borde superior de la trama. En pantalla estrecha se recorta esa
+     holgura: con menos rótulos que esquivar, las columnas pueden crecer y
+     recuperar presencia. */
   const ahorroMaximo = Math.max(...historial.map((mes) => mes.montoBloqueado));
-  const techoAhorro = ahorroMaximo * 1.75;
+  const techoAhorro = ahorroMaximo * (estrecha ? 1.35 : 1.75);
   const escalaAhorro = (monto) => ALTO_TRAMA - (monto / techoAhorro) * ALTO_TRAMA;
 
   /* ------------------------------------------------------------------ */
@@ -9167,7 +9262,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
         atributos: {
           x1: 0,
           y1: y,
-          x2: ANCHO_TRAMA,
+          x2: anchoTrama,
           y2: y,
           stroke: COLOR.rejilla,
           "stroke-width": esBase ? 1.5 : 1,
@@ -9185,7 +9280,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
           x: -14,
           y: y + 4,
           fill: COLOR.textoTenue,
-          "font-size": 10.5,
+          "font-size": px(10.5),
           "font-family": "monospace",
           "text-anchor": "end",
         },
@@ -9211,11 +9306,14 @@ function crearGraficoAprendizaje({ historial, hitos }) {
     const esFinal = indice === historial.length - 1;
 
     /* Si alguna curva pasa por la franja donde iría el rótulo, este baja al
-       interior de la columna en lugar de superponerse al trazo. */
+       interior de la columna en lugar de superponerse al trazo. La columna
+       final entra siempre por dentro en pantalla estrecha: ahí arriba está
+       el valor de precisión, con el que competiría. */
     const yPrecision = escalaY(mes.precision);
     const yFalsos = escalaY(mes.falsosPositivos);
     const invade = (yLinea) => yLinea > y - HOLGURA_ROTULO && yLinea < y + 6;
-    const rotuloDentro = alto > 34 && (invade(yPrecision) || invade(yFalsos));
+    const rotuloDentro =
+      alto > 34 && (invade(yPrecision) || invade(yFalsos) || (estrecha && esFinal));
 
     /* La columna se dibuja como un rectángulo de cabeza redondeada: el
        radio superior la suaviza y la base queda a ras del eje. */
@@ -9240,23 +9338,35 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       })
     );
 
-    /* El rótulo va sobre la columna salvo que una curva ocupe ese espacio,
-       en cuyo caso baja al interior, donde el fondo tenue lo admite. */
-    trama.appendChild(
-      crearSVG("text", {
-        texto: montoCorto(mes.montoBloqueado),
-        atributos: {
-          x: centro,
-          y: rotuloDentro ? y + 17 : y - 9,
-          fill: COLOR.acento,
-          "font-size": esFinal ? 11 : 10,
-          "font-weight": esFinal ? "700" : "600",
-          "font-family": "monospace",
-          "text-anchor": "middle",
-          opacity: esFinal ? 1 : 0.85,
-        },
-      })
-    );
+    /* En pantalla estrecha los rótulos se alternan: diez cifras seguidas no
+       caben, y mostrar una de cada dos conserva la lectura del avance. Se
+       omite el primer mes, cuyo rótulo se cruzaría con el valor inicial de
+       precisión, y cuya cifra es además la menos relevante del conjunto. */
+    const rotular = !estrecha
+      ? true
+      : esFinal || (indice % 2 === 0 && indice !== 0);
+
+    if (rotular) {
+      /* Un rótulo situado sobre la columna final se ancla a la derecha para
+         no salirse del lienzo; dentro de ella se centra como los demás. */
+      const anclaje = esFinal && !rotuloDentro ? "end" : "middle";
+
+      trama.appendChild(
+        crearSVG("text", {
+          texto: montoCorto(mes.montoBloqueado),
+          atributos: {
+            x: centro,
+            y: rotuloDentro ? y + px(17) : y - px(9),
+            fill: COLOR.acento,
+            "font-size": esFinal ? px(11) : px(10),
+            "font-weight": esFinal ? "700" : "600",
+            "font-family": "monospace",
+            "text-anchor": anclaje,
+            opacity: esFinal ? 1 : 0.85,
+          },
+        })
+      );
+    }
   });
 
   /* ------------------------------------------------------------------ */
@@ -9279,7 +9389,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
   trama.appendChild(
     crearSVG("path", {
       atributos: {
-        d: `${trazoPrecision} L ${ANCHO_TRAMA} ${ALTO_TRAMA} L 0 ${ALTO_TRAMA} Z`,
+        d: `${trazoPrecision} L ${anchoTrama} ${ALTO_TRAMA} L 0 ${ALTO_TRAMA} Z`,
         fill: `url(#${idArea})`,
       },
     })
@@ -9314,7 +9424,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
   });
 
   /* La curva se dibuja al entrar, como si el modelo trazara su historia. */
-  const largoTrazo = ANCHO_TRAMA * 1.8;
+  const largoTrazo = anchoTrama * 1.8;
   linea.setAttribute("stroke-dasharray", largoTrazo);
   linea.setAttribute("stroke-dashoffset", largoTrazo);
   linea.appendChild(
@@ -9479,7 +9589,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
             x: esFinal ? x - 4 : x + 4,
             y: escalaY(mes.precision) - 18,
             fill: COLOR.precision,
-            "font-size": 15,
+            "font-size": px(15),
             "font-weight": "700",
             "font-family": "monospace",
             "text-anchor": esFinal ? "end" : "start",
@@ -9488,20 +9598,25 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       );
     }
 
-    /* Rótulo del mes. */
-    trama.appendChild(
-      crearSVG("text", {
-        texto: mes.abreviatura,
-        atributos: {
-          x,
-          y: ALTO_TRAMA + 24,
-          fill: hito ? COLOR.acento : COLOR.textoTenue,
-          "font-size": 11,
-          "font-weight": hito ? "700" : "400",
-          "text-anchor": "middle",
-        },
-      })
-    );
+    /* Rótulo del mes. En pantalla estrecha se muestran los meses con hito y
+       los extremos, que son los que sostienen la lectura del eje. */
+    const rotularMes = !estrecha || hito || esFinal || esInicial;
+
+    if (rotularMes) {
+      trama.appendChild(
+        crearSVG("text", {
+          texto: mes.abreviatura,
+          atributos: {
+            x,
+            y: ALTO_TRAMA + px(24),
+            fill: hito ? COLOR.acento : COLOR.textoTenue,
+            "font-size": px(11),
+            "font-weight": hito ? "700" : "400",
+            "text-anchor": "middle",
+          },
+        })
+      );
+    }
   });
 
   svg.appendChild(trama);
@@ -10093,12 +10208,13 @@ function crearRelleno(porcentaje) {
 
 /* ===== src/js/app.js ===== */
 (() => {
-  const { reemplazar, alCambiarTema, iniciarTema, obtenerCaso, crearArmazon, mostrarAviso, crearVistaDashboard, crearVistaRegistro, crearVistaReporte, crearVistaRed, crearVistaForense, crearVistaArchivo } = REGISTRO;
+  const { reemplazar, alCambiarTema, iniciarTema, ANCHO_ESTRECHO, obtenerCaso, crearArmazon, mostrarAviso, crearVistaDashboard, crearVistaRegistro, crearVistaReporte, crearVistaRed, crearVistaForense, crearVistaArchivo } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Punto de entrada.
    Monta el armazón, resuelve la navegación entre vistas y mantiene el
    estado mínimo del prototipo (sección activa y caso en revisión).
    ========================================================================= */
+
 
 
 
@@ -10192,13 +10308,19 @@ function resolverVista() {
   return crearVistaDashboard({ alAbrirCaso: abrirCaso });
 }
 
-/** Vuelca la vista activa en el contenedor principal. */
-function dibujar() {
+/**
+ * Vuelca la vista activa en el contenedor principal.
+ * @param {boolean} [conservarPosicion] Mantiene el desplazamiento actual,
+ *   para redibujados que no responden a una navegación del usuario.
+ */
+function dibujar(conservarPosicion = false) {
+  const desplazamiento = window.scrollY;
+
   reemplazar(armazon.contenedorVista, resolverVista());
   armazon.marcarSeccion(estado.seccion);
 
-  /* Cada cambio de vista empieza desde el inicio del documento. */
-  window.scrollTo({ top: 0, behavior: "auto" });
+  /* Una navegación empieza desde el inicio; un redibujado, donde estaba. */
+  window.scrollTo({ top: conservarPosicion ? desplazamiento : 0, behavior: "auto" });
 }
 
 /** Arranca la aplicación. */
@@ -10218,6 +10340,33 @@ function iniciar() {
     if (armazon) {
       dibujar();
     }
+  });
+
+  vigilarAncho();
+}
+
+/**
+ * Redibuja la vista cuando la ventana cruza el punto de quiebre.
+ * Los gráficos consultan el ancho al construirse, así que un cambio de
+ * tamaño no los alcanza por sí solo. Solo se redibuja al cruzar el umbral,
+ * no en cada píxel del arrastre.
+ */
+function vigilarAncho() {
+  let eraEstrecha = window.innerWidth <= ANCHO_ESTRECHO;
+  let temporizador = null;
+
+  window.addEventListener("resize", () => {
+    const esEstrecha = window.innerWidth <= ANCHO_ESTRECHO;
+
+    if (esEstrecha === eraEstrecha) {
+      return;
+    }
+
+    eraEstrecha = esEstrecha;
+    window.clearTimeout(temporizador);
+
+    /* Se espera a que el arrastre se detenga antes de reconstruir. */
+    temporizador = window.setTimeout(() => dibujar(true), 180);
   });
 }
 

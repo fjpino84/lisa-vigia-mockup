@@ -8,6 +8,7 @@
 import { crear, crearSVG, vaciar } from "../utils/dom.js";
 import { comoMoneda } from "../utils/formato.js";
 import { paleta } from "../utils/paleta.js";
+import { escaladorDe } from "../utils/escalaGrafico.js";
 
 const ANCHO = 760;
 const ALTO = 460;
@@ -27,6 +28,7 @@ const RADIO_ORBITA = 150;
  */
 export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
   const COLOR = paleta();
+  const px = escaladorDe(ANCHO);
   const contenedor = crear("div", { clase: "grafico" });
 
   const svg = crearSVG("svg", {
@@ -170,7 +172,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x: medioXAjustado + desvioX,
           y: medioYAjustado + desvioY,
           fill: COLOR.textoMedio,
-          "font-size": 10,
+          "font-size": px(10),
           "font-family": "monospace",
           "text-anchor": "middle",
           "dominant-baseline": "middle",
@@ -215,7 +217,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         x: CENTRO_X,
         y: CENTRO_Y + 4,
         fill: COLOR.violetaClaro,
-        "font-size": 10,
+        "font-size": px(10),
         "font-weight": "700",
         "font-family": "monospace",
         "text-anchor": "middle",
@@ -249,7 +251,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         x: CENTRO_X,
         y: CENTRO_Y + 56,
         fill: COLOR.texto,
-        "font-size": 13,
+        "font-size": px(13),
         "font-weight": "600",
         "text-anchor": "middle",
       },
@@ -263,7 +265,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         x: CENTRO_X,
         y: CENTRO_Y + 70,
         fill: COLOR.textoTenue,
-        "font-size": 11,
+        "font-size": px(11),
         "font-family": "monospace",
         "text-anchor": "middle",
       },
@@ -312,7 +314,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x,
           y: y + 4,
           fill: color,
-          "font-size": 12,
+          "font-size": px(12),
           "font-weight": "700",
           "font-family": "monospace",
           "text-anchor": "middle",
@@ -328,7 +330,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x,
           y: y < CENTRO_Y ? y - 32 : y + 40,
           fill: paciente.esCasoActual ? COLOR.critico : COLOR.textoMedio,
-          "font-size": 11,
+          "font-size": px(11),
           "font-weight": paciente.esCasoActual ? "700" : "400",
           "text-anchor": "middle",
         },

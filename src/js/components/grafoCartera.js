@@ -28,6 +28,20 @@ const ACHATADO = 0.68;
 /* Radio de la órbita de beneficiarios en torno a un núcleo. */
 const radioOrbita = (cantidad) => Math.min(40 + cantidad * 4, 76);
 
+/* Columnas de la retícula según el ancho disponible. Cada núcleo necesita
+   unos 300 px reales para que su cartel se lea sin solaparse. */
+function columnasSegunAncho() {
+  const ancho = window.innerWidth;
+
+  if (ancho <= 620) {
+    return 1;
+  }
+  if (ancho <= 1000) {
+    return 2;
+  }
+  return 3;
+}
+
 /**
  * Dibuja la red de prestadores y beneficiarios de toda la cartera.
  * @param {object} opciones
@@ -42,19 +56,24 @@ export function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirC
   const contenedor = crear("div", { clase: "grafico" });
 
   /* Los prestadores se reparten en una retícula holgada, ordenados de mayor
-     a menor concentración para que el foco principal quede a la izquierda. */
+     a menor concentración para que el foco principal quede a la izquierda.
+     En pantallas estrechas se usan menos columnas: apilar los núcleos es
+     preferible a comprimirlos hasta que sus carteles se solapen. */
   const ordenados = [...nodosPrestador].sort((uno, otro) => otro.casos - uno.casos);
-  const columnas = Math.min(ordenados.length, 3);
+  const columnas = Math.min(ordenados.length, columnasSegunAncho());
   const filas = Math.ceil(ordenados.length / columnas);
 
-  const anchoCelda = ANCHO / columnas;
+  /* El lienzo se estrecha con la retícula: una sola columna no necesita el
+     ancho de tres, y así los núcleos conservan su tamaño relativo. */
+  const anchoLienzo = columnas === 3 ? ANCHO : columnas * 300;
+  const anchoCelda = anchoLienzo / columnas;
   const altoCelda = ALTO_FILA;
   const alto = filas * ALTO_FILA;
 
   const svg = crearSVG("svg", {
     clase: "grafico__lienzo",
     atributos: {
-      viewBox: `0 0 ${ANCHO} ${alto}`,
+      viewBox: `0 0 ${anchoLienzo} ${alto}`,
       role: "img",
       "aria-label": `Red de la cartera: ${nodosPrestador.length} prestadores y ${nodosBeneficiario.length} beneficiarios.`,
     },

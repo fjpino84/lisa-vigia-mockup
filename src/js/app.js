@@ -6,6 +6,7 @@
 
 import { reemplazar } from "./utils/dom.js";
 import { alCambiarTema, iniciarTema } from "./utils/tema.js";
+import { ANCHO_ESTRECHO } from "./utils/escalaGrafico.js";
 import { obtenerCaso } from "./data/casos.js";
 import { crearArmazon } from "./components/layout.js";
 import { mostrarAviso } from "./components/avisos.js";
@@ -98,13 +99,19 @@ function resolverVista() {
   return crearVistaDashboard({ alAbrirCaso: abrirCaso });
 }
 
-/** Vuelca la vista activa en el contenedor principal. */
-function dibujar() {
+/**
+ * Vuelca la vista activa en el contenedor principal.
+ * @param {boolean} [conservarPosicion] Mantiene el desplazamiento actual,
+ *   para redibujados que no responden a una navegación del usuario.
+ */
+function dibujar(conservarPosicion = false) {
+  const desplazamiento = window.scrollY;
+
   reemplazar(armazon.contenedorVista, resolverVista());
   armazon.marcarSeccion(estado.seccion);
 
-  /* Cada cambio de vista empieza desde el inicio del documento. */
-  window.scrollTo({ top: 0, behavior: "auto" });
+  /* Una navegación empieza desde el inicio; un redibujado, donde estaba. */
+  window.scrollTo({ top: conservarPosicion ? desplazamiento : 0, behavior: "auto" });
 }
 
 /** Arranca la aplicación. */
@@ -124,6 +131,33 @@ function iniciar() {
     if (armazon) {
       dibujar();
     }
+  });
+
+  vigilarAncho();
+}
+
+/**
+ * Redibuja la vista cuando la ventana cruza el punto de quiebre.
+ * Los gráficos consultan el ancho al construirse, así que un cambio de
+ * tamaño no los alcanza por sí solo. Solo se redibuja al cruzar el umbral,
+ * no en cada píxel del arrastre.
+ */
+function vigilarAncho() {
+  let eraEstrecha = window.innerWidth <= ANCHO_ESTRECHO;
+  let temporizador = null;
+
+  window.addEventListener("resize", () => {
+    const esEstrecha = window.innerWidth <= ANCHO_ESTRECHO;
+
+    if (esEstrecha === eraEstrecha) {
+      return;
+    }
+
+    eraEstrecha = esEstrecha;
+    window.clearTimeout(temporizador);
+
+    /* Se espera a que el arrastre se detenga antes de reconstruir. */
+    temporizador = window.setTimeout(() => dibujar(true), 180);
   });
 }
 
