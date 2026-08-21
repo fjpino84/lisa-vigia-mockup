@@ -6,9 +6,10 @@ Thumbs.db
 desktop.ini
 .DS_Store
 
-# Editores
+# Editores y herramientas
 .vscode/
 .idea/
+.claude/
 
 # Registros
 *.log
