@@ -31,10 +31,10 @@ function guardar(tema) {
   }
 }
 
-/* El modo nocturno es el diseño de referencia de la plataforma, así que se
-   mantiene como predeterminado: solo una elección guardada lo cambia. */
+/* La aplicación abre en modo diurno; el nocturno queda a un clic para quien
+   lo prefiera. Una elección guardada tiene prioridad sobre este valor. */
 function temaInicial() {
-  return leerGuardado() ?? OSCURO;
+  return leerGuardado() ?? CLARO;
 }
 
 let temaActual = temaInicial();

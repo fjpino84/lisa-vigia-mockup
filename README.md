@@ -83,6 +83,10 @@ src/
   de las utilidades de `src/js/utils/dom.js`.
 - **Medidas en `rem`** sobre una raíz al 62.5%, de modo que `1rem` equivale a
   10px.
+- **Dos temas.** La aplicación abre en modo diurno y el botón de la cabecera
+  alterna al nocturno, recordando la elección entre visitas. Todo el color vive
+  en variables CSS, así que el tema solo las redefine; los gráficos, que llevan
+  sus colores en atributos del SVG, los toman de `src/js/utils/paleta.js`.
 
 ## Las cinco secciones
 
