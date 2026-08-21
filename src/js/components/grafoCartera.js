@@ -7,6 +7,7 @@
 
 import { crear, crearSVG, vaciar } from "../utils/dom.js";
 import { comoMoneda } from "../utils/formato.js";
+import { paleta } from "../utils/paleta.js";
 
 const ANCHO = 900;
 
@@ -14,12 +15,12 @@ const ANCHO = 900;
    de modo que no queden franjas vacías cuando hay pocos prestadores. */
 const ALTO_FILA = 250;
 
-/* Color de cada nivel de alerta del prestador. */
-const COLOR_ALERTA = {
-  critica: "#f2857f",
-  media: "#e5b567",
-  baja: "#6ea8d8",
-};
+/* Color de cada nivel de alerta del prestador, según el tema activo. */
+const coloresAlerta = (COLOR) => ({
+  critica: COLOR.critico,
+  media: COLOR.medio,
+  baja: COLOR.bajo,
+});
 
 /* Proporción vertical de la órbita: la achata para dejar sitio al cartel. */
 const ACHATADO = 0.68;
@@ -36,6 +37,8 @@ const radioOrbita = (cantidad) => Math.min(40 + cantidad * 4, 76);
  * @returns {HTMLElement}
  */
 export function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirCaso }) {
+  const COLOR = paleta();
+  const COLOR_ALERTA = coloresAlerta(COLOR);
   const contenedor = crear("div", { clase: "grafico" });
 
   /* Los prestadores se reparten en una retícula holgada, ordenados de mayor
@@ -125,7 +128,7 @@ export function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirC
             y1: y,
             x2: bx,
             y2: by,
-            stroke: esCritico ? color : "#3a3a46",
+            stroke: esCritico ? color : COLOR.trazoTenue,
             "stroke-width": esCritico ? 1.6 : 1,
             opacity: esCritico ? 0.7 : 0.35,
           },
@@ -138,8 +141,8 @@ export function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirC
           cx: bx,
           cy: by,
           r: esCritico ? 7 : 5,
-          fill: esCritico ? color : "#2a2a34",
-          stroke: esCritico ? "#0a0a0c" : "#4a4a58",
+          fill: esCritico ? color : COLOR.nodoNeutro,
+          stroke: esCritico ? COLOR.fondo : COLOR.nodoBorde,
           "stroke-width": 1.5,
           tabindex: "0",
           role: "button",
@@ -202,7 +205,7 @@ export function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirC
         cx: x,
         cy: y,
         r: radioNucleo,
-        fill: "#16161c",
+        fill: COLOR.nucleo,
         stroke: color,
         "stroke-width": prestador.alerta === "critica" ? 3 : 2,
         tabindex: "0",
@@ -253,8 +256,8 @@ export function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirC
           width: anchoCartel,
           height: 20,
           rx: 5,
-          fill: "#0a0a0c",
-          stroke: "#26262e",
+          fill: COLOR.fondo,
+          stroke: COLOR.rejilla,
           "stroke-width": 1,
         },
       })
@@ -266,7 +269,7 @@ export function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirC
         atributos: {
           x,
           y: yCartel + 14,
-          fill: "#f2f2f5",
+          fill: COLOR.texto,
           "font-size": 11,
           "font-weight": "600",
           "text-anchor": "middle",

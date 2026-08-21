@@ -68,6 +68,48 @@
   --transicion: 160ms ease;
 }
 
+/* =========================================================================
+   Tema diurno.
+   Solo se redefinen los tokens: ningún componente conoce el tema activo.
+   Los colores del semáforo se oscurecen para conservar el contraste sobre
+   fondo claro, ya que los tonos pensados para el modo nocturno pierden
+   legibilidad al invertir la superficie.
+   ========================================================================= */
+
+:root[data-tema="claro"] {
+  /* --- Superficies -------------------------------------------------- */
+  --color-fondo: #f2f3f7;
+  --color-superficie: #ffffff;
+  --color-superficie-alta: #f7f8fb;
+  --color-superficie-suave: #eceef4;
+  --color-panel-datos: #e9edf5;
+
+  /* --- Bordes y separadores ----------------------------------------- */
+  --color-borde: #d3d7e2;
+  --color-borde-suave: #e2e5ee;
+  --color-borde-acento: #b3b9c9;
+
+  /* --- Texto --------------------------------------------------------- */
+  --color-texto: #14161d;
+  --color-texto-medio: #4d5364;
+  --color-texto-tenue: #757c8f;
+
+  /* --- Semáforo de riesgo -------------------------------------------- */
+  --color-critico: #c8322f;
+  --color-critico-fuerte: #b3231f;
+  --color-critico-fondo: rgba(200, 50, 47, 0.1);
+  --color-medio: #9a6800;
+  --color-medio-fondo: rgba(154, 104, 0, 0.12);
+  --color-bajo: #2b6ea8;
+  --color-bajo-fondo: rgba(43, 110, 168, 0.12);
+  --color-ok: #157a56;
+
+  /* --- Marca LISA ----------------------------------------------------- */
+  --color-accion: #3d3f8f;
+
+  --sombra-panel: 0 0.2rem 1.6rem rgba(20, 22, 29, 0.12);
+}
+
 html {
   font-size: 62.5%; /* 1rem = 10px */
 }
@@ -83,6 +125,7 @@ body {
   /* Ningún contenido ancho debe desplazar la página en horizontal: los
      bloques que lo necesitan gestionan su propio scroll interno. */
   overflow-x: hidden;
+  transition: background-color var(--transicion), color var(--transicion);
 }
 
 h1,

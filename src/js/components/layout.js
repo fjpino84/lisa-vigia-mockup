@@ -3,7 +3,8 @@
    El contenedor de vistas es el único fragmento que se reemplaza al navegar.
    ========================================================================= */
 
-import { crear } from "../utils/dom.js";
+import { crear, reemplazar } from "../utils/dom.js";
+import { alternarTema, esTemaClaro } from "../utils/tema.js";
 import { icono } from "./iconos.js";
 import { mostrarAviso } from "./avisos.js";
 
@@ -170,6 +171,34 @@ export function crearArmazon({ alNavegar, alBuscar }) {
       },
     });
 
+  /* Interruptor entre el modo nocturno y el diurno. El icono anticipa el
+     tema al que se cambiará, no el que está activo. */
+  const botonTema = crear("button", {
+    clase: ["topbar__boton", "topbar__boton--tema"],
+    atributos: { type: "button" },
+  });
+
+  const pintarBotonTema = () => {
+    const claro = esTemaClaro();
+    const destino = claro ? "modo nocturno" : "modo diurno";
+
+    reemplazar(botonTema, icono(claro ? "luna" : "sol", { tamano: 20 }));
+    botonTema.setAttribute("aria-label", `Cambiar a ${destino}`);
+    botonTema.setAttribute("title", `Cambiar a ${destino}`);
+  };
+
+  botonTema.addEventListener("click", () => {
+    const tema = alternarTema();
+    pintarBotonTema();
+
+    mostrarAviso({
+      titulo: tema === "claro" ? "Modo diurno" : "Modo nocturno",
+      texto: "La preferencia se recordará en este navegador.",
+    });
+  });
+
+  pintarBotonTema();
+
   const topbar = crear("header", {
     clase: "topbar",
     hijos: [
@@ -179,6 +208,7 @@ export function crearArmazon({ alNavegar, alBuscar }) {
       crear("div", {
         clase: "topbar__acciones",
         hijos: [
+          botonTema,
           crearBotonTopbar("campana", "Notificaciones", true),
           crearBotonTopbar("ayuda", "Ayuda"),
           crearBotonTopbar("ajustes", "Configuración"),

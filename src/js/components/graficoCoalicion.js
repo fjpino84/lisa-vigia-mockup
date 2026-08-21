@@ -7,6 +7,7 @@
 
 import { crear, crearSVG, vaciar } from "../utils/dom.js";
 import { comoMoneda } from "../utils/formato.js";
+import { paleta } from "../utils/paleta.js";
 
 const ANCHO = 760;
 const ALTO = 460;
@@ -25,6 +26,7 @@ const RADIO_ORBITA = 150;
  * @returns {HTMLElement}
  */
 export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
+  const COLOR = paleta();
   const contenedor = crear("div", { clase: "grafico" });
 
   const svg = crearSVG("svg", {
@@ -63,7 +65,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           rx: radio,
           ry: radio * 0.94,
           fill: "none",
-          stroke: "#26262e",
+          stroke: COLOR.rejilla,
           "stroke-width": 1,
           "stroke-dasharray": "4 6",
         },
@@ -122,7 +124,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         y1: CENTRO_Y,
         x2: x,
         y2: y,
-        stroke: paciente.esCasoActual ? "#f2857f" : "#7c6ce0",
+        stroke: paciente.esCasoActual ? COLOR.critico : COLOR.violeta,
         "stroke-width": grosor,
         opacity: paciente.esCasoActual ? 0.9 : 0.45,
         "stroke-linecap": "round",
@@ -152,8 +154,8 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
     /* Las aristas inferiores pasan junto al cartel del prestador, así que
        sus rótulos se apartan más y se sitúan más cerca del paciente. */
     const esInferior = y > CENTRO_Y;
-    const separacion = esInferior ? 30 : 16;
-    const avance = esInferior ? 0.62 : 0.5;
+    const separacion = esInferior ? 34 : 16;
+    const avance = esInferior ? 0.78 : 0.5;
 
     const medioXAjustado = CENTRO_X + (x - CENTRO_X) * avance;
     const medioYAjustado = CENTRO_Y + (y - CENTRO_Y) * avance;
@@ -167,7 +169,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         atributos: {
           x: medioXAjustado + desvioX,
           y: medioYAjustado + desvioY,
-          fill: "#a0a0ae",
+          fill: COLOR.textoMedio,
           "font-size": 10,
           "font-family": "monospace",
           "text-anchor": "middle",
@@ -179,7 +181,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
 
   /* --- Nodo central: el prestador ------------------------------------ */
   const halo = crearSVG("circle", {
-    atributos: { cx: CENTRO_X, cy: CENTRO_Y, r: 46, fill: "#7c6ce0", opacity: 0.14 },
+    atributos: { cx: CENTRO_X, cy: CENTRO_Y, r: 46, fill: COLOR.violeta, opacity: 0.14 },
   });
   halo.appendChild(
     crearSVG("animate", {
@@ -199,8 +201,8 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         cx: CENTRO_X,
         cy: CENTRO_Y,
         r: 34,
-        fill: "#241f3d",
-        stroke: "#7c6ce0",
+        fill: COLOR.nodoPrestador,
+        stroke: COLOR.violeta,
         "stroke-width": 2,
       },
     })
@@ -212,7 +214,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
       atributos: {
         x: CENTRO_X,
         y: CENTRO_Y + 4,
-        fill: "#b9aef5",
+        fill: COLOR.violetaClaro,
         "font-size": 10,
         "font-weight": "700",
         "font-family": "monospace",
@@ -233,8 +235,8 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         width: anchoCartel,
         height: 36,
         rx: 6,
-        fill: "#0a0a0c",
-        stroke: "#26262e",
+        fill: COLOR.fondo,
+        stroke: COLOR.rejilla,
         "stroke-width": 1,
       },
     })
@@ -246,7 +248,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
       atributos: {
         x: CENTRO_X,
         y: CENTRO_Y + 56,
-        fill: "#f2f2f5",
+        fill: COLOR.texto,
         "font-size": 13,
         "font-weight": "600",
         "text-anchor": "middle",
@@ -260,7 +262,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
       atributos: {
         x: CENTRO_X,
         y: CENTRO_Y + 70,
-        fill: "#6e6e7c",
+        fill: COLOR.textoTenue,
         "font-size": 11,
         "font-family": "monospace",
         "text-anchor": "middle",
@@ -270,7 +272,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
 
   /* --- Nodos de pacientes -------------------------------------------- */
   posiciones.forEach(({ paciente, x, y }) => {
-    const color = paciente.esCasoActual ? "#f2857f" : "#7c6ce0";
+    const color = paciente.esCasoActual ? COLOR.critico : COLOR.violeta;
 
     const grupo = crearSVG("g", {
       clase: "nodo-red",
@@ -288,7 +290,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           cx: x,
           cy: y,
           r: 22,
-          fill: paciente.esCasoActual ? "#3a1f22" : "#1d1b2e",
+          fill: paciente.esCasoActual ? COLOR.nodoCritico : COLOR.nodoVioleta,
           stroke: color,
           "stroke-width": 2,
         },
@@ -325,7 +327,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         atributos: {
           x,
           y: y < CENTRO_Y ? y - 32 : y + 40,
-          fill: paciente.esCasoActual ? "#f2857f" : "#a0a0ae",
+          fill: paciente.esCasoActual ? COLOR.critico : COLOR.textoMedio,
           "font-size": 11,
           "font-weight": paciente.esCasoActual ? "700" : "400",
           "text-anchor": "middle",
@@ -365,8 +367,8 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
     crear("div", {
       clase: "grafico__leyenda",
       hijos: [
-        crearItemLeyenda("#f2857f", "Caso en revisión"),
-        crearItemLeyenda("#7c6ce0", "Pacientes con el mismo patrón"),
+        crearItemLeyenda(COLOR.critico, "Caso en revisión"),
+        crearItemLeyenda(COLOR.violeta, "Pacientes con el mismo patrón"),
       ],
     })
   );

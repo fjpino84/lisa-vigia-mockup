@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf salida/perfil6 salida/perfil2)",
+      "Bash(node archivo.js \"http://localhost:4175/\" \"C:/Users/USER/AppData/Local/Temp/claude/c--Users-USER-Proyectos-08---Fraude-LISA/a5dc95d2-d47e-400a-b193-2179b4b5f7eb/scratchpad/salida\")",
+      "Bash(node interaccion.js \"http://localhost:4175/\" \"C:/Users/USER/AppData/Local/Temp/claude/c--Users-USER-Proyectos-08---Fraude-LISA/a5dc95d2-d47e-400a-b193-2179b4b5f7eb/scratchpad/salida\")"
+    ]
+  }
+}

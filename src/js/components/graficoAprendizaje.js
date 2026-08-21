@@ -6,6 +6,7 @@
    ========================================================================= */
 
 import { crear, crearSVG, vaciar } from "../utils/dom.js";
+import { paleta } from "../utils/paleta.js";
 
 const ANCHO = 820;
 const ALTO = 380;
@@ -22,6 +23,7 @@ const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
  * @returns {HTMLElement}
  */
 export function crearGraficoAprendizaje({ historial, hitos }) {
+  const COLOR = paleta();
   const contenedor = crear("div", { clase: "grafico" });
 
   const svg = crearSVG("svg", {
@@ -53,7 +55,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
           y1: y,
           x2: ANCHO_TRAMA,
           y2: y,
-          stroke: "#26262e",
+          stroke: COLOR.rejilla,
           "stroke-width": 1,
         },
       })
@@ -65,7 +67,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
         atributos: {
           x: -10,
           y: y + 4,
-          fill: "#6e6e7c",
+          fill: COLOR.textoTenue,
           "font-size": 11,
           "font-family": "monospace",
           "text-anchor": "end",
@@ -93,10 +95,10 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
         atributos: { id: "degradadoPrecision", x1: "0", y1: "0", x2: "0", y2: "1" },
         hijos: [
           crearSVG("stop", {
-            atributos: { offset: "0%", "stop-color": "#5fc9a0", "stop-opacity": "0.32" },
+            atributos: { offset: "0%", "stop-color": COLOR.ok, "stop-opacity": "0.32" },
           }),
           crearSVG("stop", {
-            atributos: { offset: "100%", "stop-color": "#5fc9a0", "stop-opacity": "0" },
+            atributos: { offset: "100%", "stop-color": COLOR.ok, "stop-opacity": "0" },
           }),
         ],
       }),
@@ -116,7 +118,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       atributos: {
         points: trazoFalsos,
         fill: "none",
-        stroke: "#f2857f",
+        stroke: COLOR.critico,
         "stroke-width": 2,
         "stroke-dasharray": "5 4",
         "stroke-linecap": "round",
@@ -131,7 +133,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
     atributos: {
       points: trazoPrecision,
       fill: "none",
-      stroke: "#5fc9a0",
+      stroke: COLOR.ok,
       "stroke-width": 3,
       "stroke-linecap": "round",
       "stroke-linejoin": "round",
@@ -208,7 +210,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
             y1: escalaY(mes.precision),
             x2: x,
             y2: -12,
-            stroke: "#4a4a58",
+            stroke: COLOR.nodoBorde,
             "stroke-width": 1,
             "stroke-dasharray": "3 3",
           },
@@ -217,7 +219,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
 
       trama.appendChild(
         crearSVG("circle", {
-          atributos: { cx: x, cy: -16, r: 3, fill: "#c3cbf0" },
+          atributos: { cx: x, cy: -16, r: 3, fill: COLOR.acento },
         })
       );
     }
@@ -229,7 +231,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
           cx: x,
           cy: escalaY(mes.falsosPositivos),
           r: 3.5,
-          fill: "#f2857f",
+          fill: COLOR.critico,
         },
       })
     );
@@ -243,8 +245,8 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
         cx: x,
         cy: escalaY(mes.precision),
         r: esFinal ? 7 : 5,
-        fill: "#5fc9a0",
-        stroke: "#0a0a0c",
+        fill: COLOR.ok,
+        stroke: COLOR.fondo,
         "stroke-width": 2,
       },
     });
@@ -261,7 +263,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
           atributos: {
             x: esFinal ? x - 6 : x + 6,
             y: escalaY(mes.precision) - 14,
-            fill: "#5fc9a0",
+            fill: COLOR.ok,
             "font-size": 13,
             "font-weight": "700",
             "font-family": "monospace",
@@ -278,7 +280,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
         atributos: {
           x,
           y: ALTO_TRAMA + 22,
-          fill: hito ? "#c3cbf0" : "#6e6e7c",
+          fill: hito ? COLOR.acento : COLOR.textoTenue,
           "font-size": 11,
           "font-weight": hito ? "700" : "400",
           "text-anchor": "middle",
@@ -308,9 +310,9 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
     crear("div", {
       clase: "grafico__leyenda",
       hijos: [
-        crearItemLeyenda("#5fc9a0", "Precisión de detección"),
-        crearItemLeyenda("#f2857f", "Falsos positivos"),
-        crearItemLeyenda("#c3cbf0", "Capacidad incorporada"),
+        crearItemLeyenda(COLOR.ok, "Precisión de detección"),
+        crearItemLeyenda(COLOR.critico, "Falsos positivos"),
+        crearItemLeyenda(COLOR.acento, "Capacidad incorporada"),
       ],
     })
   );

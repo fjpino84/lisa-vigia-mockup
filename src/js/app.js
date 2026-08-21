@@ -5,6 +5,7 @@
    ========================================================================= */
 
 import { reemplazar } from "./utils/dom.js";
+import { alCambiarTema, iniciarTema } from "./utils/tema.js";
 import { obtenerCaso } from "./data/casos.js";
 import { crearArmazon } from "./components/layout.js";
 import { mostrarAviso } from "./components/avisos.js";
@@ -108,12 +109,22 @@ function dibujar() {
 
 /** Arranca la aplicación. */
 function iniciar() {
+  iniciarTema();
+
   armazon = crearArmazon({ alNavegar: navegar, alBuscar: buscar });
 
   document.body.appendChild(armazon.app);
   document.body.appendChild(armazon.velo);
 
   dibujar();
+
+  /* Los gráficos llevan sus colores en atributos del SVG, de modo que no
+     los alcanza el cambio de variables: la vista se redibuja al alternar. */
+  alCambiarTema(() => {
+    if (armazon) {
+      dibujar();
+    }
+  });
 }
 
 iniciar();

@@ -420,9 +420,9 @@
     display: none;
   }
 
-  /* La cabecera conserva solo las notificaciones y el avatar: el resto de
+  /* La cabecera conserva el cambio de tema y el avatar: el resto de
      accesos permanece disponible desde el menú lateral. */
-  .topbar__boton:not(:first-child) {
+  .topbar__boton:not(.topbar__boton--tema) {
     display: none;
   }
 

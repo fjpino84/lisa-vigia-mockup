@@ -7,6 +7,7 @@
 
 import { crear, crearSVG, vaciar } from "../utils/dom.js";
 import { comoMoneda } from "../utils/formato.js";
+import { paleta } from "../utils/paleta.js";
 
 /* Lienzo en unidades de usuario; el SVG escala con el contenedor. */
 const ANCHO = 760;
@@ -39,6 +40,7 @@ export function crearGraficoDesviacion({
   promedioReferencia,
   alElegirCaso,
 }) {
+  const COLOR = paleta();
   const estadisticos = calcularEstadisticos(poblacion.map((dato) => dato.monto));
   const { desviacion } = estadisticos;
 
@@ -95,7 +97,7 @@ export function crearGraficoDesviacion({
           y: superior,
           width: ANCHO_TRAMA,
           height: Math.max(inferior - superior, 1),
-          fill: "#6ea8d8",
+          fill: COLOR.bajo,
           opacity: opacidad,
           rx: 4,
         },
@@ -111,7 +113,7 @@ export function crearGraficoDesviacion({
         y1: escalaY(media),
         x2: ANCHO_TRAMA,
         y2: escalaY(media),
-        stroke: "#6ea8d8",
+        stroke: COLOR.bajo,
         "stroke-width": 1.5,
         "stroke-dasharray": "6 4",
       },
@@ -124,7 +126,7 @@ export function crearGraficoDesviacion({
       atributos: {
         x: 6,
         y: escalaY(media) - 8,
-        fill: "#6ea8d8",
+        fill: COLOR.bajo,
         "font-size": 11,
         "font-family": "monospace",
       },
@@ -148,7 +150,7 @@ export function crearGraficoDesviacion({
           y1: y,
           x2: ANCHO_TRAMA,
           y2: y,
-          stroke: "#26262e",
+          stroke: COLOR.rejilla,
           "stroke-width": 1,
         },
       })
@@ -160,7 +162,7 @@ export function crearGraficoDesviacion({
         atributos: {
           x: -12,
           y: y + 4,
-          fill: "#6e6e7c",
+          fill: COLOR.textoTenue,
           "font-size": 11,
           "font-family": "monospace",
           "text-anchor": "end",
@@ -237,8 +239,8 @@ export function crearGraficoDesviacion({
         cx: escalaX(ranurasPoblacion[indice]),
         cy: escalaY(dato.monto),
         r: 5,
-        fill: "#3d4a5c",
-        stroke: "#6ea8d8",
+        fill: COLOR.puntoPoblacion,
+        stroke: COLOR.bajo,
         "stroke-width": 1.5,
       },
     });
@@ -256,7 +258,7 @@ export function crearGraficoDesviacion({
     /* Halo que resalta el punto correspondiente al caso en pantalla. */
     if (dato.esCasoActual) {
       const halo = crearSVG("circle", {
-        atributos: { cx, cy, r: 14, fill: "#f2857f", opacity: 0.18 },
+        atributos: { cx, cy, r: 14, fill: COLOR.critico, opacity: 0.18 },
       });
       halo.appendChild(
         crearSVG("animate", {
@@ -279,7 +281,7 @@ export function crearGraficoDesviacion({
           y1: cy,
           x2: cx,
           y2: escalaY(media),
-          stroke: "#f2857f",
+          stroke: COLOR.critico,
           "stroke-width": 1,
           "stroke-dasharray": "3 3",
           opacity: 0.5,
@@ -293,8 +295,8 @@ export function crearGraficoDesviacion({
         cx,
         cy,
         r: dato.esCasoActual ? 8 : 7,
-        fill: "#f2857f",
-        stroke: "#0a0a0c",
+        fill: COLOR.critico,
+        stroke: COLOR.fondo,
         "stroke-width": 2,
         tabindex: "0",
         role: "button",
@@ -325,9 +327,9 @@ export function crearGraficoDesviacion({
   const leyenda = crear("div", {
     clase: "grafico__leyenda",
     hijos: [
-      crearItemLeyenda("#6ea8d8", "Siniestros dentro del rango esperado"),
-      crearItemLeyenda("#f2857f", "Casos fuera de la desviación (4)"),
-      crearItemLeyenda("rgba(110,168,216,.35)", "Banda de ±1σ y ±2σ", true),
+      crearItemLeyenda(COLOR.bajo, "Siniestros dentro del rango esperado"),
+      crearItemLeyenda(COLOR.critico, "Casos fuera de la desviación (4)"),
+      crearItemLeyenda(COLOR.puntoPoblacion, "Banda de ±1σ y ±2σ", true),
     ],
   });
 
