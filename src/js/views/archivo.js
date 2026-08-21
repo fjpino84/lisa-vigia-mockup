@@ -737,14 +737,15 @@ export function crearVistaArchivo({ alAbrirCaso }) {
       }),
       crearTitular(),
       panelCurva,
-      /* Los dos análisis que explican la curva van inmediatamente después:
-         qué reconoce el modelo y por qué a veces se equivoca. */
+      /* Bajo la curva, lo que explica hacia dónde se mueve: primero cómo
+         está cambiando el fraude, después qué reconoce el modelo y por qué
+         a veces se equivoca. */
+      panelSenales,
       panelPatrones,
       panelFalsos,
       panelHitos,
       panelRecuperados,
       panelReincidentes,
-      panelSenales,
       crearPanelCasos(),
     ],
   });

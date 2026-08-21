@@ -2705,10 +2705,18 @@ table {
 /* Señales anticipadas                                                 */
 /* ------------------------------------------------------------------ */
 
+/* Las tres señales comparten fila, o pasan a una sola columna: repartirlas
+   en dos dejaría una tarjeta suelta. */
 .senales {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--espacio-md);
+}
+
+@media (max-width: 1100px) {
+  .senales {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .senal {
@@ -9834,14 +9842,15 @@ function crearVistaArchivo({ alAbrirCaso }) {
       }),
       crearTitular(),
       panelCurva,
-      /* Los dos análisis que explican la curva van inmediatamente después:
-         qué reconoce el modelo y por qué a veces se equivoca. */
+      /* Bajo la curva, lo que explica hacia dónde se mueve: primero cómo
+         está cambiando el fraude, después qué reconoce el modelo y por qué
+         a veces se equivoca. */
+      panelSenales,
       panelPatrones,
       panelFalsos,
       panelHitos,
       panelRecuperados,
       panelReincidentes,
-      panelSenales,
       crearPanelCasos(),
     ],
   });
