@@ -6,7 +6,7 @@
    ========================================================================= */
 
 import { crear, reemplazar } from "../utils/dom.js";
-import { comoMoneda, comoPorcentaje } from "../utils/formato.js";
+import { comoMoneda, comoNumero, comoPorcentaje } from "../utils/formato.js";
 import {
   casosArchivados,
   casosRecuperados,
@@ -24,26 +24,31 @@ import { crearGraficoAprendizaje } from "../components/graficoAprendizaje.js";
 /* Encabezado: la evolución del modelo                                   */
 /* -------------------------------------------------------------------- */
 
-/* Cifra destacada del titular, con su variación respecto del inicio. */
-function crearCifraTitular({ etiqueta, valor, desde, mejora, invertido = false }) {
-  const baja = mejora < 0;
+/* Cifra destacada del titular. Las métricas que evolucionan llevan su valor
+   de partida; las acumuladas, una nota que explica sobre qué se calculan. */
+function crearCifraTitular({ etiqueta, valor, desde, mejora, invertido = false, nota }) {
+  const pie = nota
+    ? crear("p", { clase: "titular__pie", texto: nota })
+    : crear("p", {
+        clase: [
+          "titular__variacion",
+          /* En métricas invertidas, bajar es mejorar. */
+          mejora < 0 === invertido
+            ? "titular__variacion--buena"
+            : "titular__variacion--mala",
+        ],
+        hijos: [
+          icono("tendencia", { tamano: 14 }),
+          crear("span", { texto: `${desde} en diciembre` }),
+        ],
+      });
 
   return crear("div", {
     clase: "titular__cifra",
     hijos: [
       crear("p", { clase: "etiqueta-campo", texto: etiqueta }),
       crear("p", { clase: "titular__valor", texto: valor }),
-      crear("p", {
-        clase: [
-          "titular__variacion",
-          /* En métricas invertidas, bajar es mejorar. */
-          baja === invertido ? "titular__variacion--buena" : "titular__variacion--mala",
-        ],
-        hijos: [
-          icono("tendencia", { tamano: 14 }),
-          crear("span", { texto: `${desde} en diciembre` }),
-        ],
-      }),
+      pie,
     ],
   });
 }
@@ -52,33 +57,29 @@ function crearTitular() {
   const primero = historialResoluciones[0];
   const ultimo = historialResoluciones[historialResoluciones.length - 1];
 
+  const resumen = resumirArchivo();
+
   const cifras = [
     {
-      etiqueta: "Precisión actual",
+      etiqueta: "Accuracy",
       valor: comoPorcentaje(ultimo.precision),
       desde: comoPorcentaje(primero.precision),
       mejora: ultimo.precision - primero.precision,
     },
     {
-      etiqueta: "Falsos positivos",
-      valor: comoPorcentaje(ultimo.falsosPositivos),
-      desde: comoPorcentaje(primero.falsosPositivos),
-      mejora: ultimo.falsosPositivos - primero.falsosPositivos,
-      invertido: true,
+      etiqueta: "Tasa de detección",
+      valor: `${resumen.tasaDeteccion.toFixed(1).replace(".", ",")}%`,
+      nota: `${comoNumero(resumen.total)} de ${comoNumero(resumen.procesados)} siniestros procesados`,
     },
     {
-      etiqueta: "Días por caso",
-      valor: String(ultimo.diasResolucion),
-      desde: String(primero.diasResolucion),
-      mejora: ultimo.diasResolucion - primero.diasResolucion,
-      invertido: true,
+      etiqueta: "Monto detectado",
+      valor: comoMoneda(resumen.montoBloqueado),
+      nota: "Acumulado del semestre",
     },
     {
-      etiqueta: "Casos escapados",
-      valor: String(ultimo.escapados),
-      desde: String(primero.escapados),
-      mejora: ultimo.escapados - primero.escapados,
-      invertido: true,
+      etiqueta: "Casos detectados",
+      valor: comoNumero(resumen.total),
+      nota: `${resumen.fraude} confirmados como fraude`,
     },
   ];
 

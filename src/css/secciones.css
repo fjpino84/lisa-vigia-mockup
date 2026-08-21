@@ -331,10 +331,20 @@
 .titular__valor {
   margin-top: 0.4rem;
   font-family: var(--fuente-mono);
-  font-size: 2.8rem;
+  /* La cifra se encoge si la tarjeta es estrecha, de modo que un monto
+     largo no desborde el ancho de su columna. */
+  font-size: clamp(2rem, 2.4vw, 2.8rem);
   font-weight: 700;
   line-height: 1;
   color: var(--color-texto);
+  overflow-wrap: anywhere;
+}
+
+/* Nota al pie de las cifras acumuladas, que no evolucionan mes a mes. */
+.titular__pie {
+  margin-top: var(--espacio-xs);
+  font-size: 1.15rem;
+  color: var(--color-texto-tenue);
 }
 
 .titular__variacion {

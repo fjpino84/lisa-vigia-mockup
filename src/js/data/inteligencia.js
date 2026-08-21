@@ -267,6 +267,7 @@ export const historialResoluciones = [
     falsosPositivos: 31,
     diasResolucion: 14.2,
     escapados: 9,
+    procesados: 1520,
   },
   {
     mes: "Enero 2024",
@@ -278,6 +279,7 @@ export const historialResoluciones = [
     falsosPositivos: 26,
     diasResolucion: 12.6,
     escapados: 7,
+    procesados: 1610,
   },
   {
     mes: "Febrero 2024",
@@ -289,6 +291,7 @@ export const historialResoluciones = [
     falsosPositivos: 21,
     diasResolucion: 10.1,
     escapados: 6,
+    procesados: 1680,
   },
   {
     mes: "Marzo 2024",
@@ -300,6 +303,7 @@ export const historialResoluciones = [
     falsosPositivos: 16,
     diasResolucion: 7.8,
     escapados: 4,
+    procesados: 1740,
   },
   {
     mes: "Abril 2024",
@@ -311,6 +315,7 @@ export const historialResoluciones = [
     falsosPositivos: 11,
     diasResolucion: 5.4,
     escapados: 2,
+    procesados: 1810,
   },
   {
     mes: "Mayo 2024",
@@ -322,6 +327,7 @@ export const historialResoluciones = [
     falsosPositivos: 6,
     diasResolucion: 3.1,
     escapados: 1,
+    procesados: 1890,
   },
 ];
 
@@ -631,13 +637,23 @@ export function resumirArchivo() {
     (suma, mes) => suma + mes.montoBloqueado,
     0
   );
+  const procesados = historialResoluciones.reduce(
+    (suma, mes) => suma + mes.procesados,
+    0
+  );
+
+  const total = fraude + liberados;
 
   return {
     fraude,
     liberados,
-    total: fraude + liberados,
+    total,
     montoBloqueado,
-    tasaFraude: (fraude / (fraude + liberados)) * 100,
+    procesados,
+    tasaFraude: (fraude / total) * 100,
+    /* Proporción de siniestros que el modelo marca para revisión sobre el
+       total que pasa por la canalización. */
+    tasaDeteccion: (total / procesados) * 100,
   };
 }
 

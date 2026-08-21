@@ -2402,10 +2402,20 @@ table {
 .titular__valor {
   margin-top: 0.4rem;
   font-family: var(--fuente-mono);
-  font-size: 2.8rem;
+  /* La cifra se encoge si la tarjeta es estrecha, de modo que un monto
+     largo no desborde el ancho de su columna. */
+  font-size: clamp(2rem, 2.4vw, 2.8rem);
   font-weight: 700;
   line-height: 1;
   color: var(--color-texto);
+  overflow-wrap: anywhere;
+}
+
+/* Nota al pie de las cifras acumuladas, que no evolucionan mes a mes. */
+.titular__pie {
+  margin-top: var(--espacio-xs);
+  font-size: 1.15rem;
+  color: var(--color-texto-tenue);
 }
 
 .titular__variacion {
@@ -7108,6 +7118,7 @@ const historialResoluciones = [
     falsosPositivos: 31,
     diasResolucion: 14.2,
     escapados: 9,
+    procesados: 1520,
   },
   {
     mes: "Enero 2024",
@@ -7119,6 +7130,7 @@ const historialResoluciones = [
     falsosPositivos: 26,
     diasResolucion: 12.6,
     escapados: 7,
+    procesados: 1610,
   },
   {
     mes: "Febrero 2024",
@@ -7130,6 +7142,7 @@ const historialResoluciones = [
     falsosPositivos: 21,
     diasResolucion: 10.1,
     escapados: 6,
+    procesados: 1680,
   },
   {
     mes: "Marzo 2024",
@@ -7141,6 +7154,7 @@ const historialResoluciones = [
     falsosPositivos: 16,
     diasResolucion: 7.8,
     escapados: 4,
+    procesados: 1740,
   },
   {
     mes: "Abril 2024",
@@ -7152,6 +7166,7 @@ const historialResoluciones = [
     falsosPositivos: 11,
     diasResolucion: 5.4,
     escapados: 2,
+    procesados: 1810,
   },
   {
     mes: "Mayo 2024",
@@ -7163,6 +7178,7 @@ const historialResoluciones = [
     falsosPositivos: 6,
     diasResolucion: 3.1,
     escapados: 1,
+    procesados: 1890,
   },
 ];
 
@@ -7472,13 +7488,23 @@ function resumirArchivo() {
     (suma, mes) => suma + mes.montoBloqueado,
     0
   );
+  const procesados = historialResoluciones.reduce(
+    (suma, mes) => suma + mes.procesados,
+    0
+  );
+
+  const total = fraude + liberados;
 
   return {
     fraude,
     liberados,
-    total: fraude + liberados,
+    total,
     montoBloqueado,
-    tasaFraude: (fraude / (fraude + liberados)) * 100,
+    procesados,
+    tasaFraude: (fraude / total) * 100,
+    /* Proporción de siniestros que el modelo marca para revisión sobre el
+       total que pasa por la canalización. */
+    tasaDeteccion: (total / procesados) * 100,
   };
 }
 
@@ -8990,7 +9016,7 @@ function crearItemLeyenda(color, texto, forma = "punto") {
 
 /* ===== src/js/views/archivo.js ===== */
 (() => {
-  const { crear, reemplazar, comoMoneda, comoPorcentaje, casosArchivados, casosRecuperados, historialResoluciones, hitosModelo, patronesAprendidos, reincidentes, resumirArchivo, senalesTempranas, icono, crearGraficoAprendizaje } = REGISTRO;
+  const { crear, reemplazar, comoMoneda, comoNumero, comoPorcentaje, casosArchivados, casosRecuperados, historialResoluciones, hitosModelo, patronesAprendidos, reincidentes, resumirArchivo, senalesTempranas, icono, crearGraficoAprendizaje } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Inteligencia archivada.
    El archivo no es un registro muerto: es lo que entrena al modelo. La vista
@@ -9006,26 +9032,31 @@ function crearItemLeyenda(color, texto, forma = "punto") {
 /* Encabezado: la evolución del modelo                                   */
 /* -------------------------------------------------------------------- */
 
-/* Cifra destacada del titular, con su variación respecto del inicio. */
-function crearCifraTitular({ etiqueta, valor, desde, mejora, invertido = false }) {
-  const baja = mejora < 0;
+/* Cifra destacada del titular. Las métricas que evolucionan llevan su valor
+   de partida; las acumuladas, una nota que explica sobre qué se calculan. */
+function crearCifraTitular({ etiqueta, valor, desde, mejora, invertido = false, nota }) {
+  const pie = nota
+    ? crear("p", { clase: "titular__pie", texto: nota })
+    : crear("p", {
+        clase: [
+          "titular__variacion",
+          /* En métricas invertidas, bajar es mejorar. */
+          mejora < 0 === invertido
+            ? "titular__variacion--buena"
+            : "titular__variacion--mala",
+        ],
+        hijos: [
+          icono("tendencia", { tamano: 14 }),
+          crear("span", { texto: `${desde} en diciembre` }),
+        ],
+      });
 
   return crear("div", {
     clase: "titular__cifra",
     hijos: [
       crear("p", { clase: "etiqueta-campo", texto: etiqueta }),
       crear("p", { clase: "titular__valor", texto: valor }),
-      crear("p", {
-        clase: [
-          "titular__variacion",
-          /* En métricas invertidas, bajar es mejorar. */
-          baja === invertido ? "titular__variacion--buena" : "titular__variacion--mala",
-        ],
-        hijos: [
-          icono("tendencia", { tamano: 14 }),
-          crear("span", { texto: `${desde} en diciembre` }),
-        ],
-      }),
+      pie,
     ],
   });
 }
@@ -9034,33 +9065,29 @@ function crearTitular() {
   const primero = historialResoluciones[0];
   const ultimo = historialResoluciones[historialResoluciones.length - 1];
 
+  const resumen = resumirArchivo();
+
   const cifras = [
     {
-      etiqueta: "Precisión actual",
+      etiqueta: "Accuracy",
       valor: comoPorcentaje(ultimo.precision),
       desde: comoPorcentaje(primero.precision),
       mejora: ultimo.precision - primero.precision,
     },
     {
-      etiqueta: "Falsos positivos",
-      valor: comoPorcentaje(ultimo.falsosPositivos),
-      desde: comoPorcentaje(primero.falsosPositivos),
-      mejora: ultimo.falsosPositivos - primero.falsosPositivos,
-      invertido: true,
+      etiqueta: "Tasa de detección",
+      valor: `${resumen.tasaDeteccion.toFixed(1).replace(".", ",")}%`,
+      nota: `${comoNumero(resumen.total)} de ${comoNumero(resumen.procesados)} siniestros procesados`,
     },
     {
-      etiqueta: "Días por caso",
-      valor: String(ultimo.diasResolucion),
-      desde: String(primero.diasResolucion),
-      mejora: ultimo.diasResolucion - primero.diasResolucion,
-      invertido: true,
+      etiqueta: "Monto detectado",
+      valor: comoMoneda(resumen.montoBloqueado),
+      nota: "Acumulado del semestre",
     },
     {
-      etiqueta: "Casos escapados",
-      valor: String(ultimo.escapados),
-      desde: String(primero.escapados),
-      mejora: ultimo.escapados - primero.escapados,
-      invertido: true,
+      etiqueta: "Casos detectados",
+      valor: comoNumero(resumen.total),
+      nota: `${resumen.fraude} confirmados como fraude`,
     },
   ];
 
