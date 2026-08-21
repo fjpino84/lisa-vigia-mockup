@@ -267,24 +267,454 @@
   color: var(--color-texto);
 }
 
+/* Texto introductorio de un panel. */
+.panel__intro {
+  max-width: 78ch;
+  margin-bottom: var(--espacio-lg);
+  font-size: 1.35rem;
+  color: var(--color-texto-medio);
+}
+
+/* ------------------------------------------------------------------ */
+/* Titular de la evolución del modelo                                  */
+/* ------------------------------------------------------------------ */
+
+.titular {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: var(--espacio-xl);
+  align-items: center;
+  padding: var(--espacio-xl);
+  background:
+    radial-gradient(
+      120% 140% at 0% 0%,
+      rgba(95, 201, 160, 0.12),
+      transparent 60%
+    ),
+    var(--color-superficie);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+}
+
+.titular__frase {
+  margin-top: var(--espacio-md);
+  font-size: 3rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.titular__frase strong {
+  color: var(--color-ok);
+}
+
+.titular__nota {
+  max-width: 60ch;
+  margin-top: var(--espacio-md);
+  font-size: 1.4rem;
+  color: var(--color-texto-medio);
+}
+
+.titular__cifras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-md);
+}
+
+.titular__cifra {
+  padding: var(--espacio-md);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+}
+
+.titular__valor {
+  margin-top: 0.4rem;
+  font-family: var(--fuente-mono);
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-texto);
+}
+
+.titular__variacion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  margin-top: var(--espacio-xs);
+  font-size: 1.15rem;
+}
+
+.titular__variacion--buena {
+  color: var(--color-ok);
+}
+
+.titular__variacion--mala {
+  color: var(--color-critico);
+}
+
+/* La flecha se invierte cuando la métrica desciende. */
+.titular__variacion--buena .icono {
+  transform: scaleY(-1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Línea de tiempo de hitos                                            */
+/* ------------------------------------------------------------------ */
+
+.hitos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: var(--espacio-lg);
+  counter-reset: hito;
+}
+
+.hito {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  padding-top: var(--espacio-lg);
+}
+
+/* Riel horizontal que une los hitos consecutivos. */
+.hito::before {
+  content: "";
+  position: absolute;
+  top: 1.4rem;
+  left: 0;
+  width: 100%;
+  height: 0.2rem;
+  background-color: var(--color-borde);
+}
+
+.hito:last-child::before {
+  width: 1.4rem;
+}
+
+.hito__marca {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  font-family: var(--fuente-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-fondo);
+  background-color: var(--color-accion);
+  border: 0.3rem solid var(--color-superficie);
+  border-radius: 50%;
+}
+
+/* El último hito marca el estado actual del modelo. */
+.hito:last-child .hito__marca {
+  background-color: var(--color-ok);
+}
+
+.hito__mes {
+  font-size: 1.15rem;
+  font-family: var(--fuente-mono);
+  color: var(--color-texto-tenue);
+}
+
+.hito__titulo {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.hito__descripcion {
+  flex: 1;
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.hito__precision strong {
+  font-family: var(--fuente-mono);
+  font-size: 1.4rem;
+  color: var(--color-ok);
+}
+
+/* ------------------------------------------------------------------ */
+/* Casos recuperados                                                   */
+/* ------------------------------------------------------------------ */
+
+.recuperados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
+  gap: var(--espacio-md);
+}
+
+.recuperado {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.recuperado__nombre {
+  font-family: var(--fuente-mono);
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.recuperado__meta {
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+}
+
+.recuperado__salto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-md);
+  padding: var(--espacio-md);
+  background-color: var(--color-fondo);
+  border-radius: var(--radio-md);
+}
+
+.recuperado__salto .puntaje {
+  font-size: 2.6rem;
+}
+
+/* El puntaje original se muestra tachado: ya no es el vigente. */
+.recuperado__antes {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.recuperado__flecha {
+  color: var(--color-texto-tenue);
+}
+
+.recuperado__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-sm);
+  flex-wrap: wrap;
+}
+
+.recuperado__monto {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-critico);
+}
+
+/* ------------------------------------------------------------------ */
+/* Reincidentes                                                        */
+/* ------------------------------------------------------------------ */
+
+.reincidentes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  gap: var(--espacio-md);
+}
+
+.reincidente {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+  padding: var(--espacio-lg);
+  background-color: rgba(242, 133, 127, 0.05);
+  border: 0.1rem solid rgba(242, 133, 127, 0.28);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.reincidente__cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-sm);
+  flex-wrap: wrap;
+}
+
+.reincidente__nombre {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.reincidente__meta {
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+}
+
+/* Dos lados enfrentados: lo confirmado frente a lo que sigue abierto. */
+.reincidente__balance {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-md);
+  padding: var(--espacio-md) 0;
+  border-top: 0.1rem solid var(--color-borde-suave);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+}
+
+.reincidente__lado + .reincidente__lado {
+  padding-left: var(--espacio-md);
+  border-left: 0.1rem solid var(--color-borde-suave);
+}
+
+.reincidente__cifra {
+  margin-top: 0.4rem;
+  font-family: var(--fuente-mono);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reincidente__cifra--historica {
+  color: var(--color-texto-medio);
+}
+
+.reincidente__cifra--activa {
+  color: var(--color-critico);
+}
+
+.reincidente__monto {
+  margin-top: 0.2rem;
+  font-family: var(--fuente-mono);
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+}
+
+.reincidente__nota {
+  flex: 1;
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.reincidente__accion {
+  align-self: flex-start;
+}
+
+/* ------------------------------------------------------------------ */
+/* Señales anticipadas                                                 */
+/* ------------------------------------------------------------------ */
+
+.senales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+  gap: var(--espacio-md);
+}
+
+.senal {
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-left: 0.3rem solid var(--color-medio);
+  border-radius: var(--radio-md);
+  min-width: 0;
+}
+
+.senal--alto {
+  border-left-color: var(--color-critico);
+}
+
+.senal--alto .senal__icono {
+  color: var(--color-critico);
+}
+
+.senal__cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  margin-bottom: var(--espacio-sm);
+}
+
+.senal__icono {
+  flex-shrink: 0;
+  color: var(--color-medio);
+}
+
+.senal__titulo {
+  flex: 1;
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.senal__variacion {
+  font-family: var(--fuente-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.senal__detalle {
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
 /* ------------------------------------------------------------------ */
 /* Adaptación a pantallas menores                                      */
 /* ------------------------------------------------------------------ */
 
+@media (max-width: 1100px) {
+  .titular {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--espacio-lg);
+  }
+
+  .titular__frase {
+    font-size: 2.4rem;
+  }
+}
+
 @media (max-width: 620px) {
   .prestadores,
   .verificadores,
-  .patrones {
+  .patrones,
+  .recuperados,
+  .reincidentes,
+  .senales,
+  .hitos {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .prestador,
   .verificador,
-  .patron {
+  .patron,
+  .recuperado,
+  .reincidente,
+  .senal {
     padding: var(--espacio-md);
   }
 
   .verificador__pie {
     gap: var(--espacio-lg);
+  }
+
+  .titular {
+    padding: var(--espacio-lg);
+  }
+
+  .titular__cifras {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* En una sola columna el riel de los hitos pasa a ser vertical. */
+  .hito::before {
+    top: 2.8rem;
+    left: 1.3rem;
+    width: 0.2rem;
+    height: calc(100% - 2.8rem);
+  }
+
+  .hito:last-child::before {
+    height: 0;
+  }
+
+  .hito {
+    padding-top: 0;
+    padding-left: 4.4rem;
+    min-height: 2.8rem;
   }
 }

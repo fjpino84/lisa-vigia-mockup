@@ -91,7 +91,7 @@ function resolverVista() {
   }
 
   if (estado.seccion === "archivo") {
-    return crearVistaArchivo();
+    return crearVistaArchivo({ alAbrirCaso: abrirCaso });
   }
 
   return crearVistaDashboard({ alAbrirCaso: abrirCaso });

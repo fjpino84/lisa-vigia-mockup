@@ -254,14 +254,231 @@ export const verificadores = [
 /* Inteligencia archivada: casos resueltos                               */
 /* -------------------------------------------------------------------- */
 
-/* Historial de resoluciones de los últimos seis meses. */
+/* Historial de resoluciones de los últimos seis meses. Cada mes registra
+   además cómo se comportó el modelo, para poder trazar su aprendizaje. */
 export const historialResoluciones = [
-  { mes: "Diciembre 2023", fraude: 6, liberados: 22, montoBloqueado: 3120000 },
-  { mes: "Enero 2024", fraude: 9, liberados: 27, montoBloqueado: 4890000 },
-  { mes: "Febrero 2024", fraude: 7, liberados: 31, montoBloqueado: 3640000 },
-  { mes: "Marzo 2024", fraude: 12, liberados: 29, montoBloqueado: 6710000 },
-  { mes: "Abril 2024", fraude: 15, liberados: 34, montoBloqueado: 8250000 },
-  { mes: "Mayo 2024", fraude: 18, liberados: 30, montoBloqueado: 9930000 },
+  {
+    mes: "Diciembre 2023",
+    abreviatura: "Dic",
+    fraude: 6,
+    liberados: 22,
+    montoBloqueado: 3120000,
+    precision: 62,
+    falsosPositivos: 31,
+    diasResolucion: 14.2,
+    escapados: 9,
+  },
+  {
+    mes: "Enero 2024",
+    abreviatura: "Ene",
+    fraude: 9,
+    liberados: 27,
+    montoBloqueado: 4890000,
+    precision: 68,
+    falsosPositivos: 26,
+    diasResolucion: 12.6,
+    escapados: 7,
+  },
+  {
+    mes: "Febrero 2024",
+    abreviatura: "Feb",
+    fraude: 7,
+    liberados: 31,
+    montoBloqueado: 3640000,
+    precision: 74,
+    falsosPositivos: 21,
+    diasResolucion: 10.1,
+    escapados: 6,
+  },
+  {
+    mes: "Marzo 2024",
+    abreviatura: "Mar",
+    fraude: 12,
+    liberados: 29,
+    montoBloqueado: 6710000,
+    precision: 81,
+    falsosPositivos: 16,
+    diasResolucion: 7.8,
+    escapados: 4,
+  },
+  {
+    mes: "Abril 2024",
+    abreviatura: "Abr",
+    fraude: 15,
+    liberados: 34,
+    montoBloqueado: 8250000,
+    precision: 88,
+    falsosPositivos: 11,
+    diasResolucion: 5.4,
+    escapados: 2,
+  },
+  {
+    mes: "Mayo 2024",
+    abreviatura: "May",
+    fraude: 18,
+    liberados: 30,
+    montoBloqueado: 9930000,
+    precision: 94,
+    falsosPositivos: 6,
+    diasResolucion: 3.1,
+    escapados: 1,
+  },
+];
+
+/* -------------------------------------------------------------------- */
+/* Evolución del modelo                                                  */
+/* -------------------------------------------------------------------- */
+
+/* Hitos del entrenamiento: qué aprendió el modelo y cuándo. Cada hito se
+   asocia al mes en que entró en producción. */
+export const hitosModelo = [
+  {
+    mes: "Diciembre 2023",
+    abreviatura: "Dic",
+    titulo: "Puesta en marcha",
+    descripcion:
+      "El modelo parte solo con reglas de monto y validación de folio. Detecta los casos más burdos y descarta poco.",
+    precision: 62,
+  },
+  {
+    mes: "Febrero 2024",
+    abreviatura: "Feb",
+    titulo: "Lectura de metadatos",
+    descripcion:
+      "Se incorpora el análisis del rastro digital del archivo. Aparecen las primeras ediciones hechas con herramientas de diseño.",
+    precision: 74,
+  },
+  {
+    mes: "Marzo 2024",
+    abreviatura: "Mar",
+    titulo: "Detección visual",
+    descripcion:
+      "El comparador de plantillas empieza a señalar diferencias de tipografía y numeración que ningún revisor humano alcanzaba a ver.",
+    precision: 81,
+  },
+  {
+    mes: "Abril 2024",
+    abreviatura: "Abr",
+    titulo: "Análisis de coalición",
+    descripcion:
+      "El modelo deja de mirar siniestros aislados y empieza a cruzar vínculos entre beneficiarios y prestadores.",
+    precision: 88,
+  },
+  {
+    mes: "Mayo 2024",
+    abreviatura: "May",
+    titulo: "Realimentación del archivo",
+    descripcion:
+      "Cada caso resuelto reentrena el scoring. El modelo reconoce hoy patrones que hace seis meses dejaba pasar.",
+    precision: 94,
+  },
+];
+
+/* Casos que el modelo dejó pasar en su día y que hoy sí detectaría.
+   Sostienen la afirmación de que el sistema aprende de lo resuelto. */
+export const casosRecuperados = [
+  {
+    beneficiario: "Gustavo M. Iturra",
+    rut: "13.442.907-5",
+    monto: 780000,
+    puntajeOriginal: 41,
+    puntajeActual: 96,
+    detectadoPor: "Lectura de metadatos",
+    cierre: "28/04/2024",
+  },
+  {
+    beneficiario: "Carla S. Bravo",
+    rut: "17.220.114-8",
+    monto: 690000,
+    puntajeOriginal: 38,
+    puntajeActual: 91,
+    detectadoPor: "Análisis de coalición",
+    cierre: "22/04/2024",
+  },
+  {
+    beneficiario: "Alejandra P. Vidal",
+    rut: "14.330.226-K",
+    monto: 910000,
+    puntajeOriginal: 45,
+    puntajeActual: 94,
+    detectadoPor: "Detección visual",
+    cierre: "03/04/2024",
+  },
+];
+
+/* -------------------------------------------------------------------- */
+/* Reincidencia                                                          */
+/* -------------------------------------------------------------------- */
+
+/* Identidades con casos confirmados en el archivo que vuelven a aparecer
+   en la cartera activa. Es el cruce que justifica conservar el histórico. */
+export const reincidentes = [
+  {
+    nombre: "Fabián Rodríguez Díaz",
+    rut: "11.005.560-2",
+    rol: "Prestador",
+    confirmados: 3,
+    activos: 6,
+    montoHistorico: 2380000,
+    montoActivo: 5197000,
+    idCaso: "77940303",
+    nota:
+      "Tres siniestros confirmados como fraude entre marzo y abril. Vuelve a aparecer en seis casos críticos de la cartera actual.",
+  },
+  {
+    nombre: "Centro Salud Integral Ltda.",
+    rut: "77.003.412-9",
+    rol: "Prestador",
+    confirmados: 1,
+    activos: 2,
+    montoHistorico: 615000,
+    montoActivo: 1681000,
+    idCaso: "77940337",
+    nota:
+      "Un caso de coalición confirmado en marzo. Mantiene dos siniestros críticos bajo revisión.",
+  },
+  {
+    nombre: "Clínica Los Andes SpA",
+    rut: "76.221.905-1",
+    rol: "Prestador",
+    confirmados: 1,
+    activos: 2,
+    montoHistorico: 845000,
+    montoActivo: 1672000,
+    idCaso: "77940330",
+    nota:
+      "Un siniestro con monto fuera de rango confirmado en abril. Dos casos activos con el mismo perfil.",
+  },
+];
+
+/* -------------------------------------------------------------------- */
+/* Señales anticipadas                                                   */
+/* -------------------------------------------------------------------- */
+
+/* Comportamientos que el archivo permite anticipar antes de que un caso
+   escale a crítico. */
+export const senalesTempranas = [
+  {
+    titulo: "Repunte de ediciones con Canva",
+    detalle:
+      "Los documentos alterados con herramientas de diseño en línea crecieron 18 % en el semestre. Es hoy el patrón dominante.",
+    nivel: "alto",
+    variacion: 18,
+  },
+  {
+    titulo: "Coaliciones más pequeñas",
+    detalle:
+      "Los grupos detectados pasaron de ocho a cuatro integrantes promedio: se fragmentan para pasar bajo el umbral de alerta.",
+    nivel: "alto",
+    variacion: 9,
+  },
+  {
+    titulo: "Montos más cercanos al promedio",
+    detalle:
+      "Las desviaciones extremas caen 4 %. Los montos se acercan al rango esperado para evitar la alarma estadística.",
+    nivel: "medio",
+    variacion: -4,
+  },
 ];
 
 /* Casos cerrados que sirven de referencia para el modelo de scoring. */
