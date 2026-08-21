@@ -10,8 +10,7 @@ import { paleta } from "../utils/paleta.js";
 
 const ANCHO = 820;
 const ALTO = 380;
-/* El margen derecho aloja el eje del ahorro mensual. */
-const MARGEN = { arriba: 44, derecha: 56, abajo: 52, izquierda: 48 };
+const MARGEN = { arriba: 44, derecha: 28, abajo: 52, izquierda: 48 };
 
 const ANCHO_TRAMA = ANCHO - MARGEN.izquierda - MARGEN.derecha;
 const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
@@ -49,7 +48,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       viewBox: `0 0 ${ANCHO} ${ALTO}`,
       role: "img",
       "aria-label":
-        "Evolución del modelo: la precisión sube del 62 % al 94 % mientras los falsos positivos caen del 31 % al 6 %, y el ahorro mensual pasa de 6,2 a 20,1 millones de pesos.",
+        "Evolución del modelo a lo largo de diez meses: la precisión sube del 20 % al 72 % con retrocesos intermedios, mientras los falsos positivos caen del 44 % al 17 % y el ahorro mensual pasa de 2,1 a 20,1 millones de pesos.",
     },
   });
 
@@ -75,7 +74,8 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
      Se dibujan antes que la rejilla y las curvas para que queden detrás y
      se lean como el sustento económico de la mejora, no como una serie
      que compite con ellas. */
-  const anchoBarra = Math.min(paso * 0.42, 42);
+  /* Las columnas son anchas para que el monto rotulado quepa dentro. */
+  const anchoBarra = Math.min(paso * 0.58, 52);
 
   historial.forEach((mes, indice) => {
     const x = escalaX(indice) - anchoBarra / 2;
@@ -96,43 +96,19 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       })
     );
 
-    /* El mes más reciente lleva su cifra rotulada: es la que resume el
-       ritmo de ahorro al que opera la herramienta hoy. El rótulo va dentro
-       de la columna, ya que sobre ella chocaría con el valor de precisión. */
-    if (esFinal) {
-      trama.appendChild(
-        crearSVG("text", {
-          texto: montoCorto(mes.montoBloqueado),
-          atributos: {
-            x: x + anchoBarra / 2,
-            y: y + 22,
-            fill: COLOR.acento,
-            "font-size": 12,
-            "font-weight": "700",
-            "font-family": "monospace",
-            "text-anchor": "middle",
-          },
-        })
-      );
-    }
-  });
-
-  /* --- Eje derecho: montos ------------------------------------------- */
-  const marcasAhorro = [];
-  for (let monto = 0; monto <= techoAhorro; monto += PASO_EJE * 2) {
-    marcasAhorro.push(monto);
-  }
-
-  marcasAhorro.forEach((monto) => {
+    /* Cada columna lleva su monto rotulado dentro, de modo que el eje
+       derecho resulta innecesario y la cifra queda junto a su barra. */
     trama.appendChild(
       crearSVG("text", {
-        texto: montoCorto(monto),
+        texto: montoCorto(mes.montoBloqueado),
         atributos: {
-          x: ANCHO_TRAMA + 12,
-          y: escalaAhorro(monto) + 4,
+          x: x + anchoBarra / 2,
+          y: y + 16,
           fill: COLOR.acento,
-          "font-size": 11,
+          "font-size": 10.5,
+          "font-weight": "700",
           "font-family": "monospace",
+          "text-anchor": "middle",
         },
       })
     );
@@ -304,17 +280,11 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
             x1: x,
             y1: escalaY(mes.precision),
             x2: x,
-            y2: -12,
+            y2: -6,
             stroke: COLOR.nodoBorde,
             "stroke-width": 1,
             "stroke-dasharray": "3 3",
           },
-        })
-      );
-
-      trama.appendChild(
-        crearSVG("circle", {
-          atributos: { cx: x, cy: -16, r: 3, fill: COLOR.acento },
         })
       );
     }
@@ -396,7 +366,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
     crear("p", {
       clase: "grafico__ayuda",
       texto:
-        "Las columnas miden el ahorro de cada mes en el eje derecho: a medida que el modelo gana precisión, retiene más dinero. Los meses en negrita marcan la entrada de una capacidad nueva.",
+        "Cada columna indica el monto retenido ese mes: a medida que el modelo gana precisión, detiene más dinero. Los meses en negrita marcan la entrada de una capacidad nueva.",
     })
   );
   contenedor.appendChild(svg);
@@ -407,7 +377,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       hijos: [
         crearItemLeyenda(COLOR.ok, "Precisión de detección"),
         crearItemLeyenda(COLOR.critico, "Falsos positivos"),
-        crearItemLeyenda(COLOR.acento, "Ahorro del mes (eje derecho)", "barra"),
+        crearItemLeyenda(COLOR.acento, "Ahorro del mes", "barra"),
         crearItemLeyenda(COLOR.acento, "Capacidad incorporada"),
       ],
     })

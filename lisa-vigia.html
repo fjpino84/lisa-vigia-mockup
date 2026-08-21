@@ -2255,10 +2255,18 @@ table {
 /* Patrones aprendidos (Inteligencia archivada)                        */
 /* ------------------------------------------------------------------ */
 
+/* Los grupos de patrones son de cuatro: la retícula pasa de 4 a 2 y a 1
+   columna, sin estados intermedios que dejen una tarjeta suelta. */
 .patrones {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--espacio-md);
+}
+
+@media (max-width: 1500px) {
+  .patrones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .patron {
@@ -2443,11 +2451,25 @@ table {
 /* Línea de tiempo de hitos                                            */
 /* ------------------------------------------------------------------ */
 
+/* Los seis hitos se reparten en una sola fila, o en dos de tres cuando el
+   ancho no alcanza, de modo que la secuencia siga leyéndose completa. */
 .hitos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--espacio-lg);
   counter-reset: hito;
+}
+
+@media (max-width: 1500px) {
+  .hitos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .hitos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .hito {
@@ -2503,13 +2525,14 @@ table {
 }
 
 .hito__titulo {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .hito__descripcion {
   flex: 1;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   color: var(--color-texto-medio);
 }
 
@@ -7105,19 +7128,67 @@ const verificadores = [
 /* Inteligencia archivada: casos resueltos                               */
 /* -------------------------------------------------------------------- */
 
-/* Historial de resoluciones de los últimos seis meses. Cada mes registra
+/* Historial de resoluciones de los últimos diez meses. Cada mes registra
    además cómo se comportó el modelo, para poder trazar su aprendizaje. */
 const historialResoluciones = [
+  {
+    mes: "Agosto 2023",
+    abreviatura: "Ago",
+    fraude: 3,
+    liberados: 14,
+    montoBloqueado: 2100000,
+    precision: 20,
+    falsosPositivos: 44,
+    diasResolucion: 18.6,
+    escapados: 14,
+    procesados: 1180,
+  },
+  {
+    mes: "Septiembre 2023",
+    abreviatura: "Sep",
+    fraude: 5,
+    liberados: 19,
+    montoBloqueado: 4300000,
+    precision: 41,
+    falsosPositivos: 33,
+    diasResolucion: 16.9,
+    escapados: 12,
+    procesados: 1265,
+  },
+  {
+    mes: "Octubre 2023",
+    abreviatura: "Oct",
+    fraude: 4,
+    liberados: 17,
+    montoBloqueado: 3600000,
+    precision: 35,
+    falsosPositivos: 38,
+    diasResolucion: 17.4,
+    escapados: 13,
+    procesados: 1310,
+  },
+  {
+    mes: "Noviembre 2023",
+    abreviatura: "Nov",
+    fraude: 7,
+    liberados: 22,
+    montoBloqueado: 6900000,
+    precision: 52,
+    falsosPositivos: 28,
+    diasResolucion: 14.2,
+    escapados: 10,
+    procesados: 1395,
+  },
   {
     mes: "Diciembre 2023",
     abreviatura: "Dic",
     fraude: 6,
     liberados: 22,
     montoBloqueado: 6200000,
-    precision: 62,
+    precision: 48,
     falsosPositivos: 31,
-    diasResolucion: 14.2,
-    escapados: 9,
+    diasResolucion: 15.1,
+    escapados: 11,
     procesados: 1520,
   },
   {
@@ -7126,10 +7197,10 @@ const historialResoluciones = [
     fraude: 9,
     liberados: 27,
     montoBloqueado: 9800000,
-    precision: 68,
-    falsosPositivos: 26,
+    precision: 59,
+    falsosPositivos: 24,
     diasResolucion: 12.6,
-    escapados: 7,
+    escapados: 8,
     procesados: 1610,
   },
   {
@@ -7138,10 +7209,10 @@ const historialResoluciones = [
     fraude: 7,
     liberados: 31,
     montoBloqueado: 7400000,
-    precision: 74,
-    falsosPositivos: 21,
-    diasResolucion: 10.1,
-    escapados: 6,
+    precision: 55,
+    falsosPositivos: 27,
+    diasResolucion: 13.3,
+    escapados: 9,
     procesados: 1680,
   },
   {
@@ -7150,10 +7221,10 @@ const historialResoluciones = [
     fraude: 12,
     liberados: 29,
     montoBloqueado: 13500000,
-    precision: 81,
-    falsosPositivos: 16,
-    diasResolucion: 7.8,
-    escapados: 4,
+    precision: 68,
+    falsosPositivos: 19,
+    diasResolucion: 9.4,
+    escapados: 5,
     procesados: 1740,
   },
   {
@@ -7162,10 +7233,10 @@ const historialResoluciones = [
     fraude: 15,
     liberados: 34,
     montoBloqueado: 16600000,
-    precision: 88,
-    falsosPositivos: 11,
-    diasResolucion: 5.4,
-    escapados: 2,
+    precision: 65,
+    falsosPositivos: 22,
+    diasResolucion: 10.2,
+    escapados: 6,
     procesados: 1810,
   },
   {
@@ -7174,10 +7245,10 @@ const historialResoluciones = [
     fraude: 18,
     liberados: 30,
     montoBloqueado: 20100000,
-    precision: 94,
-    falsosPositivos: 6,
-    diasResolucion: 3.1,
-    escapados: 1,
+    precision: 72,
+    falsosPositivos: 17,
+    diasResolucion: 7.8,
+    escapados: 4,
     procesados: 1890,
   },
 ];
@@ -7190,44 +7261,52 @@ const historialResoluciones = [
    asocia al mes en que entró en producción. */
 const hitosModelo = [
   {
-    mes: "Diciembre 2023",
-    abreviatura: "Dic",
+    mes: "Agosto 2023",
+    abreviatura: "Ago",
     titulo: "Puesta en marcha",
     descripcion:
       "El modelo parte solo con reglas de monto y validación de folio. Detecta los casos más burdos y descarta poco.",
-    precision: 62,
+    precision: 20,
   },
   {
-    mes: "Febrero 2024",
-    abreviatura: "Feb",
+    mes: "Septiembre 2023",
+    abreviatura: "Sep",
     titulo: "Lectura de metadatos",
     descripcion:
       "Se incorpora el análisis del rastro digital del archivo. Aparecen las primeras ediciones hechas con herramientas de diseño.",
-    precision: 74,
+    precision: 41,
+  },
+  {
+    mes: "Noviembre 2023",
+    abreviatura: "Nov",
+    titulo: "Detección visual",
+    descripcion:
+      "El comparador de plantillas empieza a señalar diferencias de tipografía y numeración que ningún revisor humano alcanzaba a ver.",
+    precision: 52,
+  },
+  {
+    mes: "Enero 2024",
+    abreviatura: "Ene",
+    titulo: "Análisis de coalición",
+    descripcion:
+      "El modelo deja de mirar siniestros aislados y empieza a cruzar vínculos entre beneficiarios y prestadores.",
+    precision: 59,
   },
   {
     mes: "Marzo 2024",
     abreviatura: "Mar",
-    titulo: "Detección visual",
+    titulo: "Realimentación del archivo",
     descripcion:
-      "El comparador de plantillas empieza a señalar diferencias de tipografía y numeración que ningún revisor humano alcanzaba a ver.",
-    precision: 81,
-  },
-  {
-    mes: "Abril 2024",
-    abreviatura: "Abr",
-    titulo: "Análisis de coalición",
-    descripcion:
-      "El modelo deja de mirar siniestros aislados y empieza a cruzar vínculos entre beneficiarios y prestadores.",
-    precision: 88,
+      "Cada caso resuelto reentrena el scoring. El modelo reconoce patrones que antes dejaba pasar.",
+    precision: 68,
   },
   {
     mes: "Mayo 2024",
     abreviatura: "May",
-    titulo: "Realimentación del archivo",
+    titulo: "Ajuste por deriva",
     descripcion:
-      "Cada caso resuelto reentrena el scoring. El modelo reconoce hoy patrones que hace seis meses dejaba pasar.",
-    precision: 94,
+      "Se recalibra el umbral tras detectar que los defraudadores fragmentan sus coaliciones para esquivarlo.",
+    precision: 72,
   },
 ];
 
@@ -7309,6 +7388,47 @@ const reincidentes = [
 ];
 
 /* -------------------------------------------------------------------- */
+/* Falsos positivos                                                      */
+/* -------------------------------------------------------------------- */
+
+/* Motivos por los que el modelo marca casos que luego resultan legítimos.
+   Su peso indica cuánto aporta cada motivo al total de falsas alarmas. */
+const causasFalsosPositivos = [
+  {
+    nombre: "Prestador de alto volumen",
+    descripcion:
+      "Centros con mucha actividad concentran visitas de forma natural, y el detector de coalición los confundía con una red de fraude.",
+    detecciones: 41,
+    tendencia: -17,
+    peso: 38,
+  },
+  {
+    nombre: "Tratamiento prolongado",
+    descripcion:
+      "Terapias que exigen sesiones frecuentes durante semanas reproducen el patrón de visitas reiteradas sobre un mismo prestador.",
+    detecciones: 28,
+    tendencia: -12,
+    peso: 26,
+  },
+  {
+    nombre: "Documento escaneado",
+    descripcion:
+      "Boletas digitalizadas con equipos antiguos pierden nitidez y el análisis visual las leía como alteraciones de tipografía.",
+    detecciones: 22,
+    tendencia: -9,
+    peso: 21,
+  },
+  {
+    nombre: "Prestación de alto costo",
+    descripcion:
+      "Intervenciones legítimamente caras se apartan del promedio de su especialidad y disparaban la alerta por desviación.",
+    detecciones: 16,
+    tendencia: -5,
+    peso: 15,
+  },
+];
+
+/* -------------------------------------------------------------------- */
 /* Señales anticipadas                                                   */
 /* -------------------------------------------------------------------- */
 
@@ -7318,7 +7438,7 @@ const senalesTempranas = [
   {
     titulo: "Repunte de ediciones con Canva",
     detalle:
-      "Los documentos alterados con herramientas de diseño en línea crecieron 18 % en el semestre. Es hoy el patrón dominante.",
+      "Los documentos alterados con herramientas de diseño en línea crecieron 18 % en el período. Es hoy el patrón dominante.",
     nivel: "alto",
     variacion: 18,
   },
@@ -7569,7 +7689,7 @@ function construirRedCartera() {
   return { nodosPrestador, nodosBeneficiario, vinculos, totalCriticos: casosCriticos.length };
 }
 
-  Object.assign(REGISTRO, { prestadores, resumirPrestadores, colaDocumental, verificadores, historialResoluciones, hitosModelo, casosRecuperados, reincidentes, senalesTempranas, casosArchivados, patronesAprendidos, resumirArchivo, resumirCola, construirRedCartera });
+  Object.assign(REGISTRO, { prestadores, resumirPrestadores, colaDocumental, verificadores, historialResoluciones, hitosModelo, casosRecuperados, reincidentes, causasFalsosPositivos, senalesTempranas, casosArchivados, patronesAprendidos, resumirArchivo, resumirCola, construirRedCartera });
 })();
 
 /* ===== src/js/components/grafoCartera.js ===== */
@@ -8581,8 +8701,7 @@ function crearVistaForense({ alAbrirCaso }) {
 
 const ANCHO = 820;
 const ALTO = 380;
-/* El margen derecho aloja el eje del ahorro mensual. */
-const MARGEN = { arriba: 44, derecha: 56, abajo: 52, izquierda: 48 };
+const MARGEN = { arriba: 44, derecha: 28, abajo: 52, izquierda: 48 };
 
 const ANCHO_TRAMA = ANCHO - MARGEN.izquierda - MARGEN.derecha;
 const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
@@ -8620,7 +8739,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       viewBox: `0 0 ${ANCHO} ${ALTO}`,
       role: "img",
       "aria-label":
-        "Evolución del modelo: la precisión sube del 62 % al 94 % mientras los falsos positivos caen del 31 % al 6 %, y el ahorro mensual pasa de 6,2 a 20,1 millones de pesos.",
+        "Evolución del modelo a lo largo de diez meses: la precisión sube del 20 % al 72 % con retrocesos intermedios, mientras los falsos positivos caen del 44 % al 17 % y el ahorro mensual pasa de 2,1 a 20,1 millones de pesos.",
     },
   });
 
@@ -8646,7 +8765,8 @@ function crearGraficoAprendizaje({ historial, hitos }) {
      Se dibujan antes que la rejilla y las curvas para que queden detrás y
      se lean como el sustento económico de la mejora, no como una serie
      que compite con ellas. */
-  const anchoBarra = Math.min(paso * 0.42, 42);
+  /* Las columnas son anchas para que el monto rotulado quepa dentro. */
+  const anchoBarra = Math.min(paso * 0.58, 52);
 
   historial.forEach((mes, indice) => {
     const x = escalaX(indice) - anchoBarra / 2;
@@ -8667,43 +8787,19 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       })
     );
 
-    /* El mes más reciente lleva su cifra rotulada: es la que resume el
-       ritmo de ahorro al que opera la herramienta hoy. El rótulo va dentro
-       de la columna, ya que sobre ella chocaría con el valor de precisión. */
-    if (esFinal) {
-      trama.appendChild(
-        crearSVG("text", {
-          texto: montoCorto(mes.montoBloqueado),
-          atributos: {
-            x: x + anchoBarra / 2,
-            y: y + 22,
-            fill: COLOR.acento,
-            "font-size": 12,
-            "font-weight": "700",
-            "font-family": "monospace",
-            "text-anchor": "middle",
-          },
-        })
-      );
-    }
-  });
-
-  /* --- Eje derecho: montos ------------------------------------------- */
-  const marcasAhorro = [];
-  for (let monto = 0; monto <= techoAhorro; monto += PASO_EJE * 2) {
-    marcasAhorro.push(monto);
-  }
-
-  marcasAhorro.forEach((monto) => {
+    /* Cada columna lleva su monto rotulado dentro, de modo que el eje
+       derecho resulta innecesario y la cifra queda junto a su barra. */
     trama.appendChild(
       crearSVG("text", {
-        texto: montoCorto(monto),
+        texto: montoCorto(mes.montoBloqueado),
         atributos: {
-          x: ANCHO_TRAMA + 12,
-          y: escalaAhorro(monto) + 4,
+          x: x + anchoBarra / 2,
+          y: y + 16,
           fill: COLOR.acento,
-          "font-size": 11,
+          "font-size": 10.5,
+          "font-weight": "700",
           "font-family": "monospace",
+          "text-anchor": "middle",
         },
       })
     );
@@ -8875,17 +8971,11 @@ function crearGraficoAprendizaje({ historial, hitos }) {
             x1: x,
             y1: escalaY(mes.precision),
             x2: x,
-            y2: -12,
+            y2: -6,
             stroke: COLOR.nodoBorde,
             "stroke-width": 1,
             "stroke-dasharray": "3 3",
           },
-        })
-      );
-
-      trama.appendChild(
-        crearSVG("circle", {
-          atributos: { cx: x, cy: -16, r: 3, fill: COLOR.acento },
         })
       );
     }
@@ -8967,7 +9057,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
     crear("p", {
       clase: "grafico__ayuda",
       texto:
-        "Las columnas miden el ahorro de cada mes en el eje derecho: a medida que el modelo gana precisión, retiene más dinero. Los meses en negrita marcan la entrada de una capacidad nueva.",
+        "Cada columna indica el monto retenido ese mes: a medida que el modelo gana precisión, detiene más dinero. Los meses en negrita marcan la entrada de una capacidad nueva.",
     })
   );
   contenedor.appendChild(svg);
@@ -8978,7 +9068,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       hijos: [
         crearItemLeyenda(COLOR.ok, "Precisión de detección"),
         crearItemLeyenda(COLOR.critico, "Falsos positivos"),
-        crearItemLeyenda(COLOR.acento, "Ahorro del mes (eje derecho)", "barra"),
+        crearItemLeyenda(COLOR.acento, "Ahorro del mes", "barra"),
         crearItemLeyenda(COLOR.acento, "Capacidad incorporada"),
       ],
     })
@@ -9016,7 +9106,7 @@ function crearItemLeyenda(color, texto, forma = "punto") {
 
 /* ===== src/js/views/archivo.js ===== */
 (() => {
-  const { crear, reemplazar, comoMoneda, comoNumero, comoPorcentaje, casosArchivados, casosRecuperados, historialResoluciones, hitosModelo, patronesAprendidos, reincidentes, resumirArchivo, senalesTempranas, icono, crearGraficoAprendizaje } = REGISTRO;
+  const { crear, reemplazar, comoMoneda, comoNumero, comoPorcentaje, casosArchivados, casosRecuperados, causasFalsosPositivos, historialResoluciones, hitosModelo, patronesAprendidos, reincidentes, resumirArchivo, senalesTempranas, icono, crearGraficoAprendizaje } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Inteligencia archivada.
    El archivo no es un registro muerto: es lo que entrena al modelo. La vista
@@ -9082,7 +9172,7 @@ function crearTitular() {
     {
       etiqueta: "Monto detectado",
       valor: comoMoneda(resumen.montoBloqueado),
-      nota: "Acumulado del semestre",
+      nota: "Acumulado de diez meses",
     },
     {
       etiqueta: "Casos detectados",
@@ -9108,7 +9198,7 @@ function crearTitular() {
             hijos: [
               crear("span", { texto: "El modelo detecta hoy " }),
               crear("strong", { texto: `${salto} puntos` }),
-              crear("span", { texto: " más de fraude que hace seis meses." }),
+              crear("span", { texto: " más de fraude que al ponerse en marcha." }),
             ],
           }),
           crear("p", {
@@ -9304,7 +9394,14 @@ function crearSenal(senal) {
 /* Patrones aprendidos                                                   */
 /* -------------------------------------------------------------------- */
 
-function crearTarjetaPatron(patron) {
+/**
+ * Tarjeta de un comportamiento aprendido por el modelo.
+ * @param {object} patron
+ * @param {object} [opciones]
+ * @param {string} [opciones.unidad] Nombre de lo que cuenta la cifra.
+ * @param {string} [opciones.etiquetaPeso] Rótulo de la barra de peso.
+ */
+function crearTarjetaPatron(patron, { unidad = "detecciones", etiquetaPeso = "Peso en el scoring" } = {}) {
   const sube = patron.tendencia >= 0;
 
   return crear("article", {
@@ -9321,7 +9418,7 @@ function crearTarjetaPatron(patron) {
             ],
             hijos: [
               icono("tendencia", { tamano: 14 }),
-              crear("span", { texto: `${sube ? "+" : ""}${patron.tendencia}% semestral` }),
+              crear("span", { texto: `${sube ? "+" : ""}${patron.tendencia}% anual` }),
             ],
           }),
         ],
@@ -9334,16 +9431,17 @@ function crearTarjetaPatron(patron) {
             clase: "patron__cifra",
             hijos: [
               crear("span", {
-                clase: ["puntaje", "puntaje--alto"],
+                /* Una incidencia en descenso no se pinta como alarma. */
+                clase: ["puntaje", sube ? "puntaje--alto" : "puntaje--medio"],
                 texto: String(patron.detecciones),
               }),
-              crear("span", { clase: "texto-tenue", texto: " detecciones" }),
+              crear("span", { clase: "texto-tenue", texto: ` ${unidad}` }),
             ],
           }),
           crear("div", {
             clase: "patron__peso",
             hijos: [
-              crear("p", { clase: "etiqueta-campo", texto: "Peso en el scoring" }),
+              crear("p", { clase: "etiqueta-campo", texto: etiquetaPeso }),
               crear("div", {
                 clase: "kpi__medida",
                 hijos: [
@@ -9630,7 +9728,7 @@ function crearVistaArchivo({ alAbrirCaso }) {
     clase: "panel",
     hijos: [
       crearCabeceraPanel("Cómo está cambiando el fraude", "tendencia", {
-        texto: "Proyección semestral",
+        texto: "Proyección anual",
         clase: "distintivo--medio",
       }),
       crear("div", {
@@ -9651,13 +9749,55 @@ function crearVistaArchivo({ alAbrirCaso }) {
   const panelPatrones = crear("section", {
     clase: "panel",
     hijos: [
-      crearCabeceraPanel("Patrones que alimentan el scoring", "lista"),
+      crearCabeceraPanel("Patrones que alimentan el scoring", "lista", {
+        texto: `${patronesAprendidos.reduce((suma, p) => suma + p.detecciones, 0)} detecciones`,
+        clase: "distintivo--critico-suave",
+      }),
       crear("div", {
         clase: "panel__cuerpo",
         hijos: [
+          crear("p", {
+            clase: "panel__intro",
+            texto:
+              "Los cuatro comportamientos que el modelo aprendió a reconocer, con su peso en el cálculo del scoring.",
+          }),
           crear("div", {
             clase: "patrones",
-            hijos: patronesAprendidos.map(crearTarjetaPatron),
+            hijos: patronesAprendidos.map((patron) => crearTarjetaPatron(patron)),
+          }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Falsos positivos --------------------------------------------------
+     El reverso de los patrones: por qué el modelo marca casos legítimos y
+     cuánto ha corregido cada motivo desde que se reentrena con el archivo. */
+  const ultimoMes = historialResoluciones[historialResoluciones.length - 1];
+  const primerMes = historialResoluciones[0];
+
+  const panelFalsos = crear("section", {
+    clase: "panel",
+    hijos: [
+      crearCabeceraPanel("Por qué se producen los falsos positivos", "aviso", {
+        texto: `${ultimoMes.falsosPositivos}% del total marcado`,
+        clase: "distintivo--medio",
+      }),
+      crear("div", {
+        clase: "panel__cuerpo",
+        hijos: [
+          crear("p", {
+            clase: "panel__intro",
+            texto: `Casos legítimos que el modelo señaló como sospechosos. La tasa bajó del ${primerMes.falsosPositivos} % al ${ultimoMes.falsosPositivos} % a medida que el archivo enseñó a distinguir estos comportamientos del fraude real.`,
+          }),
+          crear("div", {
+            clase: "patrones",
+            hijos: causasFalsosPositivos.map((causa) =>
+              crearTarjetaPatron(causa, {
+                unidad: "casos revisados",
+                etiquetaPeso: "Peso en las falsas alarmas",
+              })
+            ),
           }),
         ],
       }),
@@ -9694,11 +9834,14 @@ function crearVistaArchivo({ alAbrirCaso }) {
       }),
       crearTitular(),
       panelCurva,
+      /* Los dos análisis que explican la curva van inmediatamente después:
+         qué reconoce el modelo y por qué a veces se equivoca. */
+      panelPatrones,
+      panelFalsos,
       panelHitos,
       panelRecuperados,
       panelReincidentes,
       panelSenales,
-      panelPatrones,
       crearPanelCasos(),
     ],
   });

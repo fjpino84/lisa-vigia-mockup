@@ -254,19 +254,67 @@ export const verificadores = [
 /* Inteligencia archivada: casos resueltos                               */
 /* -------------------------------------------------------------------- */
 
-/* Historial de resoluciones de los últimos seis meses. Cada mes registra
+/* Historial de resoluciones de los últimos diez meses. Cada mes registra
    además cómo se comportó el modelo, para poder trazar su aprendizaje. */
 export const historialResoluciones = [
+  {
+    mes: "Agosto 2023",
+    abreviatura: "Ago",
+    fraude: 3,
+    liberados: 14,
+    montoBloqueado: 2100000,
+    precision: 20,
+    falsosPositivos: 44,
+    diasResolucion: 18.6,
+    escapados: 14,
+    procesados: 1180,
+  },
+  {
+    mes: "Septiembre 2023",
+    abreviatura: "Sep",
+    fraude: 5,
+    liberados: 19,
+    montoBloqueado: 4300000,
+    precision: 41,
+    falsosPositivos: 33,
+    diasResolucion: 16.9,
+    escapados: 12,
+    procesados: 1265,
+  },
+  {
+    mes: "Octubre 2023",
+    abreviatura: "Oct",
+    fraude: 4,
+    liberados: 17,
+    montoBloqueado: 3600000,
+    precision: 35,
+    falsosPositivos: 38,
+    diasResolucion: 17.4,
+    escapados: 13,
+    procesados: 1310,
+  },
+  {
+    mes: "Noviembre 2023",
+    abreviatura: "Nov",
+    fraude: 7,
+    liberados: 22,
+    montoBloqueado: 6900000,
+    precision: 52,
+    falsosPositivos: 28,
+    diasResolucion: 14.2,
+    escapados: 10,
+    procesados: 1395,
+  },
   {
     mes: "Diciembre 2023",
     abreviatura: "Dic",
     fraude: 6,
     liberados: 22,
     montoBloqueado: 6200000,
-    precision: 62,
+    precision: 48,
     falsosPositivos: 31,
-    diasResolucion: 14.2,
-    escapados: 9,
+    diasResolucion: 15.1,
+    escapados: 11,
     procesados: 1520,
   },
   {
@@ -275,10 +323,10 @@ export const historialResoluciones = [
     fraude: 9,
     liberados: 27,
     montoBloqueado: 9800000,
-    precision: 68,
-    falsosPositivos: 26,
+    precision: 59,
+    falsosPositivos: 24,
     diasResolucion: 12.6,
-    escapados: 7,
+    escapados: 8,
     procesados: 1610,
   },
   {
@@ -287,10 +335,10 @@ export const historialResoluciones = [
     fraude: 7,
     liberados: 31,
     montoBloqueado: 7400000,
-    precision: 74,
-    falsosPositivos: 21,
-    diasResolucion: 10.1,
-    escapados: 6,
+    precision: 55,
+    falsosPositivos: 27,
+    diasResolucion: 13.3,
+    escapados: 9,
     procesados: 1680,
   },
   {
@@ -299,10 +347,10 @@ export const historialResoluciones = [
     fraude: 12,
     liberados: 29,
     montoBloqueado: 13500000,
-    precision: 81,
-    falsosPositivos: 16,
-    diasResolucion: 7.8,
-    escapados: 4,
+    precision: 68,
+    falsosPositivos: 19,
+    diasResolucion: 9.4,
+    escapados: 5,
     procesados: 1740,
   },
   {
@@ -311,10 +359,10 @@ export const historialResoluciones = [
     fraude: 15,
     liberados: 34,
     montoBloqueado: 16600000,
-    precision: 88,
-    falsosPositivos: 11,
-    diasResolucion: 5.4,
-    escapados: 2,
+    precision: 65,
+    falsosPositivos: 22,
+    diasResolucion: 10.2,
+    escapados: 6,
     procesados: 1810,
   },
   {
@@ -323,10 +371,10 @@ export const historialResoluciones = [
     fraude: 18,
     liberados: 30,
     montoBloqueado: 20100000,
-    precision: 94,
-    falsosPositivos: 6,
-    diasResolucion: 3.1,
-    escapados: 1,
+    precision: 72,
+    falsosPositivos: 17,
+    diasResolucion: 7.8,
+    escapados: 4,
     procesados: 1890,
   },
 ];
@@ -339,44 +387,52 @@ export const historialResoluciones = [
    asocia al mes en que entró en producción. */
 export const hitosModelo = [
   {
-    mes: "Diciembre 2023",
-    abreviatura: "Dic",
+    mes: "Agosto 2023",
+    abreviatura: "Ago",
     titulo: "Puesta en marcha",
     descripcion:
       "El modelo parte solo con reglas de monto y validación de folio. Detecta los casos más burdos y descarta poco.",
-    precision: 62,
+    precision: 20,
   },
   {
-    mes: "Febrero 2024",
-    abreviatura: "Feb",
+    mes: "Septiembre 2023",
+    abreviatura: "Sep",
     titulo: "Lectura de metadatos",
     descripcion:
       "Se incorpora el análisis del rastro digital del archivo. Aparecen las primeras ediciones hechas con herramientas de diseño.",
-    precision: 74,
+    precision: 41,
+  },
+  {
+    mes: "Noviembre 2023",
+    abreviatura: "Nov",
+    titulo: "Detección visual",
+    descripcion:
+      "El comparador de plantillas empieza a señalar diferencias de tipografía y numeración que ningún revisor humano alcanzaba a ver.",
+    precision: 52,
+  },
+  {
+    mes: "Enero 2024",
+    abreviatura: "Ene",
+    titulo: "Análisis de coalición",
+    descripcion:
+      "El modelo deja de mirar siniestros aislados y empieza a cruzar vínculos entre beneficiarios y prestadores.",
+    precision: 59,
   },
   {
     mes: "Marzo 2024",
     abreviatura: "Mar",
-    titulo: "Detección visual",
+    titulo: "Realimentación del archivo",
     descripcion:
-      "El comparador de plantillas empieza a señalar diferencias de tipografía y numeración que ningún revisor humano alcanzaba a ver.",
-    precision: 81,
-  },
-  {
-    mes: "Abril 2024",
-    abreviatura: "Abr",
-    titulo: "Análisis de coalición",
-    descripcion:
-      "El modelo deja de mirar siniestros aislados y empieza a cruzar vínculos entre beneficiarios y prestadores.",
-    precision: 88,
+      "Cada caso resuelto reentrena el scoring. El modelo reconoce patrones que antes dejaba pasar.",
+    precision: 68,
   },
   {
     mes: "Mayo 2024",
     abreviatura: "May",
-    titulo: "Realimentación del archivo",
+    titulo: "Ajuste por deriva",
     descripcion:
-      "Cada caso resuelto reentrena el scoring. El modelo reconoce hoy patrones que hace seis meses dejaba pasar.",
-    precision: 94,
+      "Se recalibra el umbral tras detectar que los defraudadores fragmentan sus coaliciones para esquivarlo.",
+    precision: 72,
   },
 ];
 
@@ -458,6 +514,47 @@ export const reincidentes = [
 ];
 
 /* -------------------------------------------------------------------- */
+/* Falsos positivos                                                      */
+/* -------------------------------------------------------------------- */
+
+/* Motivos por los que el modelo marca casos que luego resultan legítimos.
+   Su peso indica cuánto aporta cada motivo al total de falsas alarmas. */
+export const causasFalsosPositivos = [
+  {
+    nombre: "Prestador de alto volumen",
+    descripcion:
+      "Centros con mucha actividad concentran visitas de forma natural, y el detector de coalición los confundía con una red de fraude.",
+    detecciones: 41,
+    tendencia: -17,
+    peso: 38,
+  },
+  {
+    nombre: "Tratamiento prolongado",
+    descripcion:
+      "Terapias que exigen sesiones frecuentes durante semanas reproducen el patrón de visitas reiteradas sobre un mismo prestador.",
+    detecciones: 28,
+    tendencia: -12,
+    peso: 26,
+  },
+  {
+    nombre: "Documento escaneado",
+    descripcion:
+      "Boletas digitalizadas con equipos antiguos pierden nitidez y el análisis visual las leía como alteraciones de tipografía.",
+    detecciones: 22,
+    tendencia: -9,
+    peso: 21,
+  },
+  {
+    nombre: "Prestación de alto costo",
+    descripcion:
+      "Intervenciones legítimamente caras se apartan del promedio de su especialidad y disparaban la alerta por desviación.",
+    detecciones: 16,
+    tendencia: -5,
+    peso: 15,
+  },
+];
+
+/* -------------------------------------------------------------------- */
 /* Señales anticipadas                                                   */
 /* -------------------------------------------------------------------- */
 
@@ -467,7 +564,7 @@ export const senalesTempranas = [
   {
     titulo: "Repunte de ediciones con Canva",
     detalle:
-      "Los documentos alterados con herramientas de diseño en línea crecieron 18 % en el semestre. Es hoy el patrón dominante.",
+      "Los documentos alterados con herramientas de diseño en línea crecieron 18 % en el período. Es hoy el patrón dominante.",
     nivel: "alto",
     variacion: 18,
   },

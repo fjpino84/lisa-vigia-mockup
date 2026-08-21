@@ -184,10 +184,18 @@
 /* Patrones aprendidos (Inteligencia archivada)                        */
 /* ------------------------------------------------------------------ */
 
+/* Los grupos de patrones son de cuatro: la retícula pasa de 4 a 2 y a 1
+   columna, sin estados intermedios que dejen una tarjeta suelta. */
 .patrones {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--espacio-md);
+}
+
+@media (max-width: 1500px) {
+  .patrones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .patron {
@@ -372,11 +380,25 @@
 /* Línea de tiempo de hitos                                            */
 /* ------------------------------------------------------------------ */
 
+/* Los seis hitos se reparten en una sola fila, o en dos de tres cuando el
+   ancho no alcanza, de modo que la secuencia siga leyéndose completa. */
 .hitos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--espacio-lg);
   counter-reset: hito;
+}
+
+@media (max-width: 1500px) {
+  .hitos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .hitos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .hito {
@@ -432,13 +454,14 @@
 }
 
 .hito__titulo {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .hito__descripcion {
   flex: 1;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   color: var(--color-texto-medio);
 }
 

@@ -10,6 +10,7 @@ import { comoMoneda, comoNumero, comoPorcentaje } from "../utils/formato.js";
 import {
   casosArchivados,
   casosRecuperados,
+  causasFalsosPositivos,
   historialResoluciones,
   hitosModelo,
   patronesAprendidos,
@@ -74,7 +75,7 @@ function crearTitular() {
     {
       etiqueta: "Monto detectado",
       valor: comoMoneda(resumen.montoBloqueado),
-      nota: "Acumulado del semestre",
+      nota: "Acumulado de diez meses",
     },
     {
       etiqueta: "Casos detectados",
@@ -100,7 +101,7 @@ function crearTitular() {
             hijos: [
               crear("span", { texto: "El modelo detecta hoy " }),
               crear("strong", { texto: `${salto} puntos` }),
-              crear("span", { texto: " más de fraude que hace seis meses." }),
+              crear("span", { texto: " más de fraude que al ponerse en marcha." }),
             ],
           }),
           crear("p", {
@@ -296,7 +297,14 @@ function crearSenal(senal) {
 /* Patrones aprendidos                                                   */
 /* -------------------------------------------------------------------- */
 
-function crearTarjetaPatron(patron) {
+/**
+ * Tarjeta de un comportamiento aprendido por el modelo.
+ * @param {object} patron
+ * @param {object} [opciones]
+ * @param {string} [opciones.unidad] Nombre de lo que cuenta la cifra.
+ * @param {string} [opciones.etiquetaPeso] Rótulo de la barra de peso.
+ */
+function crearTarjetaPatron(patron, { unidad = "detecciones", etiquetaPeso = "Peso en el scoring" } = {}) {
   const sube = patron.tendencia >= 0;
 
   return crear("article", {
@@ -313,7 +321,7 @@ function crearTarjetaPatron(patron) {
             ],
             hijos: [
               icono("tendencia", { tamano: 14 }),
-              crear("span", { texto: `${sube ? "+" : ""}${patron.tendencia}% semestral` }),
+              crear("span", { texto: `${sube ? "+" : ""}${patron.tendencia}% anual` }),
             ],
           }),
         ],
@@ -326,16 +334,17 @@ function crearTarjetaPatron(patron) {
             clase: "patron__cifra",
             hijos: [
               crear("span", {
-                clase: ["puntaje", "puntaje--alto"],
+                /* Una incidencia en descenso no se pinta como alarma. */
+                clase: ["puntaje", sube ? "puntaje--alto" : "puntaje--medio"],
                 texto: String(patron.detecciones),
               }),
-              crear("span", { clase: "texto-tenue", texto: " detecciones" }),
+              crear("span", { clase: "texto-tenue", texto: ` ${unidad}` }),
             ],
           }),
           crear("div", {
             clase: "patron__peso",
             hijos: [
-              crear("p", { clase: "etiqueta-campo", texto: "Peso en el scoring" }),
+              crear("p", { clase: "etiqueta-campo", texto: etiquetaPeso }),
               crear("div", {
                 clase: "kpi__medida",
                 hijos: [
@@ -622,7 +631,7 @@ export function crearVistaArchivo({ alAbrirCaso }) {
     clase: "panel",
     hijos: [
       crearCabeceraPanel("Cómo está cambiando el fraude", "tendencia", {
-        texto: "Proyección semestral",
+        texto: "Proyección anual",
         clase: "distintivo--medio",
       }),
       crear("div", {
@@ -643,13 +652,55 @@ export function crearVistaArchivo({ alAbrirCaso }) {
   const panelPatrones = crear("section", {
     clase: "panel",
     hijos: [
-      crearCabeceraPanel("Patrones que alimentan el scoring", "lista"),
+      crearCabeceraPanel("Patrones que alimentan el scoring", "lista", {
+        texto: `${patronesAprendidos.reduce((suma, p) => suma + p.detecciones, 0)} detecciones`,
+        clase: "distintivo--critico-suave",
+      }),
       crear("div", {
         clase: "panel__cuerpo",
         hijos: [
+          crear("p", {
+            clase: "panel__intro",
+            texto:
+              "Los cuatro comportamientos que el modelo aprendió a reconocer, con su peso en el cálculo del scoring.",
+          }),
           crear("div", {
             clase: "patrones",
-            hijos: patronesAprendidos.map(crearTarjetaPatron),
+            hijos: patronesAprendidos.map((patron) => crearTarjetaPatron(patron)),
+          }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Falsos positivos --------------------------------------------------
+     El reverso de los patrones: por qué el modelo marca casos legítimos y
+     cuánto ha corregido cada motivo desde que se reentrena con el archivo. */
+  const ultimoMes = historialResoluciones[historialResoluciones.length - 1];
+  const primerMes = historialResoluciones[0];
+
+  const panelFalsos = crear("section", {
+    clase: "panel",
+    hijos: [
+      crearCabeceraPanel("Por qué se producen los falsos positivos", "aviso", {
+        texto: `${ultimoMes.falsosPositivos}% del total marcado`,
+        clase: "distintivo--medio",
+      }),
+      crear("div", {
+        clase: "panel__cuerpo",
+        hijos: [
+          crear("p", {
+            clase: "panel__intro",
+            texto: `Casos legítimos que el modelo señaló como sospechosos. La tasa bajó del ${primerMes.falsosPositivos} % al ${ultimoMes.falsosPositivos} % a medida que el archivo enseñó a distinguir estos comportamientos del fraude real.`,
+          }),
+          crear("div", {
+            clase: "patrones",
+            hijos: causasFalsosPositivos.map((causa) =>
+              crearTarjetaPatron(causa, {
+                unidad: "casos revisados",
+                etiquetaPeso: "Peso en las falsas alarmas",
+              })
+            ),
           }),
         ],
       }),
@@ -686,11 +737,14 @@ export function crearVistaArchivo({ alAbrirCaso }) {
       }),
       crearTitular(),
       panelCurva,
+      /* Los dos análisis que explican la curva van inmediatamente después:
+         qué reconoce el modelo y por qué a veces se equivoca. */
+      panelPatrones,
+      panelFalsos,
       panelHitos,
       panelRecuperados,
       panelReincidentes,
       panelSenales,
-      panelPatrones,
       crearPanelCasos(),
     ],
   });
