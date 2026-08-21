@@ -25,7 +25,11 @@ const ESTILOS = [
 ];
 
 /* Imágenes que la interfaz referencia por ruta relativa. */
-const IMAGENES = ["assets/lisa-logo.png", "assets/boleta-4761.png"];
+const IMAGENES = [
+  "assets/lisa-logo.png",
+  "assets/vigia-logo.png",
+  "assets/boleta-4761.png",
+];
 
 const leer = (relativa) => fs.readFileSync(path.join(RAIZ, relativa), "utf8");
 

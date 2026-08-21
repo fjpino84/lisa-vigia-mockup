@@ -29,18 +29,27 @@ export function crearArmazon({ alNavegar, alBuscar }) {
   /* Barra lateral                                                     */
   /* ---------------------------------------------------------------- */
 
+  /* El vigía encabeza la barra; la onda de LISA acompaña al nombre debajo,
+     de modo que se lea vigIA como producto dentro de LISA. */
   const marca = crear("div", {
     clase: "sidebar__marca",
     hijos: [
       crear("img", {
-        clase: "sidebar__logo",
-        atributos: { src: "assets/lisa-logo.png", alt: "Logotipo de LISA" },
+        clase: "sidebar__vigia",
+        atributos: { src: "assets/vigia-logo.png", alt: "Logotipo de vigIA" },
       }),
       crear("div", {
+        clase: "sidebar__identidad",
         hijos: [
           crear("p", {
             clase: "sidebar__nombre",
-            hijos: [crear("span", { texto: "LISA vigIA" })],
+            hijos: [
+              crear("img", {
+                clase: "sidebar__logo",
+                atributos: { src: "assets/lisa-logo.png", alt: "" },
+              }),
+              crear("span", { texto: "LISA vigIA" }),
+            ],
           }),
           crear("p", {
             clase: "sidebar__estado",
