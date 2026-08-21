@@ -20,6 +20,7 @@ const ESTILOS = [
   "src/css/layout.css",
   "src/css/componentes.css",
   "src/css/reporte.css",
+  "src/css/secciones.css",
   "src/css/impresion.css",
 ];
 

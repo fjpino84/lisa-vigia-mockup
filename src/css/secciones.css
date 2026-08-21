@@ -1,0 +1,290 @@
+/* =========================================================================
+   LISA vigIA — Estilos de las secciones de análisis: fichas de prestador,
+   verificadores forenses y patrones de fraude archivados.
+   ========================================================================= */
+
+/* ------------------------------------------------------------------ */
+/* Utilidades compartidas                                              */
+/* ------------------------------------------------------------------ */
+
+.texto-tenue {
+  color: var(--color-texto-tenue);
+  font-size: 1.3rem;
+}
+
+/* Etiqueta que resume un hallazgo del peritaje. */
+.marca-hallazgo {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  font-size: 1.1rem;
+  font-family: var(--fuente-mono);
+  color: var(--color-texto-medio);
+  background-color: var(--color-superficie-suave);
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  white-space: nowrap;
+}
+
+.marcas-hallazgo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-xs);
+}
+
+/* ------------------------------------------------------------------ */
+/* Fichas de prestador (Análisis de red)                               */
+/* ------------------------------------------------------------------ */
+
+.prestadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(38rem, 1fr));
+  gap: var(--espacio-md);
+  align-items: start;
+}
+
+.prestador {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.prestador--critico {
+  border-color: rgba(242, 133, 127, 0.35);
+  background-color: rgba(242, 133, 127, 0.04);
+}
+
+.prestador__cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-md);
+  flex-wrap: wrap;
+}
+
+.prestador__nombre {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.prestador__meta {
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+}
+
+.prestador__metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--espacio-md);
+  padding: var(--espacio-md) 0;
+  border-top: 0.1rem solid var(--color-borde-suave);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+}
+
+.prestador__metrica {
+  margin-top: 0.4rem;
+  font-family: var(--fuente-mono);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.prestador__nota {
+  font-size: 1.35rem;
+  color: var(--color-texto-medio);
+}
+
+/* ------------------------------------------------------------------ */
+/* Verificadores (Herramientas forenses)                               */
+/* ------------------------------------------------------------------ */
+
+.verificadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+  gap: var(--espacio-md);
+}
+
+.verificador {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.verificador__cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+}
+
+.verificador__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  flex-shrink: 0;
+  color: var(--color-accion);
+  background-color: rgba(195, 203, 240, 0.1);
+  border-radius: var(--radio-md);
+}
+
+.verificador__nombre {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.verificador__estado {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--color-ok);
+}
+
+.verificador__punto {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background-color: var(--color-ok);
+  animation: latido 2s ease-in-out infinite;
+}
+
+.verificador__descripcion {
+  flex: 1;
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.verificador__pie {
+  display: flex;
+  gap: var(--espacio-xl);
+  padding-top: var(--espacio-md);
+  border-top: 0.1rem solid var(--color-borde-suave);
+}
+
+.verificador__cifra {
+  margin-top: 0.4rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+/* ------------------------------------------------------------------ */
+/* Patrones aprendidos (Inteligencia archivada)                        */
+/* ------------------------------------------------------------------ */
+
+.patrones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+  gap: var(--espacio-md);
+}
+
+.patron {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.patron__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-sm);
+  flex-wrap: wrap;
+}
+
+.patron__nombre {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.patron__tendencia {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  font-size: 1.15rem;
+  font-family: var(--fuente-mono);
+}
+
+.patron__tendencia--sube {
+  color: var(--color-critico);
+}
+
+.patron__tendencia--baja {
+  color: var(--color-ok);
+}
+
+/* La flecha apunta hacia abajo cuando la tendencia decrece. */
+.patron__tendencia--baja .icono {
+  transform: scaleY(-1);
+}
+
+.patron__descripcion {
+  flex: 1;
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.patron__medida {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espacio-md);
+  padding-top: var(--espacio-md);
+  border-top: 0.1rem solid var(--color-borde-suave);
+  flex-wrap: wrap;
+}
+
+.patron__cifra .puntaje {
+  font-size: 2.4rem;
+}
+
+.patron__peso {
+  flex: 1;
+  min-width: 16rem;
+}
+
+.patron__porcentaje {
+  font-family: var(--fuente-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+/* ------------------------------------------------------------------ */
+/* Adaptación a pantallas menores                                      */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 620px) {
+  .prestadores,
+  .verificadores,
+  .patrones {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prestador,
+  .verificador,
+  .patron {
+    padding: var(--espacio-md);
+  }
+
+  .verificador__pie {
+    gap: var(--espacio-lg);
+  }
+}

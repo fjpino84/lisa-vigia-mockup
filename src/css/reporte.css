@@ -641,11 +641,17 @@
   min-width: 0;
 }
 
+/* El nombre ocupa su propia línea para no pegarse al RUT que le sigue. */
 .relacionado__nombre {
+  display: block;
   font-family: var(--fuente-mono);
   font-size: 1.35rem;
   font-weight: 600;
   color: var(--color-texto);
+}
+
+.relacionado__meta {
+  display: block;
 }
 
 .relacionado__meta {

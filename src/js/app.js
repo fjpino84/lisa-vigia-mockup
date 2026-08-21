@@ -11,29 +11,9 @@ import { mostrarAviso } from "./components/avisos.js";
 import { crearVistaDashboard } from "./views/dashboard.js";
 import { crearVistaRegistro } from "./views/registro.js";
 import { crearVistaReporte } from "./views/reporte.js";
-import { crearVistaEnConstruccion } from "./views/enConstruccion.js";
-
-/* Descripción de las secciones que aún no tienen desarrollo propio. */
-const SECCIONES_PENDIENTES = {
-  red: {
-    titulo: "Análisis de red",
-    nombreIcono: "red",
-    descripcion:
-      "Reunirá los grafos de relación entre beneficiarios, prestadores y siniestros de toda la cartera. En el prototipo puede consultar la red de coalición dentro del reporte de un caso crítico.",
-  },
-  forense: {
-    titulo: "Herramientas forenses",
-    nombreIcono: "forense",
-    descripcion:
-      "Agrupará el laboratorio de peritaje documental: comparación de plantillas, verificación de timbres y análisis de metadatos por lotes.",
-  },
-  archivo: {
-    titulo: "Inteligencia archivada",
-    nombreIcono: "archivo",
-    descripcion:
-      "Contendrá el historial de casos resueltos y los patrones de fraude confirmados que alimentan el modelo de scoring.",
-  },
-};
+import { crearVistaRed } from "./views/red.js";
+import { crearVistaForense } from "./views/forense.js";
+import { crearVistaArchivo } from "./views/archivo.js";
 
 /* Estado del prototipo. */
 const estado = {
@@ -102,10 +82,16 @@ function resolverVista() {
     return crearVistaRegistro({ alAbrirCaso: abrirCaso, busqueda: estado.busqueda });
   }
 
-  const pendiente = SECCIONES_PENDIENTES[estado.seccion];
+  if (estado.seccion === "red") {
+    return crearVistaRed({ alAbrirCaso: abrirCaso });
+  }
 
-  if (pendiente) {
-    return crearVistaEnConstruccion({ ...pendiente, alVolver: volverAlPanel });
+  if (estado.seccion === "forense") {
+    return crearVistaForense({ alAbrirCaso: abrirCaso });
+  }
+
+  if (estado.seccion === "archivo") {
+    return crearVistaArchivo();
   }
 
   return crearVistaDashboard({ alAbrirCaso: abrirCaso });

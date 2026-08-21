@@ -45,9 +45,6 @@ Después se abre `http://localhost:4173` en el navegador. En Windows, el archivo
 4. Desde la barra inferior se emite el PDF, se envía por correo o se resuelve
    el destino del siniestro.
 
-Solo el caso 77940303 tiene expediente forense completo; el resto comparte la
-ficha y el scoring, tal como corresponde a un prototipo.
-
 ## Estructura
 
 ```
@@ -87,8 +84,19 @@ src/
 - **Medidas en `rem`** sobre una raíz al 62.5%, de modo que `1rem` equivale a
   10px.
 
+## Las cinco secciones
+
+- **Centro de mando**: indicadores de la cartera y los dos listados de casos.
+- **Registro de casos**: la cartera completa, con filtros y búsqueda.
+- **Análisis de red**: los vínculos entre prestadores y beneficiarios de toda la
+  cartera. Revela que un solo prestador concentra el 60 % de los casos críticos,
+  algo que no se aprecia revisando los casos de uno en uno.
+- **Herramientas forenses**: el laboratorio documental, con el estado de los
+  cuatro verificadores automáticos y la cola de peritaje.
+- **Inteligencia archivada**: el histórico de resoluciones de los últimos seis
+  meses y los patrones de fraude confirmados que alimentan el scoring.
+
 ## Alcance
 
-Los módulos Análisis de red, Herramientas forenses e Inteligencia archivada
-aparecen en la navegación pero no forman parte del prototipo: muestran una vista
-informativa que lo indica.
+Solo el caso 77940303 cuenta con expediente forense completo. El resto comparte
+la ficha y el scoring, como corresponde a un prototipo.

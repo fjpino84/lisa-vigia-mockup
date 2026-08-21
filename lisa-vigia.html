@@ -1916,11 +1916,17 @@ table {
   min-width: 0;
 }
 
+/* El nombre ocupa su propia línea para no pegarse al RUT que le sigue. */
 .relacionado__nombre {
+  display: block;
   font-family: var(--fuente-mono);
   font-size: 1.35rem;
   font-weight: 600;
   color: var(--color-texto);
+}
+
+.relacionado__meta {
+  display: block;
 }
 
 .relacionado__meta {
@@ -2009,6 +2015,299 @@ table {
 
 .volver:hover {
   color: var(--color-texto);
+}
+
+
+/* ===== src/css/secciones.css ===== */
+/* =========================================================================
+   LISA vigIA — Estilos de las secciones de análisis: fichas de prestador,
+   verificadores forenses y patrones de fraude archivados.
+   ========================================================================= */
+
+/* ------------------------------------------------------------------ */
+/* Utilidades compartidas                                              */
+/* ------------------------------------------------------------------ */
+
+.texto-tenue {
+  color: var(--color-texto-tenue);
+  font-size: 1.3rem;
+}
+
+/* Etiqueta que resume un hallazgo del peritaje. */
+.marca-hallazgo {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  font-size: 1.1rem;
+  font-family: var(--fuente-mono);
+  color: var(--color-texto-medio);
+  background-color: var(--color-superficie-suave);
+  border: 0.1rem solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  white-space: nowrap;
+}
+
+.marcas-hallazgo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-xs);
+}
+
+/* ------------------------------------------------------------------ */
+/* Fichas de prestador (Análisis de red)                               */
+/* ------------------------------------------------------------------ */
+
+.prestadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(38rem, 1fr));
+  gap: var(--espacio-md);
+  align-items: start;
+}
+
+.prestador {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.prestador--critico {
+  border-color: rgba(242, 133, 127, 0.35);
+  background-color: rgba(242, 133, 127, 0.04);
+}
+
+.prestador__cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-md);
+  flex-wrap: wrap;
+}
+
+.prestador__nombre {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.prestador__meta {
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--color-texto-tenue);
+}
+
+.prestador__metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--espacio-md);
+  padding: var(--espacio-md) 0;
+  border-top: 0.1rem solid var(--color-borde-suave);
+  border-bottom: 0.1rem solid var(--color-borde-suave);
+}
+
+.prestador__metrica {
+  margin-top: 0.4rem;
+  font-family: var(--fuente-mono);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.prestador__nota {
+  font-size: 1.35rem;
+  color: var(--color-texto-medio);
+}
+
+/* ------------------------------------------------------------------ */
+/* Verificadores (Herramientas forenses)                               */
+/* ------------------------------------------------------------------ */
+
+.verificadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+  gap: var(--espacio-md);
+}
+
+.verificador {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.verificador__cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+}
+
+.verificador__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  flex-shrink: 0;
+  color: var(--color-accion);
+  background-color: rgba(195, 203, 240, 0.1);
+  border-radius: var(--radio-md);
+}
+
+.verificador__nombre {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.verificador__estado {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--color-ok);
+}
+
+.verificador__punto {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background-color: var(--color-ok);
+  animation: latido 2s ease-in-out infinite;
+}
+
+.verificador__descripcion {
+  flex: 1;
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.verificador__pie {
+  display: flex;
+  gap: var(--espacio-xl);
+  padding-top: var(--espacio-md);
+  border-top: 0.1rem solid var(--color-borde-suave);
+}
+
+.verificador__cifra {
+  margin-top: 0.4rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+/* ------------------------------------------------------------------ */
+/* Patrones aprendidos (Inteligencia archivada)                        */
+/* ------------------------------------------------------------------ */
+
+.patrones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+  gap: var(--espacio-md);
+}
+
+.patron {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-lg);
+  background-color: var(--color-superficie-alta);
+  border: 0.1rem solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  min-width: 0;
+}
+
+.patron__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-sm);
+  flex-wrap: wrap;
+}
+
+.patron__nombre {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.patron__tendencia {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  font-size: 1.15rem;
+  font-family: var(--fuente-mono);
+}
+
+.patron__tendencia--sube {
+  color: var(--color-critico);
+}
+
+.patron__tendencia--baja {
+  color: var(--color-ok);
+}
+
+/* La flecha apunta hacia abajo cuando la tendencia decrece. */
+.patron__tendencia--baja .icono {
+  transform: scaleY(-1);
+}
+
+.patron__descripcion {
+  flex: 1;
+  font-size: 1.3rem;
+  color: var(--color-texto-medio);
+}
+
+.patron__medida {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espacio-md);
+  padding-top: var(--espacio-md);
+  border-top: 0.1rem solid var(--color-borde-suave);
+  flex-wrap: wrap;
+}
+
+.patron__cifra .puntaje {
+  font-size: 2.4rem;
+}
+
+.patron__peso {
+  flex: 1;
+  min-width: 16rem;
+}
+
+.patron__porcentaje {
+  font-family: var(--fuente-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+/* ------------------------------------------------------------------ */
+/* Adaptación a pantallas menores                                      */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 620px) {
+  .prestadores,
+  .verificadores,
+  .patrones {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prestador,
+  .verificador,
+  .patron {
+    padding: var(--espacio-md);
+  }
+
+  .verificador__pie {
+    gap: var(--espacio-lg);
+  }
 }
 
 
@@ -5839,49 +6138,1063 @@ function crearVistaReporte({ caso, alVolver, alAbrirCaso }) {
   Object.assign(REGISTRO, { crearVistaReporte });
 })();
 
-/* ===== src/js/views/enConstruccion.js ===== */
+/* ===== src/js/data/inteligencia.js ===== */
 (() => {
-  const { crear, icono } = REGISTRO;
+  const { casos, casosCriticos } = REGISTRO;
 /* =========================================================================
-   LISA vigIA — Vista de secciones aún no desarrolladas en el prototipo.
+   LISA vigIA — Datos de apoyo para las secciones de análisis.
+   Toda la información es ficticia y se deriva de la cartera de casos, de
+   modo que las cifras de las distintas vistas concuerden entre sí.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------- */
+/* Prestadores                                                           */
+/* -------------------------------------------------------------------- */
+
+/* Ficha de cada prestador que aparece en la cartera. El nivel de alerta
+   resume cuánta concentración de casos críticos acumula. */
+const prestadores = [
+  {
+    id: "11.005.560-2",
+    nombre: "Fabián Rodríguez Díaz",
+    tipo: "Profesional independiente",
+    especialidad: "Psicología y psicopedagogía",
+    comuna: "Vitacura",
+    antiguedad: "Desde 2019",
+    alerta: "critica",
+    nota:
+      "Concentra la mayoría de los siniestros críticos de la cartera. Sus boletas presentan saltos de numeración y montos alterados de forma sistemática.",
+  },
+  {
+    id: "77.003.412-9",
+    nombre: "Centro Salud Integral Ltda.",
+    tipo: "Centro médico",
+    especialidad: "Multiespecialidad ambulatoria",
+    comuna: "Providencia",
+    antiguedad: "Desde 2015",
+    alerta: "media",
+    nota:
+      "Volumen alto de prestaciones con montos dentro de rango. Dos casos críticos bajo revisión por documentación incompleta.",
+  },
+  {
+    id: "76.221.905-1",
+    nombre: "Clínica Los Andes SpA",
+    tipo: "Clínica",
+    especialidad: "Traumatología",
+    comuna: "Las Condes",
+    antiguedad: "Desde 2011",
+    alerta: "media",
+    nota:
+      "Montos elevados propios de la especialidad. Se vigila la reiteración de sesiones en plazos breves.",
+  },
+  {
+    id: "76.554.221-8",
+    nombre: "Clínica Dental Norte",
+    tipo: "Clínica",
+    especialidad: "Odontología",
+    comuna: "Recoleta",
+    antiguedad: "Desde 2017",
+    alerta: "baja",
+    nota: "Sin hallazgos relevantes. Documentación consistente con el registro del SII.",
+  },
+  {
+    id: "76.882.100-4",
+    nombre: "Centro Óptico Sur",
+    tipo: "Centro médico",
+    especialidad: "Oftalmología",
+    comuna: "San Miguel",
+    antiguedad: "Desde 2020",
+    alerta: "baja",
+    nota: "Sin hallazgos relevantes. Montos por debajo del promedio del rubro.",
+  },
+];
+
+/**
+ * Resume la cartera agrupada por prestador.
+ * @returns {object[]} Prestadores con sus casos, montos y criticidad.
+ */
+function resumirPrestadores() {
+  return prestadores
+    .map((prestador) => {
+      const propios = casos.filter((caso) => caso.rutPrestador === prestador.id);
+      const criticos = propios.filter((caso) => caso.criticidad === "critico");
+      const monto = propios.reduce((suma, caso) => suma + caso.monto, 0);
+      const montoCritico = criticos.reduce((suma, caso) => suma + caso.monto, 0);
+
+      /* El puntaje del prestador es el mayor de sus casos. */
+      const puntajeMaximo = propios.reduce(
+        (mayor, caso) => Math.max(mayor, caso.puntaje),
+        0
+      );
+
+      return {
+        ...prestador,
+        casos: propios,
+        totalCasos: propios.length,
+        totalCriticos: criticos.length,
+        monto,
+        montoCritico,
+        puntajeMaximo,
+      };
+    })
+    .sort((uno, otro) => otro.montoCritico - uno.montoCritico);
+}
+
+/* -------------------------------------------------------------------- */
+/* Herramientas forenses: cola de peritaje                               */
+/* -------------------------------------------------------------------- */
+
+/* Documentos en distintas fases del análisis documental. */
+const colaDocumental = [
+  {
+    id: "DOC-4761",
+    documento: "Boleta de Honorarios N° 4761",
+    beneficiario: "Ramiro Lucas Fiochi",
+    idCaso: "77940303",
+    estado: "concluido",
+    veredicto: "adulterado",
+    confianza: 98,
+    hallazgos: ["Numeración", "Tipografía", "Fecha", "Timbre SII"],
+    software: "Canva (Web Application)",
+  },
+  {
+    id: "DOC-3120",
+    documento: "Boleta de Honorarios N° 3120",
+    beneficiario: "Valeria S. Montero",
+    idCaso: "77940311",
+    estado: "concluido",
+    veredicto: "adulterado",
+    confianza: 94,
+    hallazgos: ["Numeración", "Timbre SII"],
+    software: "Adobe Photoshop",
+  },
+  {
+    id: "DOC-4772",
+    documento: "Boleta de Honorarios N° 4772",
+    beneficiario: "Carlos G. Altamirano",
+    idCaso: "77940318",
+    estado: "concluido",
+    veredicto: "adulterado",
+    confianza: 89,
+    hallazgos: ["Tipografía", "Monto"],
+    software: "Canva (Web Application)",
+  },
+  {
+    id: "DOC-5510",
+    documento: "Boleta de Honorarios N° 5510",
+    beneficiario: "Ignacio R. Bravo",
+    idCaso: "77940330",
+    estado: "analizando",
+    veredicto: null,
+    confianza: null,
+    hallazgos: ["Numeración"],
+    software: null,
+  },
+  {
+    id: "DOC-1904",
+    documento: "Boleta de Honorarios N° 1904",
+    beneficiario: "Patricia L. Cárdenas",
+    idCaso: "77940337",
+    estado: "analizando",
+    veredicto: null,
+    confianza: null,
+    hallazgos: ["Metadatos"],
+    software: null,
+  },
+  {
+    id: "DOC-8802",
+    documento: "Boleta de Honorarios N° 8802",
+    beneficiario: "Juan P. Silva",
+    idCaso: "77940402",
+    estado: "concluido",
+    veredicto: "legitimo",
+    confianza: 96,
+    hallazgos: [],
+    software: null,
+  },
+  {
+    id: "DOC-1177",
+    documento: "Boleta de Honorarios N° 1177",
+    beneficiario: "Ana C. Morales",
+    idCaso: "77940408",
+    estado: "concluido",
+    veredicto: "legitimo",
+    confianza: 99,
+    hallazgos: [],
+    software: null,
+  },
+  {
+    id: "DOC-2755",
+    documento: "Boleta de Honorarios N° 2755",
+    beneficiario: "Camila F. Vergara",
+    idCaso: "77940349",
+    estado: "en_cola",
+    veredicto: null,
+    confianza: null,
+    hallazgos: [],
+    software: null,
+  },
+  {
+    id: "DOC-6018",
+    documento: "Boleta de Honorarios N° 6018",
+    beneficiario: "Rodrigo E. Salinas",
+    idCaso: "77940355",
+    estado: "en_cola",
+    veredicto: null,
+    confianza: null,
+    hallazgos: [],
+    software: null,
+  },
+];
+
+/* Verificadores que componen el laboratorio documental. */
+const verificadores = [
+  {
+    id: "visual",
+    nombre: "Detección visual",
+    icono: "forense",
+    descripcion:
+      "Compara el documento con la plantilla legítima del emisor y señala diferencias de tipografía, alineación y numeración.",
+    procesados: 1284,
+    deteccion: 92,
+    estado: "activo",
+  },
+  {
+    id: "metadatos",
+    nombre: "Lector de metadatos",
+    icono: "huella",
+    descripcion:
+      "Extrae fechas de creación y modificación, y el programa con que se editó el archivo por última vez.",
+    procesados: 1284,
+    deteccion: 87,
+    estado: "activo",
+  },
+  {
+    id: "timbre",
+    nombre: "Verificador de timbre SII",
+    icono: "escudo",
+    descripcion:
+      "Decodifica el código bidimensional y contrasta el monto y el folio con el registro del Servicio de Impuestos Internos.",
+    procesados: 1102,
+    deteccion: 99,
+    estado: "activo",
+  },
+  {
+    id: "watchlist",
+    nombre: "Cruce con watchlist",
+    icono: "lista",
+    descripcion:
+      "Contrasta los RUT de beneficiario y prestador con la base de antecedentes de fraude del sector.",
+    procesados: 1284,
+    deteccion: 78,
+    estado: "activo",
+  },
+];
+
+/* -------------------------------------------------------------------- */
+/* Inteligencia archivada: casos resueltos                               */
+/* -------------------------------------------------------------------- */
+
+/* Historial de resoluciones de los últimos seis meses. */
+const historialResoluciones = [
+  { mes: "Diciembre 2023", fraude: 6, liberados: 22, montoBloqueado: 3120000 },
+  { mes: "Enero 2024", fraude: 9, liberados: 27, montoBloqueado: 4890000 },
+  { mes: "Febrero 2024", fraude: 7, liberados: 31, montoBloqueado: 3640000 },
+  { mes: "Marzo 2024", fraude: 12, liberados: 29, montoBloqueado: 6710000 },
+  { mes: "Abril 2024", fraude: 15, liberados: 34, montoBloqueado: 8250000 },
+  { mes: "Mayo 2024", fraude: 18, liberados: 30, montoBloqueado: 9930000 },
+];
+
+/* Casos cerrados que sirven de referencia para el modelo de scoring. */
+const casosArchivados = [
+  {
+    id: "77939841",
+    beneficiario: "Gustavo M. Iturra",
+    rut: "13.442.907-5",
+    monto: 780000,
+    prestacion: "Psicología",
+    prestador: "Fabián Rodríguez Díaz",
+    resolucion: "fraude",
+    puntaje: 96,
+    cierre: "28/04/2024",
+    patron: "Documento adulterado",
+  },
+  {
+    id: "77939866",
+    beneficiario: "Carla S. Bravo",
+    rut: "17.220.114-8",
+    monto: 690000,
+    prestacion: "Kinesiología",
+    prestador: "Fabián Rodríguez Díaz",
+    resolucion: "fraude",
+    puntaje: 91,
+    cierre: "22/04/2024",
+    patron: "Coalición con prestador",
+  },
+  {
+    id: "77939903",
+    beneficiario: "Rodrigo A. Peña",
+    rut: "12.887.330-1",
+    monto: 845000,
+    prestacion: "Traumatología",
+    prestador: "Clínica Los Andes SpA",
+    resolucion: "fraude",
+    puntaje: 88,
+    cierre: "15/04/2024",
+    patron: "Monto fuera de rango",
+  },
+  {
+    id: "77939927",
+    beneficiario: "Mónica L. Farías",
+    rut: "16.009.554-3",
+    monto: 320000,
+    prestacion: "Nutrición",
+    prestador: "Centro Salud Integral Ltda.",
+    resolucion: "liberado",
+    puntaje: 34,
+    cierre: "11/04/2024",
+    patron: "Sin hallazgos",
+  },
+  {
+    id: "77939945",
+    beneficiario: "Diego R. Salas",
+    rut: "18.554.008-7",
+    monto: 275000,
+    prestacion: "Dental",
+    prestador: "Clínica Dental Norte",
+    resolucion: "liberado",
+    puntaje: 18,
+    cierre: "08/04/2024",
+    patron: "Sin hallazgos",
+  },
+  {
+    id: "77939970",
+    beneficiario: "Alejandra P. Vidal",
+    rut: "14.330.226-K",
+    monto: 910000,
+    prestacion: "Psiquiatría",
+    prestador: "Fabián Rodríguez Díaz",
+    resolucion: "fraude",
+    puntaje: 94,
+    cierre: "03/04/2024",
+    patron: "Documento adulterado",
+  },
+  {
+    id: "77939998",
+    beneficiario: "Manuel E. Cortés",
+    rut: "11.776.443-2",
+    monto: 198000,
+    prestacion: "Oftalmología",
+    prestador: "Centro Óptico Sur",
+    resolucion: "liberado",
+    puntaje: 12,
+    cierre: "29/03/2024",
+    patron: "Sin hallazgos",
+  },
+  {
+    id: "77940012",
+    beneficiario: "Paulina G. Rojas",
+    rut: "19.887.221-4",
+    monto: 615000,
+    prestacion: "Fonoaudiología",
+    prestador: "Centro Salud Integral Ltda.",
+    resolucion: "fraude",
+    puntaje: 82,
+    cierre: "25/03/2024",
+    patron: "Coalición con prestador",
+  },
+];
+
+/* Patrones de fraude confirmados que alimentan el modelo de scoring. */
+const patronesAprendidos = [
+  {
+    nombre: "Documento adulterado",
+    descripcion:
+      "Boletas editadas con herramientas de diseño para elevar el monto declarado respecto del timbre electrónico.",
+    detecciones: 34,
+    tendencia: 18,
+    peso: 42,
+  },
+  {
+    nombre: "Coalición con prestador",
+    descripcion:
+      "Grupos de beneficiarios que concentran visitas reiteradas sobre un mismo prestador en plazos muy breves.",
+    detecciones: 21,
+    tendencia: 9,
+    peso: 28,
+  },
+  {
+    nombre: "Monto fuera de rango",
+    descripcion:
+      "Prestaciones cuyo monto se aparta varias desviaciones del promedio histórico de su especialidad.",
+    detecciones: 17,
+    tendencia: -4,
+    peso: 19,
+  },
+  {
+    nombre: "Identidad en watchlist",
+    descripcion:
+      "RUT con antecedentes previos de fraude en la base compartida del sector asegurador.",
+    detecciones: 8,
+    tendencia: 2,
+    peso: 11,
+  },
+];
+
+/**
+ * Calcula el resumen del histórico de resoluciones.
+ * @returns {object}
+ */
+function resumirArchivo() {
+  const fraude = historialResoluciones.reduce((suma, mes) => suma + mes.fraude, 0);
+  const liberados = historialResoluciones.reduce(
+    (suma, mes) => suma + mes.liberados,
+    0
+  );
+  const montoBloqueado = historialResoluciones.reduce(
+    (suma, mes) => suma + mes.montoBloqueado,
+    0
+  );
+
+  return {
+    fraude,
+    liberados,
+    total: fraude + liberados,
+    montoBloqueado,
+    tasaFraude: (fraude / (fraude + liberados)) * 100,
+  };
+}
+
+/**
+ * Resume el estado de la cola documental.
+ * @returns {object}
+ */
+function resumirCola() {
+  const contar = (estado) =>
+    colaDocumental.filter((documento) => documento.estado === estado).length;
+
+  return {
+    concluidos: contar("concluido"),
+    analizando: contar("analizando"),
+    enCola: contar("en_cola"),
+    adulterados: colaDocumental.filter((d) => d.veredicto === "adulterado").length,
+    total: colaDocumental.length,
+  };
+}
+
+/**
+ * Construye la red completa de la cartera: prestadores y beneficiarios.
+ * @returns {object} Nodos y vínculos listos para dibujar.
+ */
+function construirRedCartera() {
+  const resumen = resumirPrestadores().filter((prestador) => prestador.totalCasos > 0);
+
+  const nodosPrestador = resumen.map((prestador) => ({
+    id: prestador.id,
+    etiqueta: prestador.nombre,
+    tipo: "prestador",
+    alerta: prestador.alerta,
+    casos: prestador.totalCasos,
+    criticos: prestador.totalCriticos,
+    monto: prestador.monto,
+  }));
+
+  const vinculos = [];
+  const nodosBeneficiario = [];
+
+  resumen.forEach((prestador) => {
+    prestador.casos.forEach((caso) => {
+      nodosBeneficiario.push({
+        id: caso.id,
+        etiqueta: caso.beneficiario,
+        rut: caso.rut,
+        tipo: "beneficiario",
+        criticidad: caso.criticidad,
+        puntaje: caso.puntaje,
+        monto: caso.monto,
+        prestador: prestador.id,
+      });
+
+      vinculos.push({
+        origen: prestador.id,
+        destino: caso.id,
+        criticidad: caso.criticidad,
+      });
+    });
+  });
+
+  return { nodosPrestador, nodosBeneficiario, vinculos, totalCriticos: casosCriticos.length };
+}
+
+  Object.assign(REGISTRO, { prestadores, resumirPrestadores, colaDocumental, verificadores, historialResoluciones, casosArchivados, patronesAprendidos, resumirArchivo, resumirCola, construirRedCartera });
+})();
+
+/* ===== src/js/components/grafoCartera.js ===== */
+(() => {
+  const { crear, crearSVG, vaciar, comoMoneda } = REGISTRO;
+/* =========================================================================
+   LISA vigIA — Grafo de la cartera completa.
+   Cada prestador forma un núcleo con sus beneficiarios alrededor. El tamaño
+   del núcleo refleja cuántos casos concentra y su color, el nivel de alerta,
+   de modo que los focos de fraude se distinguen de un vistazo.
    ========================================================================= */
 
 
+const ANCHO = 900;
+
+/* Alto de cada fila de núcleos; el lienzo crece según cuántas hagan falta,
+   de modo que no queden franjas vacías cuando hay pocos prestadores. */
+const ALTO_FILA = 250;
+
+/* Color de cada nivel de alerta del prestador. */
+const COLOR_ALERTA = {
+  critica: "#f2857f",
+  media: "#e5b567",
+  baja: "#6ea8d8",
+};
+
+/* Proporción vertical de la órbita: la achata para dejar sitio al cartel. */
+const ACHATADO = 0.68;
+
+/* Radio de la órbita de beneficiarios en torno a un núcleo. */
+const radioOrbita = (cantidad) => Math.min(40 + cantidad * 4, 76);
+
 /**
- * Construye una vista informativa para una sección pendiente.
+ * Dibuja la red de prestadores y beneficiarios de toda la cartera.
  * @param {object} opciones
- * @param {string} opciones.titulo Nombre de la sección.
- * @param {string} opciones.descripcion Qué ofrecerá la sección.
- * @param {string} opciones.nombreIcono Icono representativo.
- * @param {Function} opciones.alVolver Regresa al panel inicial.
+ * @param {object[]} opciones.nodosPrestador
+ * @param {object[]} opciones.nodosBeneficiario
+ * @param {Function} [opciones.alElegirCaso] Recibe el id del caso.
  * @returns {HTMLElement}
  */
-function crearVistaEnConstruccion({ titulo, descripcion, nombreIcono, alVolver }) {
-  const panel = crear("section", {
-    clase: "panel",
+function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirCaso }) {
+  const contenedor = crear("div", { clase: "grafico" });
+
+  /* Los prestadores se reparten en una retícula holgada, ordenados de mayor
+     a menor concentración para que el foco principal quede a la izquierda. */
+  const ordenados = [...nodosPrestador].sort((uno, otro) => otro.casos - uno.casos);
+  const columnas = Math.min(ordenados.length, 3);
+  const filas = Math.ceil(ordenados.length / columnas);
+
+  const anchoCelda = ANCHO / columnas;
+  const altoCelda = ALTO_FILA;
+  const alto = filas * ALTO_FILA;
+
+  const svg = crearSVG("svg", {
+    clase: "grafico__lienzo",
+    atributos: {
+      viewBox: `0 0 ${ANCHO} ${alto}`,
+      role: "img",
+      "aria-label": `Red de la cartera: ${nodosPrestador.length} prestadores y ${nodosBeneficiario.length} beneficiarios.`,
+    },
+  });
+
+  const centros = new Map();
+
+  ordenados.forEach((prestador, indice) => {
+    const columna = indice % columnas;
+    const fila = Math.floor(indice / columnas);
+
+    centros.set(prestador.id, {
+      x: anchoCelda * (columna + 0.5),
+      y: altoCelda * (fila + 0.5),
+      prestador,
+    });
+  });
+
+  /* --- Globo informativo -------------------------------------------- */
+  const tooltip = crear("div", { clase: "tooltip", atributos: { role: "tooltip" } });
+
+  function mostrarTooltip(titulo, filas, evento) {
+    vaciar(tooltip);
+    tooltip.appendChild(crear("p", { clase: "tooltip__titulo", texto: titulo }));
+
+    filas.forEach(([clave, valor]) => {
+      tooltip.appendChild(
+        crear("div", {
+          clase: "tooltip__fila",
+          hijos: [
+            crear("span", { clase: "tooltip__clave", texto: clave }),
+            crear("span", { clase: "tooltip__valor", texto: valor }),
+          ],
+        })
+      );
+    });
+
+    const limites = contenedor.getBoundingClientRect();
+    const x = evento.clientX - limites.left + 16;
+    const y = evento.clientY - limites.top + 16;
+    const ancho = 240;
+
+    tooltip.style.left = `${x + ancho > limites.width ? x - ancho - 32 : x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.classList.add("esta-visible");
+  }
+
+  const ocultarTooltip = () => tooltip.classList.remove("esta-visible");
+
+  /* --- Vínculos y beneficiarios -------------------------------------- */
+  centros.forEach(({ x, y, prestador }) => {
+    const propios = nodosBeneficiario.filter(
+      (nodo) => nodo.prestador === prestador.id
+    );
+
+    const color = COLOR_ALERTA[prestador.alerta];
+    const radio = radioOrbita(propios.length);
+
+    propios.forEach((beneficiario, indice) => {
+      const angulo = (Math.PI * 2 * indice) / propios.length - Math.PI / 2;
+      const bx = x + Math.cos(angulo) * radio;
+      /* La órbita se achata para reservar espacio al cartel del nombre. */
+      const by = y + Math.sin(angulo) * radio * ACHATADO;
+
+      const esCritico = beneficiario.criticidad === "critico";
+
+      svg.appendChild(
+        crearSVG("line", {
+          atributos: {
+            x1: x,
+            y1: y,
+            x2: bx,
+            y2: by,
+            stroke: esCritico ? color : "#3a3a46",
+            "stroke-width": esCritico ? 1.6 : 1,
+            opacity: esCritico ? 0.7 : 0.35,
+          },
+        })
+      );
+
+      const nodo = crearSVG("circle", {
+        clase: "punto-dato",
+        atributos: {
+          cx: bx,
+          cy: by,
+          r: esCritico ? 7 : 5,
+          fill: esCritico ? color : "#2a2a34",
+          stroke: esCritico ? "#0a0a0c" : "#4a4a58",
+          "stroke-width": 1.5,
+          tabindex: "0",
+          role: "button",
+          "aria-label": `${beneficiario.etiqueta}, puntaje ${beneficiario.puntaje}. Abrir el caso.`,
+        },
+      });
+
+      const detalle = [
+        ["RUT", beneficiario.rut],
+        ["Monto", comoMoneda(beneficiario.monto)],
+        ["Scoring", `${beneficiario.puntaje}/100`],
+        ["Criticidad", esCritico ? "Crítico" : "Leve"],
+      ];
+
+      nodo.addEventListener("mousemove", (evento) =>
+        mostrarTooltip(beneficiario.etiqueta, detalle, evento)
+      );
+      nodo.addEventListener("mouseleave", ocultarTooltip);
+
+      if (alElegirCaso) {
+        nodo.addEventListener("click", () => alElegirCaso(beneficiario.id));
+        nodo.addEventListener("keydown", (evento) => {
+          if (evento.key === "Enter" || evento.key === " ") {
+            evento.preventDefault();
+            alElegirCaso(beneficiario.id);
+          }
+        });
+      }
+
+      svg.appendChild(nodo);
+    });
+  });
+
+  /* --- Núcleos de prestador ------------------------------------------ */
+  centros.forEach(({ x, y, prestador }) => {
+    const color = COLOR_ALERTA[prestador.alerta];
+    const radioNucleo = 16 + Math.min(prestador.casos, 6) * 2.6;
+
+    /* El foco crítico late para atraer la mirada. */
+    if (prestador.alerta === "critica") {
+      const halo = crearSVG("circle", {
+        atributos: { cx: x, cy: y, r: radioNucleo + 12, fill: color, opacity: 0.16 },
+      });
+      halo.appendChild(
+        crearSVG("animate", {
+          atributos: {
+            attributeName: "r",
+            values: `${radioNucleo + 8};${radioNucleo + 20};${radioNucleo + 8}`,
+            dur: "3s",
+            repeatCount: "indefinite",
+          },
+        })
+      );
+      svg.appendChild(halo);
+    }
+
+    const nucleo = crearSVG("circle", {
+      clase: "punto-dato",
+      atributos: {
+        cx: x,
+        cy: y,
+        r: radioNucleo,
+        fill: "#16161c",
+        stroke: color,
+        "stroke-width": prestador.alerta === "critica" ? 3 : 2,
+        tabindex: "0",
+        "aria-label": `${prestador.etiqueta}: ${prestador.casos} casos, ${prestador.criticos} críticos.`,
+      },
+    });
+
+    nucleo.addEventListener("mousemove", (evento) =>
+      mostrarTooltip(prestador.etiqueta, [
+        ["RUT", prestador.id],
+        ["Casos", String(prestador.casos)],
+        ["Críticos", String(prestador.criticos)],
+        ["Monto", comoMoneda(prestador.monto)],
+      ], evento)
+    );
+    nucleo.addEventListener("mouseleave", ocultarTooltip);
+    svg.appendChild(nucleo);
+
+    svg.appendChild(
+      crearSVG("text", {
+        texto: String(prestador.casos),
+        atributos: {
+          x,
+          y: y + 4,
+          fill: color,
+          "font-size": 13,
+          "font-weight": "700",
+          "font-family": "monospace",
+          "text-anchor": "middle",
+        },
+      })
+    );
+
+    /* Cartel con el nombre, sobre fondo opaco para separarlo del grafo. */
+    const etiqueta = prestador.etiqueta;
+    const anchoCartel = Math.max(etiqueta.length * 6.4, 120);
+
+    /* El cartel se sitúa por debajo de la órbita, no del núcleo, para que
+       ningún beneficiario quede tapado por el nombre del prestador. */
+    const propios = nodosBeneficiario.filter((nodo) => nodo.prestador === prestador.id);
+    const yCartel = y + radioOrbita(propios.length) * ACHATADO + 18;
+
+    svg.appendChild(
+      crearSVG("rect", {
+        atributos: {
+          x: x - anchoCartel / 2,
+          y: yCartel,
+          width: anchoCartel,
+          height: 20,
+          rx: 5,
+          fill: "#0a0a0c",
+          stroke: "#26262e",
+          "stroke-width": 1,
+        },
+      })
+    );
+
+    svg.appendChild(
+      crearSVG("text", {
+        texto: etiqueta,
+        atributos: {
+          x,
+          y: yCartel + 14,
+          fill: "#f2f2f5",
+          "font-size": 11,
+          "font-weight": "600",
+          "text-anchor": "middle",
+        },
+      })
+    );
+  });
+
+  contenedor.appendChild(
+    crear("p", {
+      clase: "grafico__titulo",
+      texto: "Mapa de vínculos entre prestadores y beneficiarios",
+    })
+  );
+  contenedor.appendChild(
+    crear("p", {
+      clase: "grafico__ayuda",
+      texto:
+        "El tamaño del núcleo indica cuántos casos concentra el prestador. Pase el puntero sobre cualquier nodo para ver el detalle.",
+    })
+  );
+  contenedor.appendChild(svg);
+
+  contenedor.appendChild(
+    crear("div", {
+      clase: "grafico__leyenda",
+      hijos: [
+        crearItemLeyenda(COLOR_ALERTA.critica, "Concentración crítica"),
+        crearItemLeyenda(COLOR_ALERTA.media, "Bajo vigilancia"),
+        crearItemLeyenda(COLOR_ALERTA.baja, "Sin hallazgos"),
+      ],
+    })
+  );
+
+  contenedor.appendChild(tooltip);
+  return contenedor;
+}
+
+/* Construye un elemento de la leyenda. */
+function crearItemLeyenda(color, texto) {
+  const muestra = crear("span", { clase: "grafico__muestra" });
+  muestra.style.backgroundColor = color;
+
+  return crear("span", {
+    clase: "grafico__leyenda-item",
+    hijos: [muestra, crear("span", { texto })],
+  });
+}
+
+  Object.assign(REGISTRO, { crearGrafoCartera });
+})();
+
+/* ===== src/js/views/red.js ===== */
+(() => {
+  const { crear, comoMoneda, comoPorcentaje, construirRedCartera, resumirPrestadores, icono, crearGrafoCartera } = REGISTRO;
+/* =========================================================================
+   LISA vigIA — Análisis de red.
+   Mira la cartera desde los vínculos en lugar de caso a caso: qué prestadores
+   concentran siniestros críticos y qué beneficiarios giran a su alrededor.
+   ========================================================================= */
+
+
+
+
+
+/* Distintivo que traduce el nivel de alerta del prestador. */
+const DISTINTIVO_ALERTA = {
+  critica: { texto: "Concentración crítica", clase: "distintivo--critico" },
+  media: { texto: "Bajo vigilancia", clase: "distintivo--medio" },
+  baja: { texto: "Sin hallazgos", clase: "distintivo--ok" },
+};
+
+/* Tarjeta con el detalle de un prestador y sus casos. */
+function crearFichaPrestador(prestador, alAbrirCaso) {
+  const distintivo = DISTINTIVO_ALERTA[prestador.alerta];
+
+  const casosCriticos = prestador.casos
+    .filter((caso) => caso.criticidad === "critico")
+    .sort((uno, otro) => otro.puntaje - uno.puntaje);
+
+  const enlaces = casosCriticos.map((caso) =>
+    crear("button", {
+      clase: "relacionado",
+      atributos: { type: "button" },
+      hijos: [
+        icono("flechaDerecha", { tamano: 16 }),
+        crear("span", {
+          clase: "relacionado__datos",
+          hijos: [
+            crear("span", { clase: "relacionado__nombre", texto: caso.beneficiario }),
+            crear("span", {
+              clase: "relacionado__meta",
+              texto: `${caso.rut} · ${caso.prestacion} · scoring ${caso.puntaje}`,
+            }),
+          ],
+        }),
+        crear("span", { clase: "relacionado__monto", texto: comoMoneda(caso.monto) }),
+      ],
+      eventos: { click: () => alAbrirCaso(caso.id) },
+    })
+  );
+
+  const metricas = [
+    ["Casos totales", String(prestador.totalCasos)],
+    ["Críticos", String(prestador.totalCriticos)],
+    ["Monto expuesto", comoMoneda(prestador.monto)],
+  ].map(([etiqueta, valor]) =>
+    crear("div", {
+      hijos: [
+        crear("p", { clase: "etiqueta-campo", texto: etiqueta }),
+        crear("p", { clase: "prestador__metrica", texto: valor }),
+      ],
+    })
+  );
+
+  return crear("article", {
+    clase: ["prestador", prestador.alerta === "critica" ? "prestador--critico" : null],
     hijos: [
-      crear("div", {
-        clase: "estado-vacio",
+      crear("header", {
+        clase: "prestador__cabecera",
         hijos: [
           crear("div", {
-            atributos: { style: "color:var(--color-texto-tenue);margin-bottom:1.6rem" },
-            hijos: [icono(nombreIcono, { tamano: 48 })],
+            hijos: [
+              crear("h3", { clase: "prestador__nombre", texto: prestador.nombre }),
+              crear("p", {
+                clase: "prestador__meta",
+                texto: `${prestador.tipo} · ${prestador.especialidad}`,
+              }),
+              crear("p", {
+                clase: "prestador__meta",
+                texto: `RUT ${prestador.id} · ${prestador.comuna} · ${prestador.antiguedad}`,
+              }),
+            ],
+          }),
+          crear("span", { clase: ["distintivo", distintivo.clase], texto: distintivo.texto }),
+        ],
+      }),
+      crear("div", { clase: "prestador__metricas", hijos: metricas }),
+      crear("p", { clase: "prestador__nota", texto: prestador.nota }),
+      enlaces.length > 0
+        ? crear("div", {
+            hijos: [
+              crear("p", {
+                clase: "hallazgos__grupo-titulo",
+                atributos: { style: "margin-top:1.6rem" },
+                texto: "Casos críticos asociados",
+              }),
+              crear("div", { clase: "relacionados", hijos: enlaces }),
+            ],
+          })
+        : null,
+    ],
+  });
+}
+
+/**
+ * Construye la vista de análisis de red.
+ * @param {object} opciones
+ * @param {Function} opciones.alAbrirCaso
+ * @returns {HTMLElement}
+ */
+function crearVistaRed({ alAbrirCaso }) {
+  const red = construirRedCartera();
+  const resumen = resumirPrestadores().filter((prestador) => prestador.totalCasos > 0);
+
+  const foco = resumen[0];
+  const concentracion = (foco.totalCriticos / red.totalCriticos) * 100;
+
+  /* --- Indicadores de la red ---------------------------------------- */
+  const indicadores = crear("section", {
+    clase: "indicadores",
+    atributos: { "aria-label": "Indicadores de la red" },
+    hijos: [
+      crear("article", {
+        clase: ["kpi", "kpi--alerta"],
+        hijos: [
+          crear("div", {
+            clase: "kpi__cabecera",
+            hijos: [
+              crear("h3", { clase: "kpi__titulo", texto: "Prestador con mayor foco" }),
+              icono("alerta", { tamano: 20, clase: "kpi__icono kpi__icono--alerta" }),
+            ],
           }),
           crear("p", {
-            atributos: { style: "font-size:1.6rem;color:var(--color-texto)" },
-            texto: "Sección en desarrollo",
+            clase: ["kpi__valor", "kpi__valor--critico"],
+            atributos: { style: "font-size:2.2rem" },
+            texto: foco.nombre,
           }),
           crear("p", {
-            atributos: { style: "margin-top:0.8rem;max-width:52rem;margin-inline:auto" },
-            texto: descripcion,
-          }),
-          crear("button", {
-            clase: ["boton", "boton--primario"],
-            atributos: { type: "button", style: "margin-top:2.4rem" },
-            texto: "Volver al centro de mando",
-            eventos: { click: alVolver },
+            clase: "kpi__nota",
+            texto: `${foco.totalCriticos} de ${red.totalCriticos} casos críticos de la cartera`,
           }),
         ],
+      }),
+      crear("article", {
+        clase: ["kpi", "kpi--alerta"],
+        hijos: [
+          crear("h3", {
+            clase: "kpi__titulo",
+            texto: "Concentración en un solo prestador",
+          }),
+          crear("div", {
+            clase: "kpi__medida",
+            hijos: [
+              crear("span", {
+                clase: "kpi__porcentaje",
+                texto: comoPorcentaje(concentracion),
+              }),
+              crear("span", {
+                clase: "barra",
+                hijos: [crearRelleno(concentracion)],
+              }),
+            ],
+          }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("h3", { clase: "kpi__titulo", texto: "Prestadores en la cartera" }),
+          crear("p", { clase: "kpi__valor", texto: String(resumen.length) }),
+          crear("p", {
+            clase: "kpi__nota",
+            texto: `${resumen.filter((p) => p.alerta !== "baja").length} bajo vigilancia`,
+          }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("div", {
+            clase: "kpi__cabecera",
+            hijos: [
+              crear("h3", { clase: "kpi__titulo", texto: "Vínculos analizados" }),
+              icono("red", { tamano: 20, clase: "kpi__icono" }),
+            ],
+          }),
+          crear("p", { clase: "kpi__valor", texto: String(red.vinculos.length) }),
+          crear("p", { clase: "kpi__nota", texto: "Relaciones prestador-beneficiario" }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Grafo de la cartera ------------------------------------------- */
+  const panelGrafo = crear("section", {
+    clase: "panel",
+    hijos: [
+      crear("header", {
+        clase: "panel__cabecera",
+        hijos: [
+          crear("h2", {
+            clase: "panel__titulo",
+            hijos: [icono("red", { tamano: 22 }), crear("span", { texto: "Red de la cartera" })],
+          }),
+          crear("span", {
+            clase: ["distintivo", "distintivo--critico-suave"],
+            atributos: { style: "margin-left:auto" },
+            texto: "1 foco detectado",
+          }),
+        ],
+      }),
+      crear("div", {
+        clase: "panel__cuerpo",
+        hijos: [
+          crearGrafoCartera({
+            nodosPrestador: red.nodosPrestador,
+            nodosBeneficiario: red.nodosBeneficiario,
+            alElegirCaso: alAbrirCaso,
+          }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Fichas de prestador -------------------------------------------- */
+  const fichas = resumen.map((prestador) => crearFichaPrestador(prestador, alAbrirCaso));
+
+  const panelPrestadores = crear("section", {
+    clase: "panel",
+    hijos: [
+      crear("header", {
+        clase: "panel__cabecera",
+        hijos: [
+          crear("h2", {
+            clase: "panel__titulo",
+            hijos: [
+              icono("carpeta", { tamano: 22 }),
+              crear("span", { texto: "Prestadores por exposición" }),
+            ],
+          }),
+        ],
+      }),
+      crear("div", {
+        clase: "panel__cuerpo",
+        hijos: [crear("div", { clase: "prestadores", hijos: fichas })],
       }),
     ],
   });
@@ -5894,26 +7207,1067 @@ function crearVistaEnConstruccion({ titulo, descripcion, nombreIcono, alVolver }
         hijos: [
           crear("div", {
             hijos: [
-              crear("h1", { clase: "vista__titulo", texto: titulo }),
+              crear("h1", { clase: "vista__titulo", texto: "Análisis de red" }),
               crear("p", {
                 clase: "vista__subtitulo",
-                texto: "Este módulo no forma parte del alcance del prototipo.",
+                texto:
+                  "Vínculos entre prestadores y beneficiarios de toda la cartera, para detectar focos que no se aprecian caso a caso.",
               }),
             ],
           }),
         ],
       }),
-      panel,
+      indicadores,
+      panelGrafo,
+      panelPrestadores,
     ],
   });
 }
 
-  Object.assign(REGISTRO, { crearVistaEnConstruccion });
+/* Barra de progreso con animación de entrada. */
+function crearRelleno(porcentaje) {
+  const relleno = crear("span", { clase: "barra__relleno" });
+  relleno.style.width = "0%";
+
+  window.requestAnimationFrame(() => {
+    relleno.style.width = `${porcentaje}%`;
+  });
+
+  return relleno;
+}
+
+  Object.assign(REGISTRO, { crearVistaRed });
+})();
+
+/* ===== src/js/views/forense.js ===== */
+(() => {
+  const { crear, reemplazar, comoPorcentaje, colaDocumental, resumirCola, verificadores, icono, mostrarAviso } = REGISTRO;
+/* =========================================================================
+   LISA vigIA — Herramientas forenses.
+   Laboratorio documental: estado de los verificadores automáticos y cola de
+   documentos en análisis, con su veredicto y nivel de confianza.
+   ========================================================================= */
+
+
+
+
+
+/* Traducción de cada estado de la cola. */
+const ESTADO = {
+  concluido: { texto: "Concluido", clase: "distintivo--neutro" },
+  analizando: { texto: "En análisis", clase: "distintivo--medio" },
+  en_cola: { texto: "En cola", clase: "distintivo--neutro" },
+};
+
+/* Traducción de cada veredicto del peritaje. */
+const VEREDICTO = {
+  adulterado: { texto: "Adulterado", clase: "distintivo--critico", icono: "alerta" },
+  legitimo: { texto: "Legítimo", clase: "distintivo--ok", icono: "visto" },
+};
+
+/* Tarjeta de un verificador automático. */
+function crearTarjetaVerificador(verificador) {
+  return crear("article", {
+    clase: "verificador",
+    hijos: [
+      crear("div", {
+        clase: "verificador__cabecera",
+        hijos: [
+          crear("span", {
+            clase: "verificador__icono",
+            hijos: [icono(verificador.icono, { tamano: 22 })],
+          }),
+          crear("div", {
+            hijos: [
+              crear("h3", { clase: "verificador__nombre", texto: verificador.nombre }),
+              crear("p", {
+                clase: "verificador__estado",
+                hijos: [
+                  crear("span", { clase: "verificador__punto" }),
+                  crear("span", { texto: "Operativo" }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      }),
+      crear("p", { clase: "verificador__descripcion", texto: verificador.descripcion }),
+      crear("div", {
+        clase: "verificador__pie",
+        hijos: [
+          crear("div", {
+            hijos: [
+              crear("p", { clase: "etiqueta-campo", texto: "Documentos" }),
+              crear("p", {
+                clase: ["verificador__cifra", "dato-mono"],
+                texto: verificador.procesados.toLocaleString("es-CL"),
+              }),
+            ],
+          }),
+          crear("div", {
+            hijos: [
+              crear("p", { clase: "etiqueta-campo", texto: "Precisión" }),
+              crear("p", {
+                clase: ["verificador__cifra", "dato-mono"],
+                texto: comoPorcentaje(verificador.deteccion),
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+}
+
+/* Fila de la cola documental. */
+function crearFilaDocumento(documento, alAbrirCaso) {
+  const estado = ESTADO[documento.estado];
+  const veredicto = documento.veredicto ? VEREDICTO[documento.veredicto] : null;
+
+  const etiquetasHallazgo = documento.hallazgos.map((hallazgo) =>
+    crear("span", { clase: "marca-hallazgo", texto: hallazgo })
+  );
+
+  const celdaVeredicto = veredicto
+    ? crear("span", {
+        clase: ["distintivo", veredicto.clase],
+        texto: veredicto.texto,
+      })
+    : crear("span", { clase: "texto-tenue", texto: "—" });
+
+  const celdaConfianza = documento.confianza
+    ? crear("span", {
+        clase: ["puntaje", documento.veredicto === "adulterado" ? "puntaje--alto" : "puntaje--bajo"],
+        texto: `${documento.confianza}%`,
+      })
+    : crear("span", { clase: "texto-tenue", texto: "—" });
+
+  return crear("tr", {
+    atributos: {
+      tabindex: "0",
+      role: "link",
+      "aria-label": `Abrir el caso de ${documento.beneficiario}`,
+    },
+    hijos: [
+      crear("td", {
+        hijos: [
+          crear("p", { clase: "celda-beneficiario__nombre", texto: documento.documento }),
+          crear("p", { clase: "celda-beneficiario__rut", texto: documento.beneficiario }),
+        ],
+      }),
+      crear("td", {
+        hijos: [crear("span", { clase: ["distintivo", estado.clase], texto: estado.texto })],
+      }),
+      crear("td", {
+        hijos: [
+          etiquetasHallazgo.length > 0
+            ? crear("div", { clase: "marcas-hallazgo", hijos: etiquetasHallazgo })
+            : crear("span", { clase: "texto-tenue", texto: "Sin hallazgos" }),
+        ],
+      }),
+      crear("td", { clase: "col-centro", hijos: [celdaVeredicto] }),
+      crear("td", { clase: "col-derecha", hijos: [celdaConfianza] }),
+    ],
+    eventos: {
+      click: () => alAbrirCaso(documento.idCaso),
+      keydown: (evento) => {
+        if (evento.key === "Enter" || evento.key === " ") {
+          evento.preventDefault();
+          alAbrirCaso(documento.idCaso);
+        }
+      },
+    },
+  });
+}
+
+/**
+ * Construye la vista de herramientas forenses.
+ * @param {object} opciones
+ * @param {Function} opciones.alAbrirCaso
+ * @returns {HTMLElement}
+ */
+function crearVistaForense({ alAbrirCaso }) {
+  const cola = resumirCola();
+
+  /* --- Indicadores del laboratorio ----------------------------------- */
+  const indicadores = crear("section", {
+    clase: "indicadores",
+    atributos: { "aria-label": "Estado del laboratorio" },
+    hijos: [
+      crear("article", {
+        clase: ["kpi", "kpi--alerta"],
+        hijos: [
+          crear("div", {
+            clase: "kpi__cabecera",
+            hijos: [
+              crear("h3", { clase: "kpi__titulo", texto: "Documentos adulterados" }),
+              icono("alerta", { tamano: 20, clase: "kpi__icono kpi__icono--alerta" }),
+            ],
+          }),
+          crear("p", {
+            clase: ["kpi__valor", "kpi__valor--critico"],
+            texto: String(cola.adulterados),
+          }),
+          crear("p", {
+            clase: "kpi__nota",
+            texto: `de ${cola.concluidos} peritajes concluidos`,
+          }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("h3", { clase: "kpi__titulo", texto: "En análisis" }),
+          crear("p", { clase: "kpi__valor", texto: String(cola.analizando) }),
+          crear("p", { clase: "kpi__nota", texto: "Peritajes en curso" }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("h3", { clase: "kpi__titulo", texto: "En cola" }),
+          crear("p", { clase: "kpi__valor", texto: String(cola.enCola) }),
+          crear("p", { clase: "kpi__nota", texto: "A la espera de procesamiento" }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("div", {
+            clase: "kpi__cabecera",
+            hijos: [
+              crear("h3", { clase: "kpi__titulo", texto: "Verificadores activos" }),
+              icono("escudo", { tamano: 20, clase: "kpi__icono" }),
+            ],
+          }),
+          crear("p", { clase: "kpi__valor", texto: String(verificadores.length) }),
+          crear("p", { clase: "kpi__nota", texto: "Operativos en la canalización" }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Verificadores --------------------------------------------------- */
+  const panelVerificadores = crear("section", {
+    clase: "panel",
+    hijos: [
+      crear("header", {
+        clase: "panel__cabecera",
+        hijos: [
+          crear("h2", {
+            clase: "panel__titulo",
+            hijos: [
+              icono("forense", { tamano: 22 }),
+              crear("span", { texto: "Verificadores automáticos" }),
+            ],
+          }),
+          crear("span", {
+            clase: ["distintivo", "distintivo--ok"],
+            atributos: { style: "margin-left:auto" },
+            texto: "Todos operativos",
+          }),
+        ],
+      }),
+      crear("div", {
+        clase: "panel__cuerpo",
+        hijos: [
+          crear("div", {
+            clase: "verificadores",
+            hijos: verificadores.map(crearTarjetaVerificador),
+          }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Cola documental -------------------------------------------------- */
+  const contenedorTabla = crear("div", { clase: "tabla-envoltura" });
+
+  let filtro = "todos";
+
+  const dibujarTabla = () => {
+    const documentos =
+      filtro === "todos"
+        ? colaDocumental
+        : colaDocumental.filter((documento) => documento.estado === filtro);
+
+    const tabla = crear("table", {
+      clase: "tabla-casos",
+      hijos: [
+        crear("thead", {
+          hijos: [
+            crear("tr", {
+              hijos: [
+                crear("th", { texto: "Documento", atributos: { scope: "col" } }),
+                crear("th", { texto: "Estado", atributos: { scope: "col" } }),
+                crear("th", { texto: "Hallazgos", atributos: { scope: "col" } }),
+                crear("th", {
+                  texto: "Veredicto",
+                  clase: "col-centro",
+                  atributos: { scope: "col" },
+                }),
+                crear("th", {
+                  texto: "Confianza",
+                  clase: "col-derecha",
+                  atributos: { scope: "col" },
+                }),
+              ],
+            }),
+          ],
+        }),
+        crear("tbody", {
+          hijos: documentos.map((documento) => crearFilaDocumento(documento, alAbrirCaso)),
+        }),
+      ],
+    });
+
+    reemplazar(contenedorTabla, tabla);
+  };
+
+  const FILTROS = [
+    { id: "todos", etiqueta: "Todos" },
+    { id: "concluido", etiqueta: "Concluidos" },
+    { id: "analizando", etiqueta: "En análisis" },
+    { id: "en_cola", etiqueta: "En cola" },
+  ];
+
+  const botones = FILTROS.map((opcion) =>
+    crear("button", {
+      clase: ["boton", opcion.id === "todos" ? "boton--primario" : "boton--fantasma"],
+      atributos: { type: "button" },
+      texto: opcion.etiqueta,
+      datos: { filtroDoc: opcion.id },
+    })
+  );
+
+  botones.forEach((boton) => {
+    boton.addEventListener("click", () => {
+      filtro = boton.dataset.filtroDoc;
+
+      botones.forEach((otro) => {
+        const activo = otro.dataset.filtroDoc === filtro;
+        otro.classList.toggle("boton--primario", activo);
+        otro.classList.toggle("boton--fantasma", !activo);
+      });
+
+      dibujarTabla();
+    });
+  });
+
+  const panelCola = crear("section", {
+    clase: "panel",
+    hijos: [
+      crear("header", {
+        clase: "panel__cabecera",
+        hijos: [
+          crear("h2", {
+            clase: "panel__titulo",
+            hijos: [
+              icono("documento", { tamano: 22 }),
+              crear("span", { texto: "Cola de peritaje documental" }),
+            ],
+          }),
+          crear("div", {
+            atributos: { style: "margin-left:auto;display:flex;gap:0.8rem;flex-wrap:wrap" },
+            hijos: botones,
+          }),
+        ],
+      }),
+      contenedorTabla,
+    ],
+  });
+
+  dibujarTabla();
+
+  /* --- Acción de carga -------------------------------------------------- */
+  const cargar = crear("button", {
+    clase: ["boton", "boton--primario"],
+    atributos: { type: "button" },
+    hijos: [icono("mas", { tamano: 16 }), crear("span", { texto: "Cargar documento" })],
+    eventos: {
+      click: () =>
+        mostrarAviso({
+          titulo: "Carga de documentos",
+          texto: "La carga manual no está habilitada en el prototipo.",
+        }),
+    },
+  });
+
+  return crear("div", {
+    clase: "vista",
+    hijos: [
+      crear("header", {
+        clase: "vista__cabecera",
+        hijos: [
+          crear("div", {
+            hijos: [
+              crear("h1", { clase: "vista__titulo", texto: "Herramientas forenses" }),
+              crear("p", {
+                clase: "vista__subtitulo",
+                texto:
+                  "Laboratorio de peritaje documental: verificadores automáticos y estado de los documentos en análisis.",
+              }),
+            ],
+          }),
+          cargar,
+        ],
+      }),
+      indicadores,
+      panelVerificadores,
+      panelCola,
+    ],
+  });
+}
+
+  Object.assign(REGISTRO, { crearVistaForense });
+})();
+
+/* ===== src/js/components/graficoBarras.js ===== */
+(() => {
+  const { crear, crearSVG, vaciar, comoMoneda } = REGISTRO;
+/* =========================================================================
+   LISA vigIA — Gráfico de barras apiladas para el histórico de resoluciones.
+   Cada mes muestra los casos derivados a investigación frente a los que
+   continuaron a liquidación, con el monto bloqueado como línea superpuesta.
+   ========================================================================= */
+
+
+const ANCHO = 760;
+const ALTO = 320;
+const MARGEN = { arriba: 24, derecha: 64, abajo: 46, izquierda: 48 };
+
+const ANCHO_TRAMA = ANCHO - MARGEN.izquierda - MARGEN.derecha;
+const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
+
+/**
+ * Dibuja el histórico mensual de resoluciones.
+ * @param {object} opciones
+ * @param {object[]} opciones.historial Meses con fraude, liberados y monto.
+ * @returns {HTMLElement}
+ */
+function crearGraficoBarras({ historial }) {
+  const contenedor = crear("div", { clase: "grafico" });
+
+  const svg = crearSVG("svg", {
+    clase: "grafico__lienzo",
+    atributos: {
+      viewBox: `0 0 ${ANCHO} ${ALTO}`,
+      role: "img",
+      "aria-label":
+        "Histórico mensual de casos resueltos: derivados a investigación frente a liberados a liquidación.",
+    },
+  });
+
+  const trama = crearSVG("g", {
+    atributos: { transform: `translate(${MARGEN.izquierda}, ${MARGEN.arriba})` },
+  });
+
+  const maximoCasos = Math.max(
+    ...historial.map((mes) => mes.fraude + mes.liberados)
+  );
+  const maximoMonto = Math.max(...historial.map((mes) => mes.montoBloqueado));
+
+  const escalaY = (valor) => ALTO_TRAMA - (valor / maximoCasos) * ALTO_TRAMA;
+  const paso = ANCHO_TRAMA / historial.length;
+  const anchoBarra = Math.min(paso * 0.5, 46);
+
+  /* --- Rejilla horizontal -------------------------------------------- */
+  const pasos = 4;
+  for (let indice = 0; indice <= pasos; indice += 1) {
+    const valor = (maximoCasos / pasos) * indice;
+    const y = escalaY(valor);
+
+    trama.appendChild(
+      crearSVG("line", {
+        atributos: {
+          x1: 0,
+          y1: y,
+          x2: ANCHO_TRAMA,
+          y2: y,
+          stroke: "#26262e",
+          "stroke-width": 1,
+        },
+      })
+    );
+
+    trama.appendChild(
+      crearSVG("text", {
+        texto: String(Math.round(valor)),
+        atributos: {
+          x: -10,
+          y: y + 4,
+          fill: "#6e6e7c",
+          "font-size": 11,
+          "font-family": "monospace",
+          "text-anchor": "end",
+        },
+      })
+    );
+  }
+
+  /* --- Globo informativo --------------------------------------------- */
+  const tooltip = crear("div", { clase: "tooltip", atributos: { role: "tooltip" } });
+
+  function mostrarTooltip(mes, evento) {
+    vaciar(tooltip);
+    tooltip.appendChild(crear("p", { clase: "tooltip__titulo", texto: mes.mes }));
+
+    [
+      ["Derivados a fraude", String(mes.fraude)],
+      ["Liberados", String(mes.liberados)],
+      ["Monto bloqueado", comoMoneda(mes.montoBloqueado)],
+    ].forEach(([clave, valor]) => {
+      tooltip.appendChild(
+        crear("div", {
+          clase: "tooltip__fila",
+          hijos: [
+            crear("span", { clase: "tooltip__clave", texto: clave }),
+            crear("span", { clase: "tooltip__valor", texto: valor }),
+          ],
+        })
+      );
+    });
+
+    const limites = contenedor.getBoundingClientRect();
+    const x = evento.clientX - limites.left + 16;
+    const y = evento.clientY - limites.top + 16;
+    const ancho = 240;
+
+    tooltip.style.left = `${x + ancho > limites.width ? x - ancho - 32 : x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.classList.add("esta-visible");
+  }
+
+  const ocultarTooltip = () => tooltip.classList.remove("esta-visible");
+
+  /* --- Barras apiladas ------------------------------------------------ */
+  historial.forEach((mes, indice) => {
+    const centro = paso * (indice + 0.5);
+    const x = centro - anchoBarra / 2;
+
+    const altoLiberados = ALTO_TRAMA - escalaY(mes.liberados);
+    const altoFraude = ALTO_TRAMA - escalaY(mes.fraude);
+
+    const grupo = crearSVG("g", { clase: "punto-dato" });
+
+    /* Los liberados forman la base de la barra. */
+    grupo.appendChild(
+      crearSVG("rect", {
+        atributos: {
+          x,
+          y: ALTO_TRAMA - altoLiberados,
+          width: anchoBarra,
+          height: altoLiberados,
+          fill: "#2f4f45",
+          rx: 2,
+        },
+      })
+    );
+
+    /* Los derivados a investigación se apilan encima. */
+    grupo.appendChild(
+      crearSVG("rect", {
+        atributos: {
+          x,
+          y: ALTO_TRAMA - altoLiberados - altoFraude,
+          width: anchoBarra,
+          height: altoFraude,
+          fill: "#f2857f",
+          rx: 2,
+        },
+      })
+    );
+
+    grupo.addEventListener("mousemove", (evento) => mostrarTooltip(mes, evento));
+    grupo.addEventListener("mouseleave", ocultarTooltip);
+    trama.appendChild(grupo);
+
+    /* Rótulo del mes, abreviado para que quepa. */
+    trama.appendChild(
+      crearSVG("text", {
+        texto: mes.mes.split(" ")[0].slice(0, 3),
+        atributos: {
+          x: centro,
+          y: ALTO_TRAMA + 20,
+          fill: "#a0a0ae",
+          "font-size": 11,
+          "text-anchor": "middle",
+        },
+      })
+    );
+  });
+
+  /* --- Línea del monto bloqueado -------------------------------------- */
+  const escalaMonto = (monto) => ALTO_TRAMA - (monto / maximoMonto) * ALTO_TRAMA * 0.86;
+
+  const puntos = historial
+    .map((mes, indice) => `${paso * (indice + 0.5)},${escalaMonto(mes.montoBloqueado)}`)
+    .join(" ");
+
+  trama.appendChild(
+    crearSVG("polyline", {
+      atributos: {
+        points: puntos,
+        fill: "none",
+        stroke: "#c3cbf0",
+        "stroke-width": 2,
+        "stroke-dasharray": "5 4",
+        "stroke-linecap": "round",
+      },
+    })
+  );
+
+  historial.forEach((mes, indice) => {
+    trama.appendChild(
+      crearSVG("circle", {
+        atributos: {
+          cx: paso * (indice + 0.5),
+          cy: escalaMonto(mes.montoBloqueado),
+          r: 3.5,
+          fill: "#c3cbf0",
+        },
+      })
+    );
+  });
+
+  svg.appendChild(trama);
+
+  contenedor.appendChild(
+    crear("p", {
+      clase: "grafico__titulo",
+      texto: "Resoluciones por mes y monto bloqueado",
+    })
+  );
+  contenedor.appendChild(
+    crear("p", {
+      clase: "grafico__ayuda",
+      texto: "Pase el puntero sobre una barra para ver el detalle del mes.",
+    })
+  );
+  contenedor.appendChild(svg);
+
+  contenedor.appendChild(
+    crear("div", {
+      clase: "grafico__leyenda",
+      hijos: [
+        crearItemLeyenda("#f2857f", "Derivados a investigación"),
+        crearItemLeyenda("#2f4f45", "Liberados a liquidación"),
+        crearItemLeyenda("#c3cbf0", "Monto bloqueado"),
+      ],
+    })
+  );
+
+  contenedor.appendChild(tooltip);
+  return contenedor;
+}
+
+/* Construye un elemento de la leyenda. */
+function crearItemLeyenda(color, texto) {
+  const muestra = crear("span", { clase: "grafico__muestra" });
+  muestra.style.backgroundColor = color;
+
+  return crear("span", {
+    clase: "grafico__leyenda-item",
+    hijos: [muestra, crear("span", { texto })],
+  });
+}
+
+  Object.assign(REGISTRO, { crearGraficoBarras });
+})();
+
+/* ===== src/js/views/archivo.js ===== */
+(() => {
+  const { crear, reemplazar, comoMoneda, comoPorcentaje, casosArchivados, historialResoluciones, patronesAprendidos, resumirArchivo, icono, crearGraficoBarras } = REGISTRO;
+/* =========================================================================
+   LISA vigIA — Inteligencia archivada.
+   Reúne los casos ya resueltos, el histórico de resoluciones y los patrones
+   de fraude confirmados que alimentan el modelo de scoring.
+   ========================================================================= */
+
+
+
+
+
+/* Tarjeta de un patrón de fraude aprendido. */
+function crearTarjetaPatron(patron) {
+  const sube = patron.tendencia >= 0;
+
+  return crear("article", {
+    clase: "patron",
+    hijos: [
+      crear("div", {
+        clase: "patron__cabecera",
+        hijos: [
+          crear("h3", { clase: "patron__nombre", texto: patron.nombre }),
+          crear("span", {
+            clase: ["patron__tendencia", sube ? "patron__tendencia--sube" : "patron__tendencia--baja"],
+            hijos: [
+              icono("tendencia", { tamano: 14 }),
+              crear("span", {
+                texto: `${sube ? "+" : ""}${patron.tendencia}% semestral`,
+              }),
+            ],
+          }),
+        ],
+      }),
+      crear("p", { clase: "patron__descripcion", texto: patron.descripcion }),
+      crear("div", {
+        clase: "patron__medida",
+        hijos: [
+          crear("div", {
+            clase: "patron__cifra",
+            hijos: [
+              crear("span", {
+                clase: ["puntaje", "puntaje--alto"],
+                texto: String(patron.detecciones),
+              }),
+              crear("span", { clase: "texto-tenue", texto: " detecciones" }),
+            ],
+          }),
+          crear("div", {
+            clase: "patron__peso",
+            hijos: [
+              crear("p", { clase: "etiqueta-campo", texto: "Peso en el scoring" }),
+              crear("div", {
+                clase: "kpi__medida",
+                hijos: [
+                  crear("span", {
+                    clase: "patron__porcentaje",
+                    texto: comoPorcentaje(patron.peso),
+                  }),
+                  crear("span", { clase: "barra", hijos: [crearRelleno(patron.peso)] }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+}
+
+/* Fila del listado de casos archivados. */
+function crearFilaArchivo(caso) {
+  const esFraude = caso.resolucion === "fraude";
+
+  return crear("tr", {
+    hijos: [
+      crear("td", {
+        hijos: [
+          crear("p", { clase: "celda-beneficiario__nombre", texto: caso.beneficiario }),
+          crear("p", { clase: "celda-beneficiario__rut", texto: caso.rut }),
+        ],
+      }),
+      crear("td", { hijos: [crear("span", { clase: "texto-tenue", texto: caso.prestador })] }),
+      crear("td", { hijos: [crear("span", { clase: "marca-hallazgo", texto: caso.patron })] }),
+      crear("td", {
+        clase: "col-centro",
+        hijos: [
+          crear("span", {
+            clase: ["distintivo", esFraude ? "distintivo--critico" : "distintivo--ok"],
+            texto: esFraude ? "Fraude" : "Liberado",
+          }),
+        ],
+      }),
+      crear("td", {
+        clase: "col-derecha",
+        hijos: [
+          crear("span", {
+            clase: ["puntaje", esFraude ? "puntaje--alto" : "puntaje--bajo"],
+            texto: String(caso.puntaje),
+          }),
+        ],
+      }),
+      crear("td", {
+        clase: "col-derecha",
+        hijos: [crear("span", { clase: "dato-mono", texto: comoMoneda(caso.monto) })],
+      }),
+      crear("td", {
+        clase: "col-derecha",
+        hijos: [crear("span", { clase: "texto-tenue", texto: caso.cierre })],
+      }),
+    ],
+  });
+}
+
+/**
+ * Construye la vista de inteligencia archivada.
+ * @returns {HTMLElement}
+ */
+function crearVistaArchivo() {
+  const resumen = resumirArchivo();
+
+  /* --- Indicadores del archivo ---------------------------------------- */
+  const indicadores = crear("section", {
+    clase: "indicadores",
+    atributos: { "aria-label": "Resumen del archivo" },
+    hijos: [
+      crear("article", {
+        clase: ["kpi", "kpi--alerta", "kpi--ancho"],
+        hijos: [
+          crear("div", {
+            clase: "kpi__cabecera",
+            hijos: [
+              crear("h3", { clase: "kpi__titulo", texto: "Monto bloqueado en seis meses" }),
+              crear("span", {
+                clase: ["distintivo", "distintivo--ok"],
+                texto: "Recuperado",
+              }),
+            ],
+          }),
+          crear("p", {
+            clase: ["kpi__valor", "kpi__valor--monto", "kpi__valor--critico"],
+            texto: comoMoneda(resumen.montoBloqueado),
+          }),
+          crear("p", {
+            clase: "kpi__nota",
+            texto: `Correspondiente a ${resumen.fraude} siniestros derivados a investigación`,
+          }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("h3", { clase: "kpi__titulo", texto: "Casos resueltos" }),
+          crear("p", { clase: "kpi__valor", texto: String(resumen.total) }),
+          crear("p", { clase: "kpi__nota", texto: "En los últimos seis meses" }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("h3", { clase: "kpi__titulo", texto: "Tasa de fraude confirmado" }),
+          crear("div", {
+            clase: "kpi__medida",
+            hijos: [
+              crear("span", {
+                clase: "kpi__porcentaje",
+                texto: comoPorcentaje(resumen.tasaFraude),
+              }),
+              crear("span", { clase: "barra", hijos: [crearRelleno(resumen.tasaFraude)] }),
+            ],
+          }),
+        ],
+      }),
+      crear("article", {
+        clase: "kpi",
+        hijos: [
+          crear("div", {
+            clase: "kpi__cabecera",
+            hijos: [
+              crear("h3", { clase: "kpi__titulo", texto: "Patrones aprendidos" }),
+              icono("huella", { tamano: 20, clase: "kpi__icono" }),
+            ],
+          }),
+          crear("p", { clase: "kpi__valor", texto: String(patronesAprendidos.length) }),
+          crear("p", { clase: "kpi__nota", texto: "Alimentan el modelo de scoring" }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Histórico ------------------------------------------------------- */
+  const panelHistorico = crear("section", {
+    clase: "panel",
+    hijos: [
+      crear("header", {
+        clase: "panel__cabecera",
+        hijos: [
+          crear("h2", {
+            clase: "panel__titulo",
+            hijos: [
+              icono("grafico", { tamano: 22 }),
+              crear("span", { texto: "Histórico de resoluciones" }),
+            ],
+          }),
+        ],
+      }),
+      crear("div", {
+        clase: "panel__cuerpo",
+        hijos: [crearGraficoBarras({ historial: historialResoluciones })],
+      }),
+    ],
+  });
+
+  /* --- Patrones aprendidos ---------------------------------------------- */
+  const panelPatrones = crear("section", {
+    clase: "panel",
+    hijos: [
+      crear("header", {
+        clase: "panel__cabecera",
+        hijos: [
+          crear("h2", {
+            clase: "panel__titulo",
+            hijos: [
+              icono("huella", { tamano: 22 }),
+              crear("span", { texto: "Patrones de fraude confirmados" }),
+            ],
+          }),
+        ],
+      }),
+      crear("div", {
+        clase: "panel__cuerpo",
+        hijos: [
+          crear("div", {
+            clase: "patrones",
+            hijos: patronesAprendidos.map(crearTarjetaPatron),
+          }),
+        ],
+      }),
+    ],
+  });
+
+  /* --- Casos archivados --------------------------------------------------- */
+  const contenedorTabla = crear("div", { clase: "tabla-envoltura" });
+
+  let filtro = "todos";
+
+  const dibujarTabla = () => {
+    const listado =
+      filtro === "todos"
+        ? casosArchivados
+        : casosArchivados.filter((caso) => caso.resolucion === filtro);
+
+    reemplazar(
+      contenedorTabla,
+      crear("table", {
+        clase: "tabla-casos",
+        hijos: [
+          crear("thead", {
+            hijos: [
+              crear("tr", {
+                hijos: [
+                  crear("th", { texto: "Beneficiario", atributos: { scope: "col" } }),
+                  crear("th", { texto: "Prestador", atributos: { scope: "col" } }),
+                  crear("th", { texto: "Patrón", atributos: { scope: "col" } }),
+                  crear("th", {
+                    texto: "Resolución",
+                    clase: "col-centro",
+                    atributos: { scope: "col" },
+                  }),
+                  crear("th", {
+                    texto: "Scoring",
+                    clase: "col-derecha",
+                    atributos: { scope: "col" },
+                  }),
+                  crear("th", {
+                    texto: "Monto",
+                    clase: "col-derecha",
+                    atributos: { scope: "col" },
+                  }),
+                  crear("th", {
+                    texto: "Cierre",
+                    clase: "col-derecha",
+                    atributos: { scope: "col" },
+                  }),
+                ],
+              }),
+            ],
+          }),
+          crear("tbody", { hijos: listado.map(crearFilaArchivo) }),
+        ],
+      })
+    );
+  };
+
+  const FILTROS = [
+    { id: "todos", etiqueta: "Todos" },
+    { id: "fraude", etiqueta: "Fraude confirmado" },
+    { id: "liberado", etiqueta: "Liberados" },
+  ];
+
+  const botones = FILTROS.map((opcion) =>
+    crear("button", {
+      clase: ["boton", opcion.id === "todos" ? "boton--primario" : "boton--fantasma"],
+      atributos: { type: "button" },
+      texto: opcion.etiqueta,
+      datos: { filtroArchivo: opcion.id },
+    })
+  );
+
+  botones.forEach((boton) => {
+    boton.addEventListener("click", () => {
+      filtro = boton.dataset.filtroArchivo;
+
+      botones.forEach((otro) => {
+        const activo = otro.dataset.filtroArchivo === filtro;
+        otro.classList.toggle("boton--primario", activo);
+        otro.classList.toggle("boton--fantasma", !activo);
+      });
+
+      dibujarTabla();
+    });
+  });
+
+  const panelCasos = crear("section", {
+    clase: "panel",
+    hijos: [
+      crear("header", {
+        clase: "panel__cabecera",
+        hijos: [
+          crear("h2", {
+            clase: "panel__titulo",
+            hijos: [
+              icono("archivo", { tamano: 22 }),
+              crear("span", { texto: "Casos cerrados" }),
+            ],
+          }),
+          crear("div", {
+            atributos: { style: "margin-left:auto;display:flex;gap:0.8rem;flex-wrap:wrap" },
+            hijos: botones,
+          }),
+        ],
+      }),
+      contenedorTabla,
+    ],
+  });
+
+  dibujarTabla();
+
+  return crear("div", {
+    clase: "vista",
+    hijos: [
+      crear("header", {
+        clase: "vista__cabecera",
+        hijos: [
+          crear("div", {
+            hijos: [
+              crear("h1", { clase: "vista__titulo", texto: "Inteligencia archivada" }),
+              crear("p", {
+                clase: "vista__subtitulo",
+                texto:
+                  "Historial de casos resueltos y patrones de fraude confirmados que alimentan el modelo de scoring.",
+              }),
+            ],
+          }),
+        ],
+      }),
+      indicadores,
+      panelHistorico,
+      panelPatrones,
+      panelCasos,
+    ],
+  });
+}
+
+/* Barra de progreso con animación de entrada. */
+function crearRelleno(porcentaje) {
+  const relleno = crear("span", { clase: "barra__relleno" });
+  relleno.style.width = "0%";
+
+  window.requestAnimationFrame(() => {
+    relleno.style.width = `${porcentaje}%`;
+  });
+
+  return relleno;
+}
+
+  Object.assign(REGISTRO, { crearVistaArchivo });
 })();
 
 /* ===== src/js/app.js ===== */
 (() => {
-  const { reemplazar, obtenerCaso, crearArmazon, mostrarAviso, crearVistaDashboard, crearVistaRegistro, crearVistaReporte, crearVistaEnConstruccion } = REGISTRO;
+  const { reemplazar, obtenerCaso, crearArmazon, mostrarAviso, crearVistaDashboard, crearVistaRegistro, crearVistaReporte, crearVistaRed, crearVistaForense, crearVistaArchivo } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Punto de entrada.
    Monta el armazón, resuelve la navegación entre vistas y mantiene el
@@ -5927,27 +8281,7 @@ function crearVistaEnConstruccion({ titulo, descripcion, nombreIcono, alVolver }
 
 
 
-/* Descripción de las secciones que aún no tienen desarrollo propio. */
-const SECCIONES_PENDIENTES = {
-  red: {
-    titulo: "Análisis de red",
-    nombreIcono: "red",
-    descripcion:
-      "Reunirá los grafos de relación entre beneficiarios, prestadores y siniestros de toda la cartera. En el prototipo puede consultar la red de coalición dentro del reporte de un caso crítico.",
-  },
-  forense: {
-    titulo: "Herramientas forenses",
-    nombreIcono: "forense",
-    descripcion:
-      "Agrupará el laboratorio de peritaje documental: comparación de plantillas, verificación de timbres y análisis de metadatos por lotes.",
-  },
-  archivo: {
-    titulo: "Inteligencia archivada",
-    nombreIcono: "archivo",
-    descripcion:
-      "Contendrá el historial de casos resueltos y los patrones de fraude confirmados que alimentan el modelo de scoring.",
-  },
-};
+
 
 /* Estado del prototipo. */
 const estado = {
@@ -6016,10 +8350,16 @@ function resolverVista() {
     return crearVistaRegistro({ alAbrirCaso: abrirCaso, busqueda: estado.busqueda });
   }
 
-  const pendiente = SECCIONES_PENDIENTES[estado.seccion];
+  if (estado.seccion === "red") {
+    return crearVistaRed({ alAbrirCaso: abrirCaso });
+  }
 
-  if (pendiente) {
-    return crearVistaEnConstruccion({ ...pendiente, alVolver: volverAlPanel });
+  if (estado.seccion === "forense") {
+    return crearVistaForense({ alAbrirCaso: abrirCaso });
+  }
+
+  if (estado.seccion === "archivo") {
+    return crearVistaArchivo();
   }
 
   return crearVistaDashboard({ alAbrirCaso: abrirCaso });
