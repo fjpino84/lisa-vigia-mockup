@@ -541,6 +541,13 @@
   border-radius: 50%;
 }
 
+/* Muestra rectangular para las series dibujadas como columnas. */
+.grafico__muestra--barra {
+  width: 0.9rem;
+  height: 1.4rem;
+  border-radius: 0.2rem;
+}
+
 /* Elementos interactivos dentro de los SVG. */
 .punto-dato {
   cursor: pointer;

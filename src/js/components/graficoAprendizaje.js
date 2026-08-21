@@ -10,10 +10,27 @@ import { paleta } from "../utils/paleta.js";
 
 const ANCHO = 820;
 const ALTO = 380;
-const MARGEN = { arriba: 44, derecha: 24, abajo: 52, izquierda: 48 };
+/* El margen derecho aloja el eje del ahorro mensual. */
+const MARGEN = { arriba: 44, derecha: 56, abajo: 52, izquierda: 48 };
 
 const ANCHO_TRAMA = ANCHO - MARGEN.izquierda - MARGEN.derecha;
 const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
+
+/* Rótulo corto para el eje de montos, con la coma decimal de la convención
+   local: 15400000 se lee como "$15,4M" y 620000 como "$620K". */
+function montoCorto(monto) {
+  if (monto === 0) {
+    return "$0";
+  }
+
+  if (monto >= 1000000) {
+    const millones = monto / 1000000;
+    const texto = Number.isInteger(millones) ? String(millones) : millones.toFixed(1);
+    return `$${texto.replace(".", ",")}M`;
+  }
+
+  return `$${Math.round(monto / 1000)}K`;
+}
 
 /**
  * Dibuja la evolución del modelo a lo largo del semestre.
@@ -32,7 +49,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       viewBox: `0 0 ${ANCHO} ${ALTO}`,
       role: "img",
       "aria-label":
-        "Evolución del modelo: la precisión sube del 62 % al 94 % mientras los falsos positivos caen del 31 % al 6 %.",
+        "Evolución del modelo: la precisión sube del 62 % al 94 % mientras los falsos positivos caen del 31 % al 6 %, y el ahorro mensual pasa de 6,2 a 20,1 millones de pesos.",
     },
   });
 
@@ -43,6 +60,83 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
   const paso = ANCHO_TRAMA / (historial.length - 1);
   const escalaX = (indice) => paso * indice;
   const escalaY = (porcentaje) => ALTO_TRAMA - (porcentaje / 100) * ALTO_TRAMA;
+
+  /* --- Escala del ahorro mensual ------------------------------------- */
+
+  /* El techo se redondea al múltiplo de dos millones inmediatamente
+     superior: deja holgura sobre la barra más alta sin desaprovechar el
+     alto del gráfico, y sitúa las marcas en cifras redondas. */
+  const PASO_EJE = 2000000;
+  const ahorroMaximo = Math.max(...historial.map((mes) => mes.montoBloqueado));
+  const techoAhorro = Math.ceil((ahorroMaximo * 1.04) / PASO_EJE) * PASO_EJE;
+  const escalaAhorro = (monto) => ALTO_TRAMA - (monto / techoAhorro) * ALTO_TRAMA;
+
+  /* --- Barras de ahorro, al fondo -------------------------------------
+     Se dibujan antes que la rejilla y las curvas para que queden detrás y
+     se lean como el sustento económico de la mejora, no como una serie
+     que compite con ellas. */
+  const anchoBarra = Math.min(paso * 0.42, 42);
+
+  historial.forEach((mes, indice) => {
+    const x = escalaX(indice) - anchoBarra / 2;
+    const y = escalaAhorro(mes.montoBloqueado);
+    const esFinal = indice === historial.length - 1;
+
+    trama.appendChild(
+      crearSVG("rect", {
+        atributos: {
+          x,
+          y,
+          width: anchoBarra,
+          height: ALTO_TRAMA - y,
+          fill: COLOR.acento,
+          opacity: esFinal ? 0.34 : 0.22,
+          rx: 3,
+        },
+      })
+    );
+
+    /* El mes más reciente lleva su cifra rotulada: es la que resume el
+       ritmo de ahorro al que opera la herramienta hoy. El rótulo va dentro
+       de la columna, ya que sobre ella chocaría con el valor de precisión. */
+    if (esFinal) {
+      trama.appendChild(
+        crearSVG("text", {
+          texto: montoCorto(mes.montoBloqueado),
+          atributos: {
+            x: x + anchoBarra / 2,
+            y: y + 22,
+            fill: COLOR.acento,
+            "font-size": 12,
+            "font-weight": "700",
+            "font-family": "monospace",
+            "text-anchor": "middle",
+          },
+        })
+      );
+    }
+  });
+
+  /* --- Eje derecho: montos ------------------------------------------- */
+  const marcasAhorro = [];
+  for (let monto = 0; monto <= techoAhorro; monto += PASO_EJE * 2) {
+    marcasAhorro.push(monto);
+  }
+
+  marcasAhorro.forEach((monto) => {
+    trama.appendChild(
+      crearSVG("text", {
+        texto: montoCorto(monto),
+        atributos: {
+          x: ANCHO_TRAMA + 12,
+          y: escalaAhorro(monto) + 4,
+          fill: COLOR.acento,
+          "font-size": 11,
+          "font-family": "monospace",
+        },
+      })
+    );
+  });
 
   /* --- Rejilla ------------------------------------------------------- */
   [0, 25, 50, 75, 100].forEach((valor) => {
@@ -168,6 +262,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
     [
       ["Precisión", `${mes.precision}%`],
       ["Falsos positivos", `${mes.falsosPositivos}%`],
+      ["Ahorro del mes", montoCorto(mes.montoBloqueado)],
       ["Días por caso", `${mes.diasResolucion}`],
       ["Casos escapados", String(mes.escapados)],
     ].forEach(([clave, valor]) => {
@@ -261,8 +356,8 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
         crearSVG("text", {
           texto: `${mes.precision}%`,
           atributos: {
-            x: esFinal ? x - 6 : x + 6,
-            y: escalaY(mes.precision) - 14,
+            x: esFinal ? x - 12 : x + 6,
+            y: escalaY(mes.precision) - 16,
             fill: COLOR.ok,
             "font-size": 13,
             "font-weight": "700",
@@ -294,14 +389,14 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
   contenedor.appendChild(
     crear("p", {
       clase: "grafico__titulo",
-      texto: "Precisión del modelo frente a falsos positivos",
+      texto: "Precisión del modelo y ahorro mensual",
     })
   );
   contenedor.appendChild(
     crear("p", {
       clase: "grafico__ayuda",
       texto:
-        "Los meses marcados en el eje corresponden a la entrada en producción de una capacidad nueva. Pase el puntero sobre un punto para ver el detalle.",
+        "Las columnas miden el ahorro de cada mes en el eje derecho: a medida que el modelo gana precisión, retiene más dinero. Los meses en negrita marcan la entrada de una capacidad nueva.",
     })
   );
   contenedor.appendChild(svg);
@@ -312,6 +407,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       hijos: [
         crearItemLeyenda(COLOR.ok, "Precisión de detección"),
         crearItemLeyenda(COLOR.critico, "Falsos positivos"),
+        crearItemLeyenda(COLOR.acento, "Ahorro del mes (eje derecho)", "barra"),
         crearItemLeyenda(COLOR.acento, "Capacidad incorporada"),
       ],
     })
@@ -321,10 +417,22 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
   return contenedor;
 }
 
-/* Construye un elemento de la leyenda. */
-function crearItemLeyenda(color, texto) {
-  const muestra = crear("span", { clase: "grafico__muestra" });
+/**
+ * Construye un elemento de la leyenda.
+ * @param {string} color
+ * @param {string} texto
+ * @param {"punto"|"barra"} [forma] La muestra de barra imita el relleno
+ *   translúcido de las columnas para no confundirse con las series de línea.
+ */
+function crearItemLeyenda(color, texto, forma = "punto") {
+  const muestra = crear("span", {
+    clase: ["grafico__muestra", forma === "barra" ? "grafico__muestra--barra" : null],
+  });
   muestra.style.backgroundColor = color;
+
+  if (forma === "barra") {
+    muestra.style.opacity = "0.3";
+  }
 
   return crear("span", {
     clase: "grafico__leyenda-item",
