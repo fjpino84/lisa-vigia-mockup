@@ -13,6 +13,10 @@ const NOCTURNA = {
   medio: "#e5b567",
   bajo: "#6ea8d8",
   ok: "#5fc9a0",
+  /* Turquesa tomado de la onda de LISA, reservado a la serie de precisión.
+     Sobre el fondo nocturno rinde de sobra (contraste 8,5), así que se usa
+     el tono del logotipo sin ajustar. */
+  precision: "#4fbab9",
   acento: "#c3cbf0",
   violeta: "#7c6ce0",
   violetaClaro: "#b9aef5",
@@ -45,6 +49,9 @@ const DIURNA = {
   medio: "#9a6800",
   bajo: "#2b7ea6",
   ok: "#157a56",
+  /* El mismo turquesa, oscurecido para que rinda sobre fondo claro: el tono
+     del logotipo daría 2,3 de contraste, y este alcanza 4,8. */
+  precision: "#177f82",
   acento: "#4f439b",
   violeta: "#4f439b",
   violetaClaro: "#3a3178",

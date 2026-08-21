@@ -50,6 +50,10 @@
   --color-ok: #5fc9a0;
   --color-ok-fondo: rgba(95, 201, 160, 0.12);
   --color-ok-fondo-fuerte: rgba(95, 201, 160, 0.24);
+  /* Turquesa de la onda de LISA, reservado a la serie de precisión de los
+     gráficos. Se mantiene aparte de --color-ok porque aquel comunica un
+     estado correcto y este es identidad de marca. */
+  --color-precision: #4fbab9;
   /* Realce de la fila destacada en los listados. */
   --color-fila-critica: rgba(242, 133, 127, 0.07);
   --color-fila-critica-fuerte: rgba(242, 133, 127, 0.12);
@@ -132,6 +136,7 @@
   --color-ok: #157a56;
   --color-ok-fondo: rgba(21, 122, 86, 0.1);
   --color-ok-fondo-fuerte: rgba(21, 122, 86, 0.18);
+  --color-precision: #177f82;
   --color-fila-critica: rgba(200, 50, 47, 0.05);
   --color-fila-critica-fuerte: rgba(200, 50, 47, 0.09);
   --color-borde-alerta: rgba(200, 50, 47, 0.3);
@@ -5281,6 +5286,10 @@ const NOCTURNA = {
   medio: "#e5b567",
   bajo: "#6ea8d8",
   ok: "#5fc9a0",
+  /* Turquesa tomado de la onda de LISA, reservado a la serie de precisión.
+     Sobre el fondo nocturno rinde de sobra (contraste 8,5), así que se usa
+     el tono del logotipo sin ajustar. */
+  precision: "#4fbab9",
   acento: "#c3cbf0",
   violeta: "#7c6ce0",
   violetaClaro: "#b9aef5",
@@ -5313,6 +5322,9 @@ const DIURNA = {
   medio: "#9a6800",
   bajo: "#2b7ea6",
   ok: "#157a56",
+  /* El mismo turquesa, oscurecido para que rinda sobre fondo claro: el tono
+     del logotipo daría 2,3 de contraste, y este alcanza 4,8. */
+  precision: "#177f82",
   acento: "#4f439b",
   violeta: "#4f439b",
   violetaClaro: "#3a3178",
@@ -9079,13 +9091,13 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       atributos: { id: idArea, x1: "0", y1: "0", x2: "0", y2: "1" },
       hijos: [
         crearSVG("stop", {
-          atributos: { offset: "0%", "stop-color": COLOR.ok, "stop-opacity": "0.28" },
+          atributos: { offset: "0%", "stop-color": COLOR.precision, "stop-opacity": "0.28" },
         }),
         crearSVG("stop", {
-          atributos: { offset: "55%", "stop-color": COLOR.ok, "stop-opacity": "0.09" },
+          atributos: { offset: "55%", "stop-color": COLOR.precision, "stop-opacity": "0.09" },
         }),
         crearSVG("stop", {
-          atributos: { offset: "100%", "stop-color": COLOR.ok, "stop-opacity": "0" },
+          atributos: { offset: "100%", "stop-color": COLOR.precision, "stop-opacity": "0" },
         }),
       ],
     })
@@ -9117,7 +9129,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
         dx: "0",
         dy: "2",
         stdDeviation: "4",
-        "flood-color": COLOR.ok,
+        "flood-color": COLOR.precision,
         "flood-opacity": "0.28",
       },
     })
@@ -9293,7 +9305,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
     atributos: {
       d: trazoPrecision,
       fill: "none",
-      stroke: COLOR.ok,
+      stroke: COLOR.precision,
       "stroke-width": 3.5,
       "stroke-linecap": "round",
       "stroke-linejoin": "round",
@@ -9412,7 +9424,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
 
     if (esFinal) {
       const halo = crearSVG("circle", {
-        atributos: { cx: x, cy: escalaY(mes.precision), r: 11, fill: COLOR.ok, opacity: 0.2 },
+        atributos: { cx: x, cy: escalaY(mes.precision), r: 11, fill: COLOR.precision, opacity: 0.2 },
       });
       halo.appendChild(
         crearSVG("animate", {
@@ -9433,7 +9445,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
         cx: x,
         cy: escalaY(mes.precision),
         r: destacado ? 6.5 : 5,
-        fill: COLOR.ok,
+        fill: COLOR.precision,
         stroke: COLOR.fondo,
         "stroke-width": 2.5,
       },
@@ -9466,7 +9478,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
           atributos: {
             x: esFinal ? x - 4 : x + 4,
             y: escalaY(mes.precision) - 18,
-            fill: COLOR.ok,
+            fill: COLOR.precision,
             "font-size": 15,
             "font-weight": "700",
             "font-family": "monospace",
@@ -9513,7 +9525,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
     crear("div", {
       clase: "grafico__leyenda",
       hijos: [
-        crearItemLeyenda(COLOR.ok, "Precisión de detección"),
+        crearItemLeyenda(COLOR.precision, "Precisión de detección"),
         crearItemLeyenda(COLOR.critico, "Falsos positivos"),
         crearItemLeyenda(COLOR.acento, "Ahorro del mes", "barra"),
         crearItemLeyenda(COLOR.acento, "Mes con capacidad nueva", "guia"),
