@@ -1926,6 +1926,15 @@ table {
   border-radius: 0.2rem;
 }
 
+/* Muestra en forma de guía vertical discontinua. */
+.grafico__muestra--guia {
+  width: 0;
+  height: 1.4rem;
+  border-radius: 0;
+  border-left: 0.2rem dashed currentColor;
+  background-color: transparent;
+}
+
 /* Elementos interactivos dentro de los SVG. */
 .punto-dato {
   cursor: pointer;
@@ -8957,20 +8966,29 @@ function crearVistaForense({ alAbrirCaso }) {
   const { crear, crearSVG, vaciar, paleta } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Curva de aprendizaje del modelo.
-   Traza cómo subió la precisión mientras caían los falsos positivos y los
-   casos que lograban escapar, y marca sobre la curva el mes en que entró
-   en producción cada capacidad nueva.
+   Traza cómo subió la precisión mientras caían los falsos positivos, con el
+   ahorro mensual como cimiento al fondo.
+
+   El reparto de peso visual es deliberado: la precisión manda —trazo grueso
+   y área rellena—, los falsos positivos acompañan en un trazo fino, y las
+   columnas del ahorro se mantienen tenues para sostener la lectura sin
+   competir. Las series se interpolan como curvas suaves porque describen
+   un aprendizaje continuo, no saltos discretos.
    ========================================================================= */
 
 
-const ANCHO = 820;
-const ALTO = 380;
-const MARGEN = { arriba: 44, derecha: 28, abajo: 52, izquierda: 48 };
+const ANCHO = 860;
+const ALTO = 400;
+const MARGEN = { arriba: 52, derecha: 32, abajo: 58, izquierda: 52 };
 
 const ANCHO_TRAMA = ANCHO - MARGEN.izquierda - MARGEN.derecha;
 const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
 
-/* Rótulo corto para el eje de montos, con la coma decimal de la convención
+/* Identificadores únicos por instancia: el gráfico puede dibujarse más de
+   una vez y los degradados no deben colisionar entre sí. */
+let contador = 0;
+
+/* Rótulo corto para los montos, con la coma decimal de la convención
    local: 15400000 se lee como "$15,4M" y 620000 como "$620K". */
 function montoCorto(monto) {
   if (monto === 0) {
@@ -8987,7 +9005,44 @@ function montoCorto(monto) {
 }
 
 /**
- * Dibuja la evolución del modelo a lo largo del semestre.
+ * Traza una curva suave que pasa por todos los puntos.
+ * Usa splines cardinales: cada tramo toma su curvatura de los puntos
+ * vecinos, de modo que la línea fluye sin inventar máximos que no están
+ * en los datos.
+ * @param {{x: number, y: number}[]} puntos
+ * @param {number} [tension] 0 es una recta; valores altos curvan más.
+ * @returns {string} Definición para el atributo d de un path.
+ */
+function curvaSuave(puntos, tension = 0.18) {
+  if (puntos.length < 2) {
+    return "";
+  }
+
+  let d = `M ${puntos[0].x} ${puntos[0].y}`;
+
+  for (let i = 0; i < puntos.length - 1; i += 1) {
+    const anterior = puntos[i - 1] ?? puntos[i];
+    const actual = puntos[i];
+    const siguiente = puntos[i + 1];
+    const posterior = puntos[i + 2] ?? siguiente;
+
+    const control1 = {
+      x: actual.x + (siguiente.x - anterior.x) * tension,
+      y: actual.y + (siguiente.y - anterior.y) * tension,
+    };
+    const control2 = {
+      x: siguiente.x - (posterior.x - actual.x) * tension,
+      y: siguiente.y - (posterior.y - actual.y) * tension,
+    };
+
+    d += ` C ${control1.x} ${control1.y}, ${control2.x} ${control2.y}, ${siguiente.x} ${siguiente.y}`;
+  }
+
+  return d;
+}
+
+/**
+ * Dibuja la evolución del modelo a lo largo del período.
  * @param {object} opciones
  * @param {object[]} opciones.historial Meses con precisión y falsos positivos.
  * @param {object[]} opciones.hitos Capacidades incorporadas al modelo.
@@ -8996,6 +9051,11 @@ function montoCorto(monto) {
 function crearGraficoAprendizaje({ historial, hitos }) {
   const COLOR = paleta();
   const contenedor = crear("div", { clase: "grafico" });
+
+  contador += 1;
+  const idArea = `areaPrecision${contador}`;
+  const idBarra = `degradadoBarra${contador}`;
+  const idBrillo = `brilloLinea${contador}`;
 
   const svg = crearSVG("svg", {
     clase: "grafico__lienzo",
@@ -9007,6 +9067,65 @@ function crearGraficoAprendizaje({ historial, hitos }) {
     },
   });
 
+  /* ------------------------------------------------------------------ */
+  /* Definiciones: degradados y filtros                                  */
+  /* ------------------------------------------------------------------ */
+
+  const defs = crearSVG("defs");
+
+  /* Área bajo la curva de precisión: se desvanece hacia abajo. */
+  defs.appendChild(
+    crearSVG("linearGradient", {
+      atributos: { id: idArea, x1: "0", y1: "0", x2: "0", y2: "1" },
+      hijos: [
+        crearSVG("stop", {
+          atributos: { offset: "0%", "stop-color": COLOR.ok, "stop-opacity": "0.28" },
+        }),
+        crearSVG("stop", {
+          atributos: { offset: "55%", "stop-color": COLOR.ok, "stop-opacity": "0.09" },
+        }),
+        crearSVG("stop", {
+          atributos: { offset: "100%", "stop-color": COLOR.ok, "stop-opacity": "0" },
+        }),
+      ],
+    })
+  );
+
+  /* Las columnas se aclaran hacia su base, de modo que se apoyen en el eje
+     en lugar de cortarse contra él. */
+  defs.appendChild(
+    crearSVG("linearGradient", {
+      atributos: { id: idBarra, x1: "0", y1: "0", x2: "0", y2: "1" },
+      hijos: [
+        crearSVG("stop", {
+          atributos: { offset: "0%", "stop-color": COLOR.acento, "stop-opacity": "0.26" },
+        }),
+        crearSVG("stop", {
+          atributos: { offset: "100%", "stop-color": COLOR.acento, "stop-opacity": "0.05" },
+        }),
+      ],
+    })
+  );
+
+  /* Halo tenue bajo la línea principal, para despegarla del fondo. */
+  const filtro = crearSVG("filter", {
+    atributos: { id: idBrillo, x: "-20%", y: "-40%", width: "140%", height: "180%" },
+  });
+  filtro.appendChild(
+    crearSVG("feDropShadow", {
+      atributos: {
+        dx: "0",
+        dy: "2",
+        stdDeviation: "4",
+        "flood-color": COLOR.ok,
+        "flood-opacity": "0.28",
+      },
+    })
+  );
+  defs.appendChild(filtro);
+
+  svg.appendChild(defs);
+
   const trama = crearSVG("g", {
     atributos: { transform: `translate(${MARGEN.izquierda}, ${MARGEN.arriba})` },
   });
@@ -9017,61 +9136,19 @@ function crearGraficoAprendizaje({ historial, hitos }) {
 
   /* --- Escala del ahorro mensual ------------------------------------- */
 
-  /* El techo se redondea al múltiplo de dos millones inmediatamente
-     superior: deja holgura sobre la barra más alta sin desaprovechar el
-     alto del gráfico, y sitúa las marcas en cifras redondas. */
-  const PASO_EJE = 2000000;
+  /* El techo deja holgura sobre la barra más alta para que ninguna llegue
+     al borde superior de la trama. */
   const ahorroMaximo = Math.max(...historial.map((mes) => mes.montoBloqueado));
-  const techoAhorro = Math.ceil((ahorroMaximo * 1.04) / PASO_EJE) * PASO_EJE;
+  const techoAhorro = ahorroMaximo * 1.75;
   const escalaAhorro = (monto) => ALTO_TRAMA - (monto / techoAhorro) * ALTO_TRAMA;
 
-  /* --- Barras de ahorro, al fondo -------------------------------------
-     Se dibujan antes que la rejilla y las curvas para que queden detrás y
-     se lean como el sustento económico de la mejora, no como una serie
-     que compite con ellas. */
-  /* Las columnas son anchas para que el monto rotulado quepa dentro. */
-  const anchoBarra = Math.min(paso * 0.58, 52);
+  /* ------------------------------------------------------------------ */
+  /* Rejilla                                                             */
+  /* ------------------------------------------------------------------ */
 
-  historial.forEach((mes, indice) => {
-    const x = escalaX(indice) - anchoBarra / 2;
-    const y = escalaAhorro(mes.montoBloqueado);
-    const esFinal = indice === historial.length - 1;
-
-    trama.appendChild(
-      crearSVG("rect", {
-        atributos: {
-          x,
-          y,
-          width: anchoBarra,
-          height: ALTO_TRAMA - y,
-          fill: COLOR.acento,
-          opacity: esFinal ? 0.34 : 0.22,
-          rx: 3,
-        },
-      })
-    );
-
-    /* Cada columna lleva su monto rotulado dentro, de modo que el eje
-       derecho resulta innecesario y la cifra queda junto a su barra. */
-    trama.appendChild(
-      crearSVG("text", {
-        texto: montoCorto(mes.montoBloqueado),
-        atributos: {
-          x: x + anchoBarra / 2,
-          y: y + 16,
-          fill: COLOR.acento,
-          "font-size": 10.5,
-          "font-weight": "700",
-          "font-family": "monospace",
-          "text-anchor": "middle",
-        },
-      })
-    );
-  });
-
-  /* --- Rejilla ------------------------------------------------------- */
   [0, 25, 50, 75, 100].forEach((valor) => {
     const y = escalaY(valor);
+    const esBase = valor === 0;
 
     trama.appendChild(
       crearSVG("line", {
@@ -9081,7 +9158,10 @@ function crearGraficoAprendizaje({ historial, hitos }) {
           x2: ANCHO_TRAMA,
           y2: y,
           stroke: COLOR.rejilla,
-          "stroke-width": 1,
+          "stroke-width": esBase ? 1.5 : 1,
+          /* Solo la línea de base es continua; el resto se insinúa. */
+          "stroke-dasharray": esBase ? "none" : "2 6",
+          opacity: esBase ? 1 : 0.7,
         },
       })
     );
@@ -9090,10 +9170,10 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       crearSVG("text", {
         texto: `${valor}%`,
         atributos: {
-          x: -10,
+          x: -14,
           y: y + 4,
           fill: COLOR.textoTenue,
-          "font-size": 11,
+          "font-size": 10.5,
           "font-family": "monospace",
           "text-anchor": "end",
         },
@@ -9101,72 +9181,128 @@ function crearGraficoAprendizaje({ historial, hitos }) {
     );
   });
 
-  /* --- Área bajo la curva de precisión -------------------------------- */
+  /* ------------------------------------------------------------------ */
+  /* Columnas de ahorro, al fondo                                        */
+  /* ------------------------------------------------------------------ */
+
+  const anchoBarra = Math.min(paso * 0.34, 30);
+  const radioBarra = anchoBarra / 2;
+
+  /* Altura libre que hace falta sobre la columna para alojar su rótulo. */
+  const HOLGURA_ROTULO = 20;
+
+  historial.forEach((mes, indice) => {
+    const centro = escalaX(indice);
+    const x = centro - anchoBarra / 2;
+    const y = escalaAhorro(mes.montoBloqueado);
+    const alto = ALTO_TRAMA - y;
+    const esFinal = indice === historial.length - 1;
+
+    /* Si alguna curva pasa por la franja donde iría el rótulo, este baja al
+       interior de la columna en lugar de superponerse al trazo. */
+    const yPrecision = escalaY(mes.precision);
+    const yFalsos = escalaY(mes.falsosPositivos);
+    const invade = (yLinea) => yLinea > y - HOLGURA_ROTULO && yLinea < y + 6;
+    const rotuloDentro = alto > 34 && (invade(yPrecision) || invade(yFalsos));
+
+    /* La columna se dibuja como un rectángulo de cabeza redondeada: el
+       radio superior la suaviza y la base queda a ras del eje. */
+    const radio = Math.min(radioBarra, alto);
+    const d = [
+      `M ${x} ${ALTO_TRAMA}`,
+      `L ${x} ${y + radio}`,
+      `Q ${x} ${y} ${x + radio} ${y}`,
+      `L ${x + anchoBarra - radio} ${y}`,
+      `Q ${x + anchoBarra} ${y} ${x + anchoBarra} ${y + radio}`,
+      `L ${x + anchoBarra} ${ALTO_TRAMA}`,
+      "Z",
+    ].join(" ");
+
+    trama.appendChild(
+      crearSVG("path", {
+        atributos: {
+          d,
+          fill: `url(#${idBarra})`,
+          opacity: esFinal ? 1 : 0.72,
+        },
+      })
+    );
+
+    /* El rótulo va sobre la columna salvo que una curva ocupe ese espacio,
+       en cuyo caso baja al interior, donde el fondo tenue lo admite. */
+    trama.appendChild(
+      crearSVG("text", {
+        texto: montoCorto(mes.montoBloqueado),
+        atributos: {
+          x: centro,
+          y: rotuloDentro ? y + 17 : y - 9,
+          fill: COLOR.acento,
+          "font-size": esFinal ? 11 : 10,
+          "font-weight": esFinal ? "700" : "600",
+          "font-family": "monospace",
+          "text-anchor": "middle",
+          opacity: esFinal ? 1 : 0.85,
+        },
+      })
+    );
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* Series                                                              */
+  /* ------------------------------------------------------------------ */
+
   const puntosPrecision = historial.map((mes, indice) => ({
     x: escalaX(indice),
     y: escalaY(mes.precision),
   }));
 
-  const area = [
-    `M 0 ${ALTO_TRAMA}`,
-    ...puntosPrecision.map((punto) => `L ${punto.x} ${punto.y}`),
-    `L ${ANCHO_TRAMA} ${ALTO_TRAMA}`,
-    "Z",
-  ].join(" ");
+  const puntosFalsos = historial.map((mes, indice) => ({
+    x: escalaX(indice),
+    y: escalaY(mes.falsosPositivos),
+  }));
 
-  const degradado = crearSVG("defs", {
-    hijos: [
-      crearSVG("linearGradient", {
-        atributos: { id: "degradadoPrecision", x1: "0", y1: "0", x2: "0", y2: "1" },
-        hijos: [
-          crearSVG("stop", {
-            atributos: { offset: "0%", "stop-color": COLOR.ok, "stop-opacity": "0.32" },
-          }),
-          crearSVG("stop", {
-            atributos: { offset: "100%", "stop-color": COLOR.ok, "stop-opacity": "0" },
-          }),
-        ],
-      }),
-    ],
-  });
+  const trazoPrecision = curvaSuave(puntosPrecision);
 
-  svg.appendChild(degradado);
-  trama.appendChild(crearSVG("path", { atributos: { d: area, fill: "url(#degradadoPrecision)" } }));
-
-  /* --- Línea de falsos positivos, en descenso -------------------------- */
-  const trazoFalsos = historial
-    .map((mes, indice) => `${escalaX(indice)},${escalaY(mes.falsosPositivos)}`)
-    .join(" ");
-
+  /* Área bajo la precisión, cerrada contra la base. */
   trama.appendChild(
-    crearSVG("polyline", {
+    crearSVG("path", {
       atributos: {
-        points: trazoFalsos,
-        fill: "none",
-        stroke: COLOR.critico,
-        "stroke-width": 2,
-        "stroke-dasharray": "5 4",
-        "stroke-linecap": "round",
+        d: `${trazoPrecision} L ${ANCHO_TRAMA} ${ALTO_TRAMA} L 0 ${ALTO_TRAMA} Z`,
+        fill: `url(#${idArea})`,
       },
     })
   );
 
-  /* --- Línea de precisión --------------------------------------------- */
-  const trazoPrecision = puntosPrecision.map((punto) => `${punto.x},${punto.y}`).join(" ");
+  /* Falsos positivos: trazo fino y discontinuo, en segundo plano. */
+  trama.appendChild(
+    crearSVG("path", {
+      atributos: {
+        d: curvaSuave(puntosFalsos),
+        fill: "none",
+        stroke: COLOR.critico,
+        "stroke-width": 2,
+        "stroke-dasharray": "1 7",
+        "stroke-linecap": "round",
+        opacity: 0.85,
+      },
+    })
+  );
 
-  const linea = crearSVG("polyline", {
+  /* Precisión: la serie protagonista. */
+  const linea = crearSVG("path", {
     atributos: {
-      points: trazoPrecision,
+      d: trazoPrecision,
       fill: "none",
       stroke: COLOR.ok,
-      "stroke-width": 3,
+      "stroke-width": 3.5,
       "stroke-linecap": "round",
       "stroke-linejoin": "round",
+      filter: `url(#${idBrillo})`,
     },
   });
 
-  /* La curva se dibuja progresivamente al entrar en pantalla. */
-  const largoTrazo = ANCHO_TRAMA * 1.4;
+  /* La curva se dibuja al entrar, como si el modelo trazara su historia. */
+  const largoTrazo = ANCHO_TRAMA * 1.8;
   linea.setAttribute("stroke-dasharray", largoTrazo);
   linea.setAttribute("stroke-dashoffset", largoTrazo);
   linea.appendChild(
@@ -9175,15 +9311,21 @@ function crearGraficoAprendizaje({ historial, hitos }) {
         attributeName: "stroke-dashoffset",
         from: largoTrazo,
         to: "0",
-        dur: "1.4s",
+        dur: "1.6s",
         fill: "freeze",
+        calcMode: "spline",
+        keySplines: "0.25 0.1 0.25 1",
+        keyTimes: "0;1",
       },
     })
   );
 
   trama.appendChild(linea);
 
-  /* --- Globo informativo ----------------------------------------------- */
+  /* ------------------------------------------------------------------ */
+  /* Globo informativo                                                   */
+  /* ------------------------------------------------------------------ */
+
   const tooltip = crear("div", { clase: "tooltip", atributos: { role: "tooltip" } });
 
   function mostrarTooltip(mes, evento) {
@@ -9220,54 +9362,80 @@ function crearGraficoAprendizaje({ historial, hitos }) {
 
   const ocultarTooltip = () => tooltip.classList.remove("esta-visible");
 
-  /* --- Puntos, hitos y rótulos ------------------------------------------ */
+  /* ------------------------------------------------------------------ */
+  /* Marcas de hito, puntos y rótulos                                    */
+  /* ------------------------------------------------------------------ */
+
   const mesesConHito = new Map(hitos.map((hito) => [hito.abreviatura, hito]));
 
   historial.forEach((mes, indice) => {
     const x = escalaX(indice);
     const hito = mesesConHito.get(mes.abreviatura);
+    const esFinal = indice === historial.length - 1;
+    const esInicial = indice === 0;
 
-    /* Marca vertical en los meses en que el modelo incorporó una capacidad. */
+    /* Guía vertical tenue en los meses que incorporan una capacidad. */
     if (hito) {
       trama.appendChild(
         crearSVG("line", {
           atributos: {
             x1: x,
-            y1: escalaY(mes.precision),
+            y1: escalaY(mes.precision) - 10,
             x2: x,
-            y2: -6,
-            stroke: COLOR.nodoBorde,
+            y2: ALTO_TRAMA,
+            stroke: COLOR.acento,
             "stroke-width": 1,
-            "stroke-dasharray": "3 3",
+            "stroke-dasharray": "2 5",
+            opacity: 0.35,
           },
         })
       );
     }
 
-    /* Punto sobre la línea de falsos positivos. */
+    /* Punto de falsos positivos: discreto. */
     trama.appendChild(
       crearSVG("circle", {
         atributos: {
           cx: x,
           cy: escalaY(mes.falsosPositivos),
-          r: 3.5,
-          fill: COLOR.critico,
+          r: 3,
+          fill: COLOR.fondo,
+          stroke: COLOR.critico,
+          "stroke-width": 1.8,
+          opacity: 0.9,
         },
       })
     );
 
-    /* Punto de precisión, mayor en el mes final. */
-    const esFinal = indice === historial.length - 1;
+    /* Punto de precisión: anillo blanco que lo despega de la curva. */
+    const destacado = esFinal || esInicial;
+
+    if (esFinal) {
+      const halo = crearSVG("circle", {
+        atributos: { cx: x, cy: escalaY(mes.precision), r: 11, fill: COLOR.ok, opacity: 0.2 },
+      });
+      halo.appendChild(
+        crearSVG("animate", {
+          atributos: {
+            attributeName: "r",
+            values: "9;15;9",
+            dur: "2.8s",
+            repeatCount: "indefinite",
+          },
+        })
+      );
+      trama.appendChild(halo);
+    }
 
     const punto = crearSVG("circle", {
       clase: "punto-dato",
       atributos: {
         cx: x,
         cy: escalaY(mes.precision),
-        r: esFinal ? 7 : 5,
+        r: destacado ? 6.5 : 5,
         fill: COLOR.ok,
         stroke: COLOR.fondo,
-        "stroke-width": 2,
+        "stroke-width": 2.5,
       },
     });
 
@@ -9275,16 +9443,31 @@ function crearGraficoAprendizaje({ historial, hitos }) {
     punto.addEventListener("mouseleave", ocultarTooltip);
     trama.appendChild(punto);
 
-    /* Rótulo del valor en el primer y el último mes. */
-    if (indice === 0 || esFinal) {
+    /* Zona de captura ancha: facilita apuntar sin exigir puntería. */
+    const zona = crearSVG("rect", {
+      clase: "punto-dato",
+      atributos: {
+        x: x - paso / 2,
+        y: 0,
+        width: paso,
+        height: ALTO_TRAMA,
+        fill: "transparent",
+      },
+    });
+    zona.addEventListener("mousemove", (evento) => mostrarTooltip(mes, evento));
+    zona.addEventListener("mouseleave", ocultarTooltip);
+    trama.appendChild(zona);
+
+    /* Valor rotulado solo en los extremos, que es donde cuenta la historia. */
+    if (destacado) {
       trama.appendChild(
         crearSVG("text", {
           texto: `${mes.precision}%`,
           atributos: {
-            x: esFinal ? x - 12 : x + 6,
-            y: escalaY(mes.precision) - 16,
+            x: esFinal ? x - 4 : x + 4,
+            y: escalaY(mes.precision) - 18,
             fill: COLOR.ok,
-            "font-size": 13,
+            "font-size": 15,
             "font-weight": "700",
             "font-family": "monospace",
             "text-anchor": esFinal ? "end" : "start",
@@ -9293,13 +9476,13 @@ function crearGraficoAprendizaje({ historial, hitos }) {
       );
     }
 
-    /* Rótulo del mes en el eje inferior. */
+    /* Rótulo del mes. */
     trama.appendChild(
       crearSVG("text", {
         texto: mes.abreviatura,
         atributos: {
           x,
-          y: ALTO_TRAMA + 22,
+          y: ALTO_TRAMA + 24,
           fill: hito ? COLOR.acento : COLOR.textoTenue,
           "font-size": 11,
           "font-weight": hito ? "700" : "400",
@@ -9333,7 +9516,7 @@ function crearGraficoAprendizaje({ historial, hitos }) {
         crearItemLeyenda(COLOR.ok, "Precisión de detección"),
         crearItemLeyenda(COLOR.critico, "Falsos positivos"),
         crearItemLeyenda(COLOR.acento, "Ahorro del mes", "barra"),
-        crearItemLeyenda(COLOR.acento, "Capacidad incorporada"),
+        crearItemLeyenda(COLOR.acento, "Mes con capacidad nueva", "guia"),
       ],
     })
   );
@@ -9346,14 +9529,18 @@ function crearGraficoAprendizaje({ historial, hitos }) {
  * Construye un elemento de la leyenda.
  * @param {string} color
  * @param {string} texto
- * @param {"punto"|"barra"} [forma] La muestra de barra imita el relleno
- *   translúcido de las columnas para no confundirse con las series de línea.
+ * @param {"punto"|"barra"|"guia"} [forma] Cada muestra imita la forma con
+ *   que su serie aparece en el gráfico: punto, columna o guía vertical.
  */
 function crearItemLeyenda(color, texto, forma = "punto") {
-  const muestra = crear("span", {
-    clase: ["grafico__muestra", forma === "barra" ? "grafico__muestra--barra" : null],
-  });
-  muestra.style.backgroundColor = color;
+  const modificador = forma === "punto" ? null : `grafico__muestra--${forma}`;
+  const muestra = crear("span", { clase: ["grafico__muestra", modificador] });
+
+  if (forma === "guia") {
+    muestra.style.borderColor = color;
+  } else {
+    muestra.style.backgroundColor = color;
+  }
 
   if (forma === "barra") {
     muestra.style.opacity = "0.3";
