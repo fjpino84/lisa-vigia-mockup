@@ -477,7 +477,68 @@ const casosLeves = [
 ];
 
 /* Cartera completa: 10 casos críticos y 10 leves. */
+/* -------------------------------------------------------------------- */
+/* Casos ya resueltos                                                    */
+/* -------------------------------------------------------------------- */
+
+/* Expedientes cerrados que alimentan la sección de inteligencia archivada.
+   Se incorporan a la cartera para que sus fichas puedan abrirse desde los
+   listados, aunque no cuenten como casos activos. */
+const cerrados = [
+  ["77939970", "Alejandra P. Vidal", "14.330.226-K", 1240000, "Psiquiatría", "Fabián Rodríguez Díaz", "11.005.560-2", 94, "1918", "28/03/2024", "03/04/2024"],
+  ["77939841", "Gustavo M. Iturra", "13.442.907-5", 1085000, "Psicología", "Fabián Rodríguez Díaz", "11.005.560-2", 96, "4702", "20/04/2024", "28/04/2024"],
+  ["77939903", "Rodrigo A. Peña", "12.887.330-1", 968000, "Traumatología", "Clínica Los Andes SpA", "76.221.905-1", 88, "5482", "08/04/2024", "15/04/2024"],
+  ["77939866", "Carla S. Bravo", "17.220.114-8", 915000, "Kinesiología", "Fabián Rodríguez Díaz", "11.005.560-2", 91, "3095", "15/04/2024", "22/04/2024"],
+  ["77940035", "Nelson H. Tapia", "11.664.208-4", 887000, "Traumatología", "Clínica Los Andes SpA", "76.221.905-1", 85, "5461", "12/03/2024", "19/03/2024"],
+  ["77940012", "Paulina G. Rojas", "19.887.221-4", 742000, "Fonoaudiología", "Centro Salud Integral Ltda.", "77.003.412-9", 82, "2244", "18/03/2024", "25/03/2024"],
+  ["77940058", "Ricardo E. Maldonado", "15.338.771-9", 695000, "Psicología", "Fabián Rodríguez Díaz", "11.005.560-2", 79, "4688", "05/03/2024", "12/03/2024"],
+  ["77940071", "Sandra V. Poblete", "16.775.443-2", 610000, "Nutrición", "Centro Salud Integral Ltda.", "77.003.412-9", 74, "2077", "28/02/2024", "06/03/2024"],
+  ["77940084", "Héctor J. Valenzuela", "10.998.336-7", 548000, "Dental", "Clínica Dental Norte", "76.554.221-8", 71, "8774", "21/02/2024", "28/02/2024"],
+  ["77940096", "Camila R. Bustamante", "20.114.559-3", 492000, "Oftalmología", "Centro Óptico Sur", "76.882.100-4", 68, "1154", "14/02/2024", "21/02/2024"],
+  ["77939927", "Mónica L. Farías", "16.009.554-3", 320000, "Nutrición", "Centro Salud Integral Ltda.", "77.003.412-9", 34, "2088", "04/04/2024", "11/04/2024"],
+  ["77939945", "Diego R. Salas", "18.554.008-7", 275000, "Dental", "Clínica Dental Norte", "76.554.221-8", 18, "8781", "01/04/2024", "08/04/2024"],
+  ["77939998", "Manuel E. Cortés", "11.776.443-2", 198000, "Oftalmología", "Centro Óptico Sur", "76.882.100-4", 12, "1160", "22/03/2024", "29/03/2024"],
+];
+
+/* Deduce el semáforo a partir del puntaje, de modo que la ficha del caso
+   resuelto concuerde con el riesgo que se le asignó en su momento. */
+function semaforoSegunPuntaje(puntaje) {
+  const nivel = (umbralAlto, umbralMedio) =>
+    puntaje >= umbralAlto ? NIVEL.ALTO : puntaje >= umbralMedio ? NIVEL.MEDIO : NIVEL.BAJO;
+
+  return {
+    forense: nivel(80, 45),
+    validacion: nivel(75, 40),
+    patrones: nivel(70, 35),
+  };
+}
+
+const casosCerrados = cerrados.map(
+  ([id, beneficiario, rut, monto, prestacion, prestador, rutPrestador, puntaje, folio, fechaDocumento, fechaIngreso]) => ({
+    id,
+    criticidad: puntaje >= 70 ? "critico" : "leve",
+    estado: "cerrado",
+    puntaje,
+    beneficiario,
+    rut,
+    monto,
+    prestacion,
+    documento: `Boleta de Honorarios N° ${folio}`,
+    numeroDocumento: folio,
+    fechaDocumento,
+    prestador,
+    rutPrestador,
+    numeroSiniestro: id,
+    fechaIngreso,
+    semaforo: semaforoSegunPuntaje(puntaje),
+  })
+);
+
+/* La cartera activa excluye los expedientes ya cerrados. */
 export const casos = [casoPrincipal, ...otrosCriticos, ...casosLeves];
+
+/* Universo completo, para resolver cualquier caso por su identificador. */
+const todosLosCasos = [...casos, ...casosCerrados];
 
 export const casosCriticos = casos.filter((caso) => caso.criticidad === "critico");
 export const casosLevesLista = casos.filter((caso) => caso.criticidad === "leve");
@@ -488,7 +549,7 @@ export const casosLevesLista = casos.filter((caso) => caso.criticidad === "leve"
  * @returns {object|undefined}
  */
 export function obtenerCaso(id) {
-  return casos.find((caso) => caso.id === id);
+  return todosLosCasos.find((caso) => caso.id === id);
 }
 
 /* -------------------------------------------------------------------- */

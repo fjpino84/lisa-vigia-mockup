@@ -1,20 +1,19 @@
 /* =========================================================================
    LISA vigIA — Inteligencia archivada.
    El archivo no es un registro muerto: es lo que entrena al modelo. La vista
-   se ordena en torno a esa idea — cuánto aprendió, qué casos recuperó, qué
-   identidades reinciden y qué anticipa hacia adelante.
+   se ordena en torno a esa idea — cuánto aprendió, hacia dónde se mueve el
+   fraude, qué reconoce el scoring, por qué se equivoca y cuáles fueron los
+   hallazgos de mayor monto.
    ========================================================================= */
 
-import { crear, reemplazar } from "../utils/dom.js";
+import { crear } from "../utils/dom.js";
 import { comoMoneda, comoNumero, comoPorcentaje } from "../utils/formato.js";
 import {
   casosArchivados,
-  casosRecuperados,
   causasFalsosPositivos,
   historialResoluciones,
   hitosModelo,
   patronesAprendidos,
-  reincidentes,
   resumirArchivo,
   senalesTempranas,
 } from "../data/inteligencia.js";
@@ -112,157 +111,6 @@ function crearTitular() {
         ],
       }),
       crear("div", { clase: "titular__cifras", hijos: cifras.map(crearCifraTitular) }),
-    ],
-  });
-}
-
-/* -------------------------------------------------------------------- */
-/* Hitos del modelo                                                      */
-/* -------------------------------------------------------------------- */
-
-/* Los hitos sí son una secuencia real: cada capacidad se apoya en la
-   anterior, así que se numeran y se enlazan como una línea de tiempo. */
-function crearLineaDeTiempo() {
-  const pasos = hitosModelo.map((hito, indice) =>
-    crear("li", {
-      clase: "hito",
-      hijos: [
-        crear("span", { clase: "hito__marca", texto: String(indice + 1) }),
-        crear("div", {
-          clase: "hito__cuerpo",
-          hijos: [
-            crear("p", { clase: "hito__mes", texto: hito.mes }),
-            crear("h4", { clase: "hito__titulo", texto: hito.titulo }),
-            crear("p", { clase: "hito__descripcion", texto: hito.descripcion }),
-            crear("p", {
-              clase: "hito__precision",
-              hijos: [
-                crear("span", { clase: "etiqueta-campo", texto: "Precisión alcanzada " }),
-                crear("strong", { texto: comoPorcentaje(hito.precision) }),
-              ],
-            }),
-          ],
-        }),
-      ],
-    })
-  );
-
-  return crear("ol", { clase: "hitos", hijos: pasos });
-}
-
-/* -------------------------------------------------------------------- */
-/* Casos recuperados                                                     */
-/* -------------------------------------------------------------------- */
-
-/* Muestra el antes y el después del scoring sobre un mismo caso. */
-function crearTarjetaRecuperado(caso) {
-  return crear("article", {
-    clase: "recuperado",
-    hijos: [
-      crear("div", {
-        clase: "recuperado__identidad",
-        hijos: [
-          crear("p", { clase: "recuperado__nombre", texto: caso.beneficiario }),
-          crear("p", { clase: "recuperado__meta", texto: `${caso.rut} · ${caso.cierre}` }),
-        ],
-      }),
-      crear("div", {
-        clase: "recuperado__salto",
-        hijos: [
-          crear("span", {
-            clase: ["puntaje", "puntaje--bajo", "recuperado__antes"],
-            texto: String(caso.puntajeOriginal),
-          }),
-          icono("flechaDerecha", { tamano: 16, clase: "recuperado__flecha" }),
-          crear("span", {
-            clase: ["puntaje", "puntaje--alto"],
-            texto: String(caso.puntajeActual),
-          }),
-        ],
-      }),
-      crear("div", {
-        clase: "recuperado__pie",
-        hijos: [
-          crear("span", { clase: "marca-hallazgo", texto: caso.detectadoPor }),
-          crear("span", {
-            clase: ["dato-mono", "recuperado__monto"],
-            texto: comoMoneda(caso.monto),
-          }),
-        ],
-      }),
-    ],
-  });
-}
-
-/* -------------------------------------------------------------------- */
-/* Reincidentes                                                          */
-/* -------------------------------------------------------------------- */
-
-function crearTarjetaReincidente(reincidente, alAbrirCaso) {
-  return crear("article", {
-    clase: "reincidente",
-    hijos: [
-      crear("div", {
-        clase: "reincidente__cabecera",
-        hijos: [
-          crear("div", {
-            hijos: [
-              crear("h4", { clase: "reincidente__nombre", texto: reincidente.nombre }),
-              crear("p", {
-                clase: "reincidente__meta",
-                texto: `${reincidente.rol} · RUT ${reincidente.rut}`,
-              }),
-            ],
-          }),
-          crear("span", {
-            clase: ["distintivo", "distintivo--critico"],
-            texto: "Reincidente",
-          }),
-        ],
-      }),
-      crear("div", {
-        clase: "reincidente__balance",
-        hijos: [
-          crear("div", {
-            clase: "reincidente__lado",
-            hijos: [
-              crear("p", { clase: "etiqueta-campo", texto: "Confirmados en archivo" }),
-              crear("p", {
-                clase: ["reincidente__cifra", "reincidente__cifra--historica"],
-                texto: String(reincidente.confirmados),
-              }),
-              crear("p", {
-                clase: "reincidente__monto",
-                texto: comoMoneda(reincidente.montoHistorico),
-              }),
-            ],
-          }),
-          crear("div", {
-            clase: "reincidente__lado",
-            hijos: [
-              crear("p", { clase: "etiqueta-campo", texto: "Activos ahora" }),
-              crear("p", {
-                clase: ["reincidente__cifra", "reincidente__cifra--activa"],
-                texto: String(reincidente.activos),
-              }),
-              crear("p", {
-                clase: "reincidente__monto",
-                texto: comoMoneda(reincidente.montoActivo),
-              }),
-            ],
-          }),
-        ],
-      }),
-      crear("p", { clase: "reincidente__nota", texto: reincidente.nota }),
-      crear("button", {
-        clase: ["boton", "boton--fantasma", "reincidente__accion"],
-        atributos: { type: "button" },
-        hijos: [
-          crear("span", { texto: "Revisar caso activo" }),
-          icono("flechaDerecha", { tamano: 16 }),
-        ],
-        eventos: { click: () => alAbrirCaso(reincidente.idCaso) },
-      }),
     ],
   });
 }
@@ -367,154 +215,130 @@ function crearTarjetaPatron(patron, { unidad = "detecciones", etiquetaPeso = "Pe
 /* Casos cerrados                                                        */
 /* -------------------------------------------------------------------- */
 
-function crearFilaArchivo(caso) {
-  const esFraude = caso.resolucion === "fraude";
+/**
+ * Fila del top diez. Repite el formato del listado de casos críticos del
+ * panel inicial y añade el monto al final.
+ * @param {object} caso
+ * @param {number} posicion Lugar que ocupa en el ranking.
+ * @param {Function} alAbrirCaso
+ */
+function crearFilaTop(caso, posicion, alAbrirCaso) {
+  const semaforos = [
+    [caso.semaforo.forense, "Análisis forense de documentos"],
+    [caso.semaforo.validacion, "Validación externa e interna"],
+    [caso.semaforo.patrones, "Análisis de patrones de comportamiento"],
+  ].map(([nivel, criterio]) =>
+    crear("td", {
+      clase: "col-centro",
+      hijos: [
+        crear("span", {
+          clase: ["semaforo", `semaforo--${nivel}`],
+          atributos: {
+            role: "img",
+            "aria-label": `${criterio}: riesgo ${nivel}`,
+            title: `${criterio}: riesgo ${nivel}`,
+          },
+        }),
+      ],
+    })
+  );
 
   return crear("tr", {
+    clase: posicion <= 3 ? "esta-destacada" : null,
+    atributos: {
+      tabindex: "0",
+      role: "link",
+      "aria-label": `Abrir el caso de ${caso.beneficiario}, monto ${comoMoneda(caso.monto)}`,
+    },
+    datos: { casoArchivado: caso.id },
     hijos: [
+      crear("td", {
+        clase: "col-centro",
+        hijos: [crear("span", { clase: "posicion", texto: String(posicion) })],
+      }),
       crear("td", {
         hijos: [
           crear("p", { clase: "celda-beneficiario__nombre", texto: caso.beneficiario }),
           crear("p", { clase: "celda-beneficiario__rut", texto: caso.rut }),
         ],
       }),
-      crear("td", { hijos: [crear("span", { clase: "texto-tenue", texto: caso.prestador })] }),
-      crear("td", { hijos: [crear("span", { clase: "marca-hallazgo", texto: caso.patron })] }),
-      crear("td", {
-        clase: "col-centro",
-        hijos: [
-          crear("span", {
-            clase: ["distintivo", esFraude ? "distintivo--critico" : "distintivo--ok"],
-            texto: esFraude ? "Fraude" : "Liberado",
-          }),
-        ],
-      }),
+      ...semaforos,
       crear("td", {
         clase: "col-derecha",
         hijos: [
           crear("span", {
-            clase: ["puntaje", esFraude ? "puntaje--alto" : "puntaje--bajo"],
+            clase: ["puntaje", "puntaje--alto", posicion === 1 ? "puntaje--marcado" : null],
             texto: String(caso.puntaje),
           }),
         ],
       }),
       crear("td", {
         clase: "col-derecha",
-        hijos: [crear("span", { clase: "dato-mono", texto: comoMoneda(caso.monto) })],
-      }),
-      crear("td", {
-        clase: "col-derecha",
-        hijos: [crear("span", { clase: "texto-tenue", texto: caso.cierre })],
+        hijos: [crear("span", { clase: "monto-top", texto: comoMoneda(caso.monto) })],
       }),
     ],
+    eventos: {
+      click: () => alAbrirCaso(caso.id),
+      keydown: (evento) => {
+        if (evento.key === "Enter" || evento.key === " ") {
+          evento.preventDefault();
+          alAbrirCaso(caso.id);
+        }
+      },
+    },
   });
 }
 
-/* Panel plegable con la tabla completa de casos cerrados. */
-function crearPanelCasos() {
-  const contenedorTabla = crear("div", { clase: "tabla-envoltura" });
+/* Listado de los diez fraudes confirmados de mayor monto. */
+function crearPanelTop(alAbrirCaso) {
+  const top = casosArchivados
+    .filter((caso) => caso.resolucion === "fraude")
+    .sort((uno, otro) => otro.monto - uno.monto)
+    .slice(0, 10);
 
-  let filtro = "todos";
+  const montoTop = top.reduce((suma, caso) => suma + caso.monto, 0);
 
-  const dibujarTabla = () => {
-    const listado =
-      filtro === "todos"
-        ? casosArchivados
-        : casosArchivados.filter((caso) => caso.resolucion === filtro);
-
-    reemplazar(
-      contenedorTabla,
-      crear("table", {
-        clase: "tabla-casos",
-        hijos: [
-          crear("thead", {
-            hijos: [
-              crear("tr", {
-                hijos: [
-                  crear("th", { texto: "Beneficiario", atributos: { scope: "col" } }),
-                  crear("th", { texto: "Prestador", atributos: { scope: "col" } }),
-                  crear("th", { texto: "Patrón", atributos: { scope: "col" } }),
-                  crear("th", {
-                    texto: "Resolución",
-                    clase: "col-centro",
-                    atributos: { scope: "col" },
-                  }),
-                  crear("th", {
-                    texto: "Scoring",
-                    clase: "col-derecha",
-                    atributos: { scope: "col" },
-                  }),
-                  crear("th", {
-                    texto: "Monto",
-                    clase: "col-derecha",
-                    atributos: { scope: "col" },
-                  }),
-                  crear("th", {
-                    texto: "Cierre",
-                    clase: "col-derecha",
-                    atributos: { scope: "col" },
-                  }),
-                ],
-              }),
-            ],
-          }),
-          crear("tbody", { hijos: listado.map(crearFilaArchivo) }),
-        ],
-      })
-    );
-  };
-
-  const FILTROS = [
-    { id: "todos", etiqueta: "Todos" },
-    { id: "fraude", etiqueta: "Fraude confirmado" },
-    { id: "liberado", etiqueta: "Liberados" },
-  ];
-
-  const botones = FILTROS.map((opcion) =>
-    crear("button", {
-      clase: ["boton", opcion.id === "todos" ? "boton--primario" : "boton--fantasma"],
-      atributos: { type: "button" },
-      texto: opcion.etiqueta,
-      datos: { filtroArchivo: opcion.id },
-    })
+  const encabezados = [
+    ["#", "col-centro"],
+    ["Beneficiario (Nombre-RUT)", null],
+    ["Análisis Forense", "col-centro"],
+    ["Validación Externa", "col-centro"],
+    ["Patrones", "col-centro"],
+    ["Scoring", "col-derecha"],
+    ["Monto", "col-derecha"],
+  ].map(([titulo, clase]) =>
+    crear("th", { texto: titulo, clase, atributos: { scope: "col" } })
   );
 
-  botones.forEach((boton) => {
-    boton.addEventListener("click", () => {
-      filtro = boton.dataset.filtroArchivo;
-
-      botones.forEach((otro) => {
-        const activo = otro.dataset.filtroArchivo === filtro;
-        otro.classList.toggle("boton--primario", activo);
-        otro.classList.toggle("boton--fantasma", !activo);
-      });
-
-      dibujarTabla();
-    });
+  const tabla = crear("table", {
+    clase: "tabla-casos",
+    hijos: [
+      crear("thead", { hijos: [crear("tr", { hijos: encabezados })] }),
+      crear("tbody", {
+        hijos: top.map((caso, indice) => crearFilaTop(caso, indice + 1, alAbrirCaso)),
+      }),
+    ],
   });
-
-  dibujarTabla();
 
   return crear("section", {
     clase: "panel",
     hijos: [
-      crear("header", {
-        clase: "panel__cabecera",
+      crearCabeceraPanel("Top diez de fraudes detectados", "martillo", {
+        texto: comoMoneda(montoTop),
+        clase: "distintivo--critico",
+      }),
+      crear("div", {
+        atributos: { style: "padding:2.4rem 2.4rem 0" },
         hijos: [
-          crear("h3", {
-            clase: "panel__titulo",
-            hijos: [
-              icono("archivo", { tamano: 22 }),
-              crear("span", { texto: "Base de evidencia" }),
-            ],
-          }),
-          crear("div", {
-            atributos: { style: "margin-left:auto;display:flex;gap:0.8rem;flex-wrap:wrap" },
-            hijos: botones,
+          crear("p", {
+            clase: "panel__intro",
+            atributos: { style: "margin-bottom:0" },
+            texto:
+              "Los diez siniestros de mayor monto confirmados como fraude. Seleccione una fila para revisar el expediente.",
           }),
         ],
       }),
-      contenedorTabla,
+      crear("div", { clase: "tabla-envoltura", hijos: [tabla] }),
     ],
   });
 }
@@ -562,64 +386,6 @@ export function crearVistaArchivo({ alAbrirCaso }) {
           crearGraficoAprendizaje({
             historial: historialResoluciones,
             hitos: hitosModelo,
-          }),
-        ],
-      }),
-    ],
-  });
-
-  /* --- Hitos y casos recuperados --------------------------------------- */
-  const panelHitos = crear("section", {
-    clase: "panel",
-    hijos: [
-      crearCabeceraPanel("Qué aprendió el modelo", "huella"),
-      crear("div", { clase: "panel__cuerpo", hijos: [crearLineaDeTiempo()] }),
-    ],
-  });
-
-  const panelRecuperados = crear("section", {
-    clase: "panel",
-    hijos: [
-      crearCabeceraPanel("Casos que hoy no se escaparían", "visto", {
-        texto: `${casosRecuperados.length} recuperados`,
-        clase: "distintivo--ok",
-      }),
-      crear("div", {
-        clase: "panel__cuerpo",
-        hijos: [
-          crear("p", {
-            clase: "panel__intro",
-            texto:
-              "Estos siniestros obtuvieron un scoring bajo cuando ingresaron y estuvieron a punto de pasar a liquidación. Con el modelo actual habrían sido críticos desde el primer día.",
-          }),
-          crear("div", {
-            clase: "recuperados",
-            hijos: casosRecuperados.map(crearTarjetaRecuperado),
-          }),
-        ],
-      }),
-    ],
-  });
-
-  /* --- Reincidentes ----------------------------------------------------- */
-  const panelReincidentes = crear("section", {
-    clase: "panel",
-    hijos: [
-      crearCabeceraPanel("Identidades reincidentes", "escudo", {
-        texto: `${reincidentes.length} detectadas`,
-        clase: "distintivo--critico",
-      }),
-      crear("div", {
-        clase: "panel__cuerpo",
-        hijos: [
-          crear("p", {
-            clase: "panel__intro",
-            texto:
-              "Cruce entre el archivo y la cartera activa: quienes ya tienen fraude confirmado y vuelven a aparecer en casos abiertos.",
-          }),
-          crear("div", {
-            clase: "reincidentes",
-            hijos: reincidentes.map((r) => crearTarjetaReincidente(r, alAbrirCaso)),
           }),
         ],
       }),
@@ -739,14 +505,11 @@ export function crearVistaArchivo({ alAbrirCaso }) {
       panelCurva,
       /* Bajo la curva, lo que explica hacia dónde se mueve: primero cómo
          está cambiando el fraude, después qué reconoce el modelo y por qué
-         a veces se equivoca. */
+         a veces se equivoca. Cierra el listado de los mayores hallazgos. */
       panelSenales,
       panelPatrones,
       panelFalsos,
-      panelHitos,
-      panelRecuperados,
-      panelReincidentes,
-      crearPanelCasos(),
+      crearPanelTop(alAbrirCaso),
     ],
   });
 }

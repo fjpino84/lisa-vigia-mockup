@@ -275,6 +275,39 @@
   color: var(--color-texto);
 }
 
+/* ------------------------------------------------------------------ */
+/* Top diez de fraudes                                                 */
+/* ------------------------------------------------------------------ */
+
+/* Número de orden dentro del ranking. */
+.posicion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  font-family: var(--fuente-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-texto-medio);
+  background-color: var(--color-superficie-suave);
+  border-radius: 50%;
+}
+
+/* Los tres primeros puestos llevan el número en el color de alarma. */
+.esta-destacada .posicion {
+  color: var(--color-critico);
+  background-color: var(--color-critico-fondo);
+}
+
+.monto-top {
+  font-family: var(--fuente-mono);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--color-critico);
+  white-space: nowrap;
+}
+
 /* Texto introductorio de un panel. */
 .panel__intro {
   max-width: 78ch;

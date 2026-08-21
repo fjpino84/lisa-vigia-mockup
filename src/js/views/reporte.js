@@ -379,17 +379,27 @@ function crearSeccionPatrones(caso, alAbrirCaso) {
 }
 
 /* Aviso mostrado en casos sin expediente forense detallado. */
-function crearAvisoSinEvidencia() {
+function crearAvisoSinEvidencia(caso) {
+  const estaCerrado = caso.estado === "cerrado";
+
+  const primeraLinea = estaCerrado
+    ? "Este siniestro ya fue resuelto y su expediente se conserva en el archivo."
+    : "Este caso aún no cuenta con un expediente forense detallado en el prototipo.";
+
   return crear("section", {
     clase: "panel",
     hijos: [
       crear("div", {
         clase: "estado-vacio",
         hijos: [
-          crear("p", {
-            texto:
-              "Este caso aún no cuenta con un expediente forense detallado en el prototipo.",
-          }),
+          estaCerrado
+            ? crear("span", {
+                clase: ["distintivo", "distintivo--neutro"],
+                atributos: { style: "margin-bottom:1.6rem" },
+                texto: "Caso cerrado",
+              })
+            : null,
+          crear("p", { texto: primeraLinea }),
           crear("p", {
             atributos: { style: "margin-top:0.8rem" },
             texto:
@@ -449,7 +459,7 @@ export function crearVistaReporte({ caso, alVolver, alAbrirCaso }) {
         crearSeccionValidacion(caso),
         crearSeccionPatrones(caso, alAbrirCaso),
       ]
-    : [crearAvisoSinEvidencia()];
+    : [crearAvisoSinEvidencia(caso)];
 
   return crear("div", {
     clase: "vista",
@@ -458,7 +468,8 @@ export function crearVistaReporte({ caso, alVolver, alAbrirCaso }) {
       volver,
       crearFicha(caso),
       fragmento(secciones),
-      crearBarraDecision({ caso }),
+      /* Un caso cerrado ya no admite decisión: su resolución está tomada. */
+      caso.estado === "cerrado" ? null : crearBarraDecision({ caso }),
     ],
   });
 }
