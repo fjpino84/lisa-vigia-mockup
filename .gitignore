@@ -14,3 +14,6 @@ desktop.ini
 # Registros
 *.log
 npm-debug.log*
+
+# Perfiles temporales de navegador
+assets/perfil-*
