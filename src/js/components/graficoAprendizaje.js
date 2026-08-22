@@ -12,12 +12,12 @@
 
 import { crear, crearSVG, vaciar } from "../utils/dom.js";
 import { paleta } from "../utils/paleta.js";
-import { escaladorDe, esPantallaEstrecha } from "../utils/escalaGrafico.js";
 
 const ANCHO = 860;
 const ALTO = 400;
 const MARGEN = { arriba: 52, derecha: 32, abajo: 58, izquierda: 52 };
 
+const ANCHO_TRAMA = ANCHO - MARGEN.izquierda - MARGEN.derecha;
 const ALTO_TRAMA = ALTO - MARGEN.arriba - MARGEN.abajo;
 
 /* Identificadores únicos por instancia: el gráfico puede dibujarse más de
@@ -86,12 +86,6 @@ function curvaSuave(puntos, tension = 0.18) {
  */
 export function crearGraficoAprendizaje({ historial, hitos }) {
   const COLOR = paleta();
-  const estrecha = esPantallaEstrecha();
-
-  /* Compensa la reducción del lienzo para que los textos conserven su
-     tamaño real en pantalla. */
-  const px = escaladorDe(ANCHO);
-
   const contenedor = crear("div", { clase: "grafico" });
 
   contador += 1;
@@ -168,28 +162,20 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
 
   svg.appendChild(defs);
 
-  /* Con la tipografía agrandada, los ejes necesitan más margen alrededor. */
-  const margenIzq = estrecha ? MARGEN.izquierda + 16 : MARGEN.izquierda;
-
   const trama = crearSVG("g", {
-    atributos: { transform: `translate(${margenIzq}, ${MARGEN.arriba})` },
+    atributos: { transform: `translate(${MARGEN.izquierda}, ${MARGEN.arriba})` },
   });
 
-  /* Ancho útil una vez descontado el margen que consumen los ejes. */
-  const anchoTrama = ANCHO - margenIzq - MARGEN.derecha;
-
-  const paso = anchoTrama / (historial.length - 1);
+  const paso = ANCHO_TRAMA / (historial.length - 1);
   const escalaX = (indice) => paso * indice;
   const escalaY = (porcentaje) => ALTO_TRAMA - (porcentaje / 100) * ALTO_TRAMA;
 
   /* --- Escala del ahorro mensual ------------------------------------- */
 
   /* El techo deja holgura sobre la barra más alta para que ninguna llegue
-     al borde superior de la trama. En pantalla estrecha se recorta esa
-     holgura: con menos rótulos que esquivar, las columnas pueden crecer y
-     recuperar presencia. */
+     al borde superior de la trama. */
   const ahorroMaximo = Math.max(...historial.map((mes) => mes.montoBloqueado));
-  const techoAhorro = ahorroMaximo * (estrecha ? 1.35 : 1.75);
+  const techoAhorro = ahorroMaximo * 1.75;
   const escalaAhorro = (monto) => ALTO_TRAMA - (monto / techoAhorro) * ALTO_TRAMA;
 
   /* ------------------------------------------------------------------ */
@@ -205,7 +191,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
         atributos: {
           x1: 0,
           y1: y,
-          x2: anchoTrama,
+          x2: ANCHO_TRAMA,
           y2: y,
           stroke: COLOR.rejilla,
           "stroke-width": esBase ? 1.5 : 1,
@@ -223,7 +209,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
           x: -14,
           y: y + 4,
           fill: COLOR.textoTenue,
-          "font-size": px(10.5),
+          "font-size": 10.5,
           "font-family": "monospace",
           "text-anchor": "end",
         },
@@ -249,14 +235,11 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
     const esFinal = indice === historial.length - 1;
 
     /* Si alguna curva pasa por la franja donde iría el rótulo, este baja al
-       interior de la columna en lugar de superponerse al trazo. La columna
-       final entra siempre por dentro en pantalla estrecha: ahí arriba está
-       el valor de precisión, con el que competiría. */
+       interior de la columna en lugar de superponerse al trazo. */
     const yPrecision = escalaY(mes.precision);
     const yFalsos = escalaY(mes.falsosPositivos);
     const invade = (yLinea) => yLinea > y - HOLGURA_ROTULO && yLinea < y + 6;
-    const rotuloDentro =
-      alto > 34 && (invade(yPrecision) || invade(yFalsos) || (estrecha && esFinal));
+    const rotuloDentro = alto > 34 && (invade(yPrecision) || invade(yFalsos));
 
     /* La columna se dibuja como un rectángulo de cabeza redondeada: el
        radio superior la suaviza y la base queda a ras del eje. */
@@ -281,35 +264,23 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       })
     );
 
-    /* En pantalla estrecha los rótulos se alternan: diez cifras seguidas no
-       caben, y mostrar una de cada dos conserva la lectura del avance. Se
-       omite el primer mes, cuyo rótulo se cruzaría con el valor inicial de
-       precisión, y cuya cifra es además la menos relevante del conjunto. */
-    const rotular = !estrecha
-      ? true
-      : esFinal || (indice % 2 === 0 && indice !== 0);
-
-    if (rotular) {
-      /* Un rótulo situado sobre la columna final se ancla a la derecha para
-         no salirse del lienzo; dentro de ella se centra como los demás. */
-      const anclaje = esFinal && !rotuloDentro ? "end" : "middle";
-
-      trama.appendChild(
-        crearSVG("text", {
-          texto: montoCorto(mes.montoBloqueado),
-          atributos: {
-            x: centro,
-            y: rotuloDentro ? y + px(17) : y - px(9),
-            fill: COLOR.acento,
-            "font-size": esFinal ? px(11) : px(10),
-            "font-weight": esFinal ? "700" : "600",
-            "font-family": "monospace",
-            "text-anchor": anclaje,
-            opacity: esFinal ? 1 : 0.85,
-          },
-        })
-      );
-    }
+    /* El rótulo va sobre la columna salvo que una curva ocupe ese espacio,
+       en cuyo caso baja al interior, donde el fondo tenue lo admite. */
+    trama.appendChild(
+      crearSVG("text", {
+        texto: montoCorto(mes.montoBloqueado),
+        atributos: {
+          x: centro,
+          y: rotuloDentro ? y + 17 : y - 9,
+          fill: COLOR.acento,
+          "font-size": esFinal ? 11 : 10,
+          "font-weight": esFinal ? "700" : "600",
+          "font-family": "monospace",
+          "text-anchor": "middle",
+          opacity: esFinal ? 1 : 0.85,
+        },
+      })
+    );
   });
 
   /* ------------------------------------------------------------------ */
@@ -332,7 +303,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
   trama.appendChild(
     crearSVG("path", {
       atributos: {
-        d: `${trazoPrecision} L ${anchoTrama} ${ALTO_TRAMA} L 0 ${ALTO_TRAMA} Z`,
+        d: `${trazoPrecision} L ${ANCHO_TRAMA} ${ALTO_TRAMA} L 0 ${ALTO_TRAMA} Z`,
         fill: `url(#${idArea})`,
       },
     })
@@ -367,7 +338,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
   });
 
   /* La curva se dibuja al entrar, como si el modelo trazara su historia. */
-  const largoTrazo = anchoTrama * 1.8;
+  const largoTrazo = ANCHO_TRAMA * 1.8;
   linea.setAttribute("stroke-dasharray", largoTrazo);
   linea.setAttribute("stroke-dashoffset", largoTrazo);
   linea.appendChild(
@@ -532,7 +503,7 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
             x: esFinal ? x - 4 : x + 4,
             y: escalaY(mes.precision) - 18,
             fill: COLOR.precision,
-            "font-size": px(15),
+            "font-size": 15,
             "font-weight": "700",
             "font-family": "monospace",
             "text-anchor": esFinal ? "end" : "start",
@@ -541,25 +512,20 @@ export function crearGraficoAprendizaje({ historial, hitos }) {
       );
     }
 
-    /* Rótulo del mes. En pantalla estrecha se muestran los meses con hito y
-       los extremos, que son los que sostienen la lectura del eje. */
-    const rotularMes = !estrecha || hito || esFinal || esInicial;
-
-    if (rotularMes) {
-      trama.appendChild(
-        crearSVG("text", {
-          texto: mes.abreviatura,
-          atributos: {
-            x,
-            y: ALTO_TRAMA + px(24),
-            fill: hito ? COLOR.acento : COLOR.textoTenue,
-            "font-size": px(11),
-            "font-weight": hito ? "700" : "400",
-            "text-anchor": "middle",
-          },
-        })
-      );
-    }
+    /* Rótulo del mes. */
+    trama.appendChild(
+      crearSVG("text", {
+        texto: mes.abreviatura,
+        atributos: {
+          x,
+          y: ALTO_TRAMA + 24,
+          fill: hito ? COLOR.acento : COLOR.textoTenue,
+          "font-size": 11,
+          "font-weight": hito ? "700" : "400",
+          "text-anchor": "middle",
+        },
+      })
+    );
   });
 
   svg.appendChild(trama);

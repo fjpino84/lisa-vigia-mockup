@@ -495,17 +495,15 @@
   overflow: visible;
 }
 
-/* En pantallas estrechas el lienzo se ajusta al ancho disponible en lugar
-   de forzar desplazamiento: los componentes agrandan su tipografía y
-   aligeran los rótulos para seguir siendo legibles a ese tamaño. */
+/* En pantallas estrechas el lienzo conserva un ancho mínimo legible y el
+   desplazamiento se resuelve dentro del propio gráfico. */
 @media (max-width: 760px) {
   .grafico {
-    padding: var(--espacio-sm);
+    overflow-x: auto;
   }
 
-  .grafico__leyenda {
-    gap: var(--espacio-sm);
-    font-size: 1.1rem;
+  .grafico__lienzo {
+    min-width: 60rem;
   }
 }
 

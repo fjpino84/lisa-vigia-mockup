@@ -8,7 +8,6 @@
 import { crear, crearSVG, vaciar } from "../utils/dom.js";
 import { comoMoneda } from "../utils/formato.js";
 import { paleta } from "../utils/paleta.js";
-import { escaladorDe } from "../utils/escalaGrafico.js";
 
 /* Lienzo en unidades de usuario; el SVG escala con el contenedor. */
 const ANCHO = 760;
@@ -42,7 +41,6 @@ export function crearGraficoDesviacion({
   alElegirCaso,
 }) {
   const COLOR = paleta();
-  const px = escaladorDe(ANCHO);
   const estadisticos = calcularEstadisticos(poblacion.map((dato) => dato.monto));
   const { desviacion } = estadisticos;
 
@@ -129,7 +127,7 @@ export function crearGraficoDesviacion({
         x: 6,
         y: escalaY(media) - 8,
         fill: COLOR.bajo,
-        "font-size": px(11),
+        "font-size": 11,
         "font-family": "monospace",
       },
     })
@@ -165,7 +163,7 @@ export function crearGraficoDesviacion({
           x: -12,
           y: y + 4,
           fill: COLOR.textoTenue,
-          "font-size": px(11),
+          "font-size": 11,
           "font-family": "monospace",
           "text-anchor": "end",
         },
