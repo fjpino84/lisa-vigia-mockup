@@ -495,15 +495,26 @@
   overflow: visible;
 }
 
-/* En pantallas estrechas el lienzo conserva un ancho mínimo legible y el
-   desplazamiento se resuelve dentro del propio gráfico. */
+/* En pantallas estrechas los gráficos pensados para escritorio conservan un
+   ancho mínimo legible y resuelven el desplazamiento dentro de su propia
+   caja. Los que tienen disposición vertical propia quedan excluidos: ya
+   están compuestos para ese ancho y no necesitan desplazarse. */
 @media (max-width: 760px) {
-  .grafico {
+  .grafico:not(.grafico--vertical) {
     overflow-x: auto;
   }
 
-  .grafico__lienzo {
+  .grafico:not(.grafico--vertical) .grafico__lienzo {
     min-width: 60rem;
+  }
+
+  .grafico--vertical {
+    padding: var(--espacio-sm);
+  }
+
+  .grafico--vertical .grafico__leyenda {
+    gap: var(--espacio-sm);
+    font-size: 1.1rem;
   }
 }
 

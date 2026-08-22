@@ -19,6 +19,8 @@ import {
 } from "../data/inteligencia.js";
 import { icono } from "../components/iconos.js";
 import { crearGraficoAprendizaje } from "../components/graficoAprendizaje.js";
+import { crearGraficoAprendizajeVertical } from "../components/graficoAprendizajeVertical.js";
+import { esPantallaEstrecha } from "../utils/escalaGrafico.js";
 
 /* -------------------------------------------------------------------- */
 /* Encabezado: la evolución del modelo                                   */
@@ -383,7 +385,11 @@ export function crearVistaArchivo({ alAbrirCaso }) {
       crear("div", {
         clase: "panel__cuerpo",
         hijos: [
-          crearGraficoAprendizaje({
+          /* En pantalla estrecha se dibuja la variante vertical, que
+             reparte los meses en filas en lugar de comprimir el eje. */
+          (esPantallaEstrecha()
+            ? crearGraficoAprendizajeVertical
+            : crearGraficoAprendizaje)({
             historial: historialResoluciones,
             hitos: hitosModelo,
           }),

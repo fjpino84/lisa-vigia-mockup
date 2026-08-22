@@ -1878,15 +1878,26 @@ table {
   overflow: visible;
 }
 
-/* En pantallas estrechas el lienzo conserva un ancho mínimo legible y el
-   desplazamiento se resuelve dentro del propio gráfico. */
+/* En pantallas estrechas los gráficos pensados para escritorio conservan un
+   ancho mínimo legible y resuelven el desplazamiento dentro de su propia
+   caja. Los que tienen disposición vertical propia quedan excluidos: ya
+   están compuestos para ese ancho y no necesitan desplazarse. */
 @media (max-width: 760px) {
-  .grafico {
+  .grafico:not(.grafico--vertical) {
     overflow-x: auto;
   }
 
-  .grafico__lienzo {
+  .grafico:not(.grafico--vertical) .grafico__lienzo {
     min-width: 60rem;
+  }
+
+  .grafico--vertical {
+    padding: var(--espacio-sm);
+  }
+
+  .grafico--vertical .grafico__leyenda {
+    gap: var(--espacio-sm);
+    font-size: 1.1rem;
   }
 }
 
@@ -3366,6 +3377,32 @@ function iniciarTema() {
 }
 
   Object.assign(REGISTRO, { obtenerTema, esTemaClaro, alternarTema, alCambiarTema, iniciarTema });
+})();
+
+/* ===== src/js/utils/escalaGrafico.js ===== */
+(() => {
+/* =========================================================================
+   LISA vigIA — Orientación de los gráficos.
+
+   En pantallas estrechas el ancho es el recurso escaso y el alto sobra. Por
+   eso los gráficos no encogen su composición de escritorio —eso apretaría
+   los elementos hasta solaparlos— sino que adoptan una disposición vertical
+   propia: el eje del tiempo baja, las series se leen de arriba abajo y cada
+   dato dispone de una franja entera para su rótulo.
+   ========================================================================= */
+
+/* Ancho por debajo del cual los gráficos adoptan su disposición vertical. */
+const ANCHO_ESTRECHO = 760;
+
+/**
+ * Indica si conviene dibujar la versión vertical del gráfico.
+ * @returns {boolean}
+ */
+function esPantallaEstrecha() {
+  return window.innerWidth <= ANCHO_ESTRECHO;
+}
+
+  Object.assign(REGISTRO, { ANCHO_ESTRECHO, esPantallaEstrecha });
 })();
 
 /* ===== src/js/data/casos.js ===== */
@@ -5368,9 +5405,6 @@ function paleta() {
    para que los cuatro casos atípicos queden visualmente fuera del rango.
    El globo informativo se muestra al posar el puntero sobre cada punto.
    ========================================================================= */
-
-
-
 /* Lienzo en unidades de usuario; el SVG escala con el contenedor. */
 const ANCHO = 760;
 const ALTO = 340;
@@ -5395,8 +5429,7 @@ function calcularEstadisticos(montos) {
  * @param {number} [opciones.promedioReferencia] Promedio histórico oficial.
  * @param {Function} [opciones.alElegirCaso] Recibe el id de un atípico.
  * @returns {HTMLElement}
- */
-function crearGraficoDesviacion({
+ */function crearGraficoDesviacion({
   poblacion,
   atipicos,
   promedioReferencia,
@@ -5737,9 +5770,6 @@ function crearItemLeyenda(color, texto, esBanda = false) {
    repiten visitas. El grosor de cada arista refleja el número de visitas,
    de modo que la concentración del patrón se aprecia de un vistazo.
    ========================================================================= */
-
-
-
 const ANCHO = 760;
 const ALTO = 460;
 const CENTRO_X = ANCHO / 2;
@@ -5755,8 +5785,7 @@ const RADIO_ORBITA = 150;
  * @param {object[]} opciones.pacientes Nodos periféricos.
  * @param {Function} [opciones.alElegirCaso] Recibe el id del caso elegido.
  * @returns {HTMLElement}
- */
-function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
+ */function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
   const COLOR = paleta();
   const contenedor = crear("div", { clase: "grafico" });
 
@@ -7986,9 +8015,6 @@ function construirRedCartera() {
    del núcleo refleja cuántos casos concentra y su color, el nivel de alerta,
    de modo que los focos de fraude se distinguen de un vistazo.
    ========================================================================= */
-
-
-
 const ANCHO = 900;
 
 /* Alto de cada fila de núcleos; el lienzo crece según cuántas hagan falta,
@@ -8015,8 +8041,7 @@ const radioOrbita = (cantidad) => Math.min(40 + cantidad * 4, 76);
  * @param {object[]} opciones.nodosBeneficiario
  * @param {Function} [opciones.alElegirCaso] Recibe el id del caso.
  * @returns {HTMLElement}
- */
-function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirCaso }) {
+ */function crearGrafoCartera({ nodosPrestador, nodosBeneficiario, alElegirCaso }) {
   const COLOR = paleta();
   const COLOR_ALERTA = coloresAlerta(COLOR);
   const contenedor = crear("div", { clase: "grafico" });
@@ -8987,8 +9012,6 @@ function crearVistaForense({ alAbrirCaso }) {
    competir. Las series se interpolan como curvas suaves porque describen
    un aprendizaje continuo, no saltos discretos.
    ========================================================================= */
-
-
 const ANCHO = 860;
 const ALTO = 400;
 const MARGEN = { arriba: 52, derecha: 32, abajo: 58, izquierda: 52 };
@@ -9059,8 +9082,7 @@ function curvaSuave(puntos, tension = 0.18) {
  * @param {object[]} opciones.historial Meses con precisión y falsos positivos.
  * @param {object[]} opciones.hitos Capacidades incorporadas al modelo.
  * @returns {HTMLElement}
- */
-function crearGraficoAprendizaje({ historial, hitos }) {
+ */function crearGraficoAprendizaje({ historial, hitos }) {
   const COLOR = paleta();
   const contenedor = crear("div", { clase: "grafico" });
 
@@ -9567,9 +9589,528 @@ function crearItemLeyenda(color, texto, forma = "punto") {
   Object.assign(REGISTRO, { crearGraficoAprendizaje });
 })();
 
+/* ===== src/js/components/graficoAprendizajeVertical.js ===== */
+(() => {
+  const { crear, crearSVG, vaciar, paleta } = REGISTRO;
+/* =========================================================================
+   LISA vigIA — Curva de aprendizaje, disposición vertical.
+
+   Variante para pantallas estrechas. El eje del tiempo baja por la
+   izquierda y cada mes ocupa una franja horizontal propia, de modo que
+   dispone de todo el ancho para su rótulo. Las barras del ahorro crecen
+   hacia la derecha y las series de porcentaje se leen como dos columnas
+   de puntos unidas por su trazo.
+
+   No es el gráfico de escritorio encogido: comprimir aquella composición
+   apretaría los elementos hasta solaparlos. Es una lectura distinta de los
+   mismos datos, pensada para el formato en que se ve.
+   ========================================================================= */
+
+
+const ANCHO = 420;
+/* Alto reservado a cada mes: da sitio al rótulo y a la barra. */
+const ALTO_FILA = 52;
+/* El margen derecho aloja el monto rotulado al final de cada barra. */
+const MARGEN = { arriba: 56, derecha: 52, abajo: 28, izquierda: 46 };
+
+/* Reparto horizontal: la franja de porcentajes a la izquierda y la del
+   ahorro a la derecha, separadas para que no se pisen. */
+const ANCHO_PORCENTAJE = 120;
+const SEPARACION = 20;
+
+let contador = 0;
+
+/* Rótulo corto para los montos, con la coma decimal local. */
+function montoCorto(monto) {
+  if (monto === 0) {
+    return "$0";
+  }
+
+  if (monto >= 1000000) {
+    const millones = monto / 1000000;
+    const texto = Number.isInteger(millones) ? String(millones) : millones.toFixed(1);
+    return `$${texto.replace(".", ",")}M`;
+  }
+
+  return `$${Math.round(monto / 1000)}K`;
+}
+
+/**
+ * Traza una curva suave vertical que pasa por todos los puntos.
+ * @param {{x: number, y: number}[]} puntos
+ * @param {number} [tension]
+ * @returns {string}
+ */
+function curvaSuave(puntos, tension = 0.2) {
+  if (puntos.length < 2) {
+    return "";
+  }
+
+  let d = `M ${puntos[0].x} ${puntos[0].y}`;
+
+  for (let i = 0; i < puntos.length - 1; i += 1) {
+    const anterior = puntos[i - 1] ?? puntos[i];
+    const actual = puntos[i];
+    const siguiente = puntos[i + 1];
+    const posterior = puntos[i + 2] ?? siguiente;
+
+    const control1 = {
+      x: actual.x + (siguiente.x - anterior.x) * tension,
+      y: actual.y + (siguiente.y - anterior.y) * tension,
+    };
+    const control2 = {
+      x: siguiente.x - (posterior.x - actual.x) * tension,
+      y: siguiente.y - (posterior.y - actual.y) * tension,
+    };
+
+    d += ` C ${control1.x} ${control1.y}, ${control2.x} ${control2.y}, ${siguiente.x} ${siguiente.y}`;
+  }
+
+  return d;
+}
+
+/**
+ * Dibuja la evolución del modelo en disposición vertical.
+ * @param {object} opciones
+ * @param {object[]} opciones.historial
+ * @param {object[]} opciones.hitos
+ * @returns {HTMLElement}
+ */
+function crearGraficoAprendizajeVertical({ historial, hitos }) {
+  const COLOR = paleta();
+  const contenedor = crear("div", { clase: ["grafico", "grafico--vertical"] });
+
+  contador += 1;
+  const idBarra = `barraVertical${contador}`;
+  const idArea = `areaVertical${contador}`;
+
+  const alto = MARGEN.arriba + historial.length * ALTO_FILA + MARGEN.abajo;
+
+  const svg = crearSVG("svg", {
+    clase: "grafico__lienzo",
+    atributos: {
+      viewBox: `0 0 ${ANCHO} ${alto}`,
+      role: "img",
+      "aria-label":
+        "Evolución del modelo a lo largo de diez meses: la precisión sube del 20 % al 72 % con retrocesos intermedios, mientras los falsos positivos caen del 44 % al 17 % y el ahorro mensual pasa de 2,1 a 20,1 millones de pesos.",
+    },
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* Definiciones                                                        */
+  /* ------------------------------------------------------------------ */
+
+  const defs = crearSVG("defs");
+
+  /* Las barras se desvanecen hacia su extremo derecho. */
+  defs.appendChild(
+    crearSVG("linearGradient", {
+      atributos: { id: idBarra, x1: "0", y1: "0", x2: "1", y2: "0" },
+      hijos: [
+        crearSVG("stop", {
+          atributos: { offset: "0%", "stop-color": COLOR.acento, "stop-opacity": "0.32" },
+        }),
+        crearSVG("stop", {
+          atributos: { offset: "100%", "stop-color": COLOR.acento, "stop-opacity": "0.1" },
+        }),
+      ],
+    })
+  );
+
+  /* Área entre el eje y la curva de precisión. */
+  defs.appendChild(
+    crearSVG("linearGradient", {
+      atributos: { id: idArea, x1: "0", y1: "0", x2: "1", y2: "0" },
+      hijos: [
+        crearSVG("stop", {
+          atributos: { offset: "0%", "stop-color": COLOR.precision, "stop-opacity": "0.22" },
+        }),
+        crearSVG("stop", {
+          atributos: { offset: "100%", "stop-color": COLOR.precision, "stop-opacity": "0.02" },
+        }),
+      ],
+    })
+  );
+
+  svg.appendChild(defs);
+
+  const trama = crearSVG("g", {
+    atributos: { transform: `translate(${MARGEN.izquierda}, ${MARGEN.arriba})` },
+  });
+
+  /* Posición vertical del centro de cada mes. */
+  const filaY = (indice) => indice * ALTO_FILA + ALTO_FILA / 2;
+
+  /* La franja de porcentajes ocupa la izquierda; el 0 % queda pegado al eje
+     y el 100 % en su extremo derecho. */
+  const escalaPorcentaje = (valor) => (valor / 100) * ANCHO_PORCENTAJE;
+
+  /* La franja del ahorro empieza donde termina la anterior. */
+  const inicioBarras = ANCHO_PORCENTAJE + SEPARACION;
+  const anchoBarras = ANCHO - MARGEN.izquierda - MARGEN.derecha - inicioBarras;
+
+  const ahorroMaximo = Math.max(...historial.map((mes) => mes.montoBloqueado));
+  const escalaAhorro = (monto) => (monto / (ahorroMaximo * 1.02)) * anchoBarras;
+
+  /* ------------------------------------------------------------------ */
+  /* Encabezados de las dos franjas                                      */
+  /* ------------------------------------------------------------------ */
+
+  const encabezados = [
+    { x: 0, texto: "0%", ancla: "start", color: COLOR.textoTenue },
+    { x: ANCHO_PORCENTAJE, texto: "100%", ancla: "end", color: COLOR.textoTenue },
+    { x: inicioBarras, texto: "AHORRO", ancla: "start", color: COLOR.acento },
+  ];
+
+  encabezados.forEach(({ x, texto, ancla, color }) => {
+    trama.appendChild(
+      crearSVG("text", {
+        texto,
+        atributos: {
+          x,
+          y: -14,
+          fill: color,
+          "font-size": 10,
+          "font-weight": "700",
+          "font-family": "monospace",
+          "text-anchor": ancla,
+          "letter-spacing": "0.06em",
+        },
+      })
+    );
+  });
+
+  /* Rótulo de la franja de porcentajes, centrado sobre ella. */
+  trama.appendChild(
+    crearSVG("text", {
+      texto: "PRECISIÓN Y FALSOS POSITIVOS",
+      atributos: {
+        x: ANCHO_PORCENTAJE / 2,
+        y: -30,
+        fill: COLOR.textoTenue,
+        "font-size": 9,
+        "font-weight": "700",
+        "font-family": "monospace",
+        "text-anchor": "middle",
+        "letter-spacing": "0.04em",
+      },
+    })
+  );
+
+  /* ------------------------------------------------------------------ */
+  /* Franjas por mes                                                     */
+  /* ------------------------------------------------------------------ */
+
+  const mesesConHito = new Map(hitos.map((hito) => [hito.abreviatura, hito]));
+  const altoTrama = historial.length * ALTO_FILA;
+
+  /* Guías verticales de la escala de porcentaje. */
+  [0, 50, 100].forEach((valor) => {
+    const x = escalaPorcentaje(valor);
+
+    trama.appendChild(
+      crearSVG("line", {
+        atributos: {
+          x1: x,
+          y1: -6,
+          x2: x,
+          y2: altoTrama,
+          stroke: COLOR.rejilla,
+          "stroke-width": valor === 0 ? 1.5 : 1,
+          "stroke-dasharray": valor === 0 ? "none" : "2 6",
+        },
+      })
+    );
+  });
+
+  historial.forEach((mes, indice) => {
+    const y = filaY(indice);
+    const hito = mesesConHito.get(mes.abreviatura);
+
+    /* Banda tenue que agrupa la fila del mes con capacidad nueva. */
+    if (hito) {
+      trama.appendChild(
+        crearSVG("rect", {
+          atributos: {
+            x: -MARGEN.izquierda + 6,
+            y: y - ALTO_FILA / 2 + 2,
+            width: ANCHO - 14,
+            height: ALTO_FILA - 4,
+            fill: COLOR.acento,
+            opacity: 0.05,
+            rx: 6,
+          },
+        })
+      );
+    }
+
+    /* Rótulo del mes, en el margen izquierdo. */
+    trama.appendChild(
+      crearSVG("text", {
+        texto: mes.abreviatura,
+        atributos: {
+          x: -12,
+          y: y + 4,
+          fill: hito ? COLOR.acento : COLOR.textoTenue,
+          "font-size": 11,
+          "font-weight": hito ? "700" : "500",
+          "text-anchor": "end",
+        },
+      })
+    );
+
+    /* Barra del ahorro, creciendo hacia la derecha. */
+    const largoBarra = Math.max(escalaAhorro(mes.montoBloqueado), 3);
+    const altoBarra = 16;
+
+    trama.appendChild(
+      crearSVG("rect", {
+        atributos: {
+          x: inicioBarras,
+          y: y - altoBarra / 2,
+          width: largoBarra,
+          height: altoBarra,
+          fill: `url(#${idBarra})`,
+          rx: altoBarra / 2,
+        },
+      })
+    );
+
+    /* Monto rotulado al final de su barra. */
+    trama.appendChild(
+      crearSVG("text", {
+        texto: montoCorto(mes.montoBloqueado),
+        atributos: {
+          x: inicioBarras + largoBarra + 6,
+          y: y + 3.5,
+          fill: COLOR.acento,
+          "font-size": 10,
+          "font-weight": "700",
+          "font-family": "monospace",
+          "text-anchor": "start",
+        },
+      })
+    );
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* Series de porcentaje                                                */
+  /* ------------------------------------------------------------------ */
+
+  const puntosPrecision = historial.map((mes, indice) => ({
+    x: escalaPorcentaje(mes.precision),
+    y: filaY(indice),
+  }));
+
+  const puntosFalsos = historial.map((mes, indice) => ({
+    x: escalaPorcentaje(mes.falsosPositivos),
+    y: filaY(indice),
+  }));
+
+  const trazoPrecision = curvaSuave(puntosPrecision);
+
+  /* Área entre el eje y la precisión. */
+  trama.appendChild(
+    crearSVG("path", {
+      atributos: {
+        d: `${trazoPrecision} L 0 ${puntosPrecision[puntosPrecision.length - 1].y} L 0 ${puntosPrecision[0].y} Z`,
+        fill: `url(#${idArea})`,
+      },
+    })
+  );
+
+  trama.appendChild(
+    crearSVG("path", {
+      atributos: {
+        d: curvaSuave(puntosFalsos),
+        fill: "none",
+        stroke: COLOR.critico,
+        "stroke-width": 2,
+        "stroke-dasharray": "1 6",
+        "stroke-linecap": "round",
+        opacity: 0.9,
+      },
+    })
+  );
+
+  trama.appendChild(
+    crearSVG("path", {
+      atributos: {
+        d: trazoPrecision,
+        fill: "none",
+        stroke: COLOR.precision,
+        "stroke-width": 3,
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+      },
+    })
+  );
+
+  /* ------------------------------------------------------------------ */
+  /* Globo informativo                                                   */
+  /* ------------------------------------------------------------------ */
+
+  const tooltip = crear("div", { clase: "tooltip", atributos: { role: "tooltip" } });
+
+  function mostrarTooltip(mes, evento) {
+    vaciar(tooltip);
+    tooltip.appendChild(crear("p", { clase: "tooltip__titulo", texto: mes.mes }));
+
+    [
+      ["Precisión", `${mes.precision}%`],
+      ["Falsos positivos", `${mes.falsosPositivos}%`],
+      ["Ahorro del mes", montoCorto(mes.montoBloqueado)],
+      ["Días por caso", `${mes.diasResolucion}`],
+      ["Casos escapados", String(mes.escapados)],
+    ].forEach(([clave, valor]) => {
+      tooltip.appendChild(
+        crear("div", {
+          clase: "tooltip__fila",
+          hijos: [
+            crear("span", { clase: "tooltip__clave", texto: clave }),
+            crear("span", { clase: "tooltip__valor", texto: valor }),
+          ],
+        })
+      );
+    });
+
+    const limites = contenedor.getBoundingClientRect();
+    const x = evento.clientX - limites.left + 14;
+    const y = evento.clientY - limites.top + 14;
+    const ancho = 230;
+
+    tooltip.style.left = `${x + ancho > limites.width ? Math.max(x - ancho - 28, 4) : x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.classList.add("esta-visible");
+  }
+
+  const ocultarTooltip = () => tooltip.classList.remove("esta-visible");
+
+  /* ------------------------------------------------------------------ */
+  /* Puntos y zonas de captura                                           */
+  /* ------------------------------------------------------------------ */
+
+  historial.forEach((mes, indice) => {
+    const y = filaY(indice);
+    const esFinal = indice === historial.length - 1;
+    const esInicial = indice === 0;
+
+    trama.appendChild(
+      crearSVG("circle", {
+        atributos: {
+          cx: escalaPorcentaje(mes.falsosPositivos),
+          cy: y,
+          r: 3,
+          fill: COLOR.fondo,
+          stroke: COLOR.critico,
+          "stroke-width": 1.8,
+        },
+      })
+    );
+
+    trama.appendChild(
+      crearSVG("circle", {
+        atributos: {
+          cx: escalaPorcentaje(mes.precision),
+          cy: y,
+          r: esFinal || esInicial ? 6 : 4.5,
+          fill: COLOR.precision,
+          stroke: COLOR.fondo,
+          "stroke-width": 2,
+        },
+      })
+    );
+
+    /* Valor rotulado en los extremos, junto a su punto. */
+    if (esFinal || esInicial) {
+      trama.appendChild(
+        crearSVG("text", {
+          texto: `${mes.precision}%`,
+          atributos: {
+            x: escalaPorcentaje(mes.precision) + 10,
+            y: y - 9,
+            fill: COLOR.precision,
+            "font-size": 12,
+            "font-weight": "700",
+            "font-family": "monospace",
+            "text-anchor": "start",
+          },
+        })
+      );
+    }
+
+    /* Franja completa sensible al puntero. */
+    const zona = crearSVG("rect", {
+      clase: "punto-dato",
+      atributos: {
+        x: -MARGEN.izquierda,
+        y: y - ALTO_FILA / 2,
+        width: ANCHO,
+        height: ALTO_FILA,
+        fill: "transparent",
+      },
+    });
+
+    zona.addEventListener("mousemove", (evento) => mostrarTooltip(mes, evento));
+    zona.addEventListener("mouseleave", ocultarTooltip);
+    trama.appendChild(zona);
+  });
+
+  svg.appendChild(trama);
+
+  contenedor.appendChild(
+    crear("p", {
+      clase: "grafico__titulo",
+      texto: "Precisión del modelo y ahorro mensual",
+    })
+  );
+  contenedor.appendChild(
+    crear("p", {
+      clase: "grafico__ayuda",
+      texto:
+        "Cada fila es un mes. A la izquierda, la precisión y los falsos positivos; a la derecha, el monto retenido. Los meses resaltados incorporan una capacidad nueva.",
+    })
+  );
+  contenedor.appendChild(svg);
+
+  contenedor.appendChild(
+    crear("div", {
+      clase: "grafico__leyenda",
+      hijos: [
+        crearItemLeyenda(COLOR.precision, "Precisión de detección"),
+        crearItemLeyenda(COLOR.critico, "Falsos positivos"),
+        crearItemLeyenda(COLOR.acento, "Ahorro del mes", "barra"),
+      ],
+    })
+  );
+
+  contenedor.appendChild(tooltip);
+  return contenedor;
+}
+
+/* Construye un elemento de la leyenda. */
+function crearItemLeyenda(color, texto, forma = "punto") {
+  const muestra = crear("span", {
+    clase: ["grafico__muestra", forma === "barra" ? "grafico__muestra--barra" : null],
+  });
+  muestra.style.backgroundColor = color;
+
+  if (forma === "barra") {
+    muestra.style.opacity = "0.3";
+  }
+
+  return crear("span", {
+    clase: "grafico__leyenda-item",
+    hijos: [muestra, crear("span", { texto })],
+  });
+}
+
+  Object.assign(REGISTRO, { crearGraficoAprendizajeVertical });
+})();
+
 /* ===== src/js/views/archivo.js ===== */
 (() => {
-  const { crear, comoMoneda, comoNumero, comoPorcentaje, casosArchivados, causasFalsosPositivos, historialResoluciones, hitosModelo, patronesAprendidos, resumirArchivo, senalesTempranas, icono, crearGraficoAprendizaje } = REGISTRO;
+  const { crear, comoMoneda, comoNumero, comoPorcentaje, casosArchivados, causasFalsosPositivos, historialResoluciones, hitosModelo, patronesAprendidos, resumirArchivo, senalesTempranas, icono, crearGraficoAprendizaje, crearGraficoAprendizajeVertical, esPantallaEstrecha } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Inteligencia archivada.
    El archivo no es un registro muerto: es lo que entrena al modelo. La vista
@@ -9577,6 +10118,8 @@ function crearItemLeyenda(color, texto, forma = "punto") {
    fraude, qué reconoce el scoring, por qué se equivoca y cuáles fueron los
    hallazgos de mayor monto.
    ========================================================================= */
+
+
 
 
 
@@ -9945,7 +10488,11 @@ function crearVistaArchivo({ alAbrirCaso }) {
       crear("div", {
         clase: "panel__cuerpo",
         hijos: [
-          crearGraficoAprendizaje({
+          /* En pantalla estrecha se dibuja la variante vertical, que
+             reparte los meses en filas en lugar de comprimir el eje. */
+          (esPantallaEstrecha()
+            ? crearGraficoAprendizajeVertical
+            : crearGraficoAprendizaje)({
             historial: historialResoluciones,
             hitos: hitosModelo,
           }),
@@ -10093,23 +10640,12 @@ function crearRelleno(porcentaje) {
 
 /* ===== src/js/app.js ===== */
 (() => {
-  const { reemplazar, alCambiarTema, iniciarTema, obtenerCaso, crearArmazon, mostrarAviso, crearVistaDashboard, crearVistaRegistro, crearVistaReporte, crearVistaRed, crearVistaForense, crearVistaArchivo } = REGISTRO;
+  const { reemplazar, alCambiarTema, iniciarTema, esPantallaEstrecha, obtenerCaso, crearArmazon, mostrarAviso, crearVistaDashboard, crearVistaRegistro, crearVistaReporte, crearVistaRed, crearVistaForense, crearVistaArchivo } = REGISTRO;
 /* =========================================================================
    LISA vigIA — Punto de entrada.
    Monta el armazón, resuelve la navegación entre vistas y mantiene el
    estado mínimo del prototipo (sección activa y caso en revisión).
    ========================================================================= */
-
-
-
-
-
-
-
-
-
-
-
 /* Estado del prototipo. */
 const estado = {
   seccion: "panel",
@@ -10192,13 +10728,19 @@ function resolverVista() {
   return crearVistaDashboard({ alAbrirCaso: abrirCaso });
 }
 
-/** Vuelca la vista activa en el contenedor principal. */
-function dibujar() {
+/**
+ * Vuelca la vista activa en el contenedor principal.
+ * @param {boolean} [conservarPosicion] Mantiene el desplazamiento actual,
+ *   para redibujados que no responden a una navegación del usuario.
+ */
+function dibujar(conservarPosicion = false) {
+  const desplazamiento = window.scrollY;
+
   reemplazar(armazon.contenedorVista, resolverVista());
   armazon.marcarSeccion(estado.seccion);
 
-  /* Cada cambio de vista empieza desde el inicio del documento. */
-  window.scrollTo({ top: 0, behavior: "auto" });
+  /* Una navegación empieza desde el inicio; un redibujado, donde estaba. */
+  window.scrollTo({ top: conservarPosicion ? desplazamiento : 0, behavior: "auto" });
 }
 
 /** Arranca la aplicación. */
@@ -10218,6 +10760,33 @@ function iniciar() {
     if (armazon) {
       dibujar();
     }
+  });
+
+  vigilarAncho();
+}
+
+/**
+ * Redibuja la vista cuando la ventana cruza el umbral de pantalla estrecha.
+ * Los gráficos eligen su disposición al construirse, así que un cambio de
+ * tamaño no los alcanza por sí solo. Solo se reconstruye al cruzar el
+ * umbral, no en cada píxel del arrastre.
+ */
+function vigilarAncho() {
+  let eraEstrecha = esPantallaEstrecha();
+  let temporizador = null;
+
+  window.addEventListener("resize", () => {
+    const esEstrecha = esPantallaEstrecha();
+
+    if (esEstrecha === eraEstrecha) {
+      return;
+    }
+
+    eraEstrecha = esEstrecha;
+    window.clearTimeout(temporizador);
+
+    /* Se espera a que el arrastre se detenga antes de reconstruir. */
+    temporizador = window.setTimeout(() => dibujar(true), 180);
   });
 }
 
