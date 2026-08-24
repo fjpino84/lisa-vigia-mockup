@@ -2200,6 +2200,34 @@ table {
   color: var(--color-texto);
 }
 
+/* ------------------------------------------------------------------ */
+/* Bloques de patrón en dos columnas                                   */
+/* ------------------------------------------------------------------ */
+
+/* El gráfico ocupa la mitad izquierda y su información asociada acompaña
+   a la derecha, en lugar de quedar debajo. Así el bloque aprovecha el
+   ancho de la pantalla y el gráfico deja de resultar desproporcionado
+   frente al resto del contenido. */
+.patron-doble {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--espacio-lg);
+  align-items: start;
+  margin-top: var(--espacio-md);
+}
+
+.patron-doble__lado {
+  min-width: 0;
+  padding-top: var(--espacio-sm);
+}
+
+/* Cuando no hay ancho para dos columnas, el lado baja bajo el gráfico. */
+@media (max-width: 1250px) {
+  .patron-doble {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 
 /* ===== src/css/secciones.css ===== */
 /* =========================================================================
@@ -5448,6 +5476,9 @@ function paleta() {
    para que los cuatro casos atípicos queden visualmente fuera del rango.
    El globo informativo se muestra al posar el puntero sobre cada punto.
    ========================================================================= */
+
+
+
 /* Lienzo en unidades de usuario; el SVG escala con el contenedor. */
 const ANCHO = 760;
 const ALTO = 340;
@@ -5472,7 +5503,8 @@ function calcularEstadisticos(montos) {
  * @param {number} [opciones.promedioReferencia] Promedio histórico oficial.
  * @param {Function} [opciones.alElegirCaso] Recibe el id de un atípico.
  * @returns {HTMLElement}
- */function crearGraficoDesviacion({
+ */
+function crearGraficoDesviacion({
   poblacion,
   atipicos,
   promedioReferencia,
@@ -5565,7 +5597,7 @@ function calcularEstadisticos(montos) {
         x: 6,
         y: escalaY(media) - 8,
         fill: COLOR.bajo,
-        "font-size": 11,
+        "font-size": 12,
         "font-family": "monospace",
       },
     })
@@ -5601,7 +5633,7 @@ function calcularEstadisticos(montos) {
           x: -12,
           y: y + 4,
           fill: COLOR.textoTenue,
-          "font-size": 11,
+          "font-size": 12,
           "font-family": "monospace",
           "text-anchor": "end",
         },
@@ -5813,13 +5845,16 @@ function crearItemLeyenda(color, texto, esBanda = false) {
    repiten visitas. El grosor de cada arista refleja el número de visitas,
    de modo que la concentración del patrón se aprecia de un vistazo.
    ========================================================================= */
+
+
+
 const ANCHO = 760;
-const ALTO = 460;
+const ALTO = 400;
 const CENTRO_X = ANCHO / 2;
 /* El centro se sitúa algo por encima del medio: la mitad inferior necesita
    más espacio para los rótulos de los nodos y el cartel del prestador. */
-const CENTRO_Y = 200;
-const RADIO_ORBITA = 150;
+const CENTRO_Y = 176;
+const RADIO_ORBITA = 138;
 
 /**
  * Dibuja la red de coalición entre un prestador y sus pacientes.
@@ -5828,7 +5863,8 @@ const RADIO_ORBITA = 150;
  * @param {object[]} opciones.pacientes Nodos periféricos.
  * @param {Function} [opciones.alElegirCaso] Recibe el id del caso elegido.
  * @returns {HTMLElement}
- */function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
+ */
+function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
   const COLOR = paleta();
   const contenedor = crear("div", { clase: "grafico" });
 
@@ -5973,7 +6009,7 @@ const RADIO_ORBITA = 150;
           x: medioXAjustado + desvioX,
           y: medioYAjustado + desvioY,
           fill: COLOR.textoMedio,
-          "font-size": 10,
+          "font-size": 12,
           "font-family": "monospace",
           "text-anchor": "middle",
           "dominant-baseline": "middle",
@@ -6066,7 +6102,7 @@ const RADIO_ORBITA = 150;
         x: CENTRO_X,
         y: CENTRO_Y + 70,
         fill: COLOR.textoTenue,
-        "font-size": 11,
+        "font-size": 12,
         "font-family": "monospace",
         "text-anchor": "middle",
       },
@@ -6131,7 +6167,7 @@ const RADIO_ORBITA = 150;
           x,
           y: y < CENTRO_Y ? y - 32 : y + 40,
           fill: paciente.esCasoActual ? COLOR.critico : COLOR.textoMedio,
-          "font-size": 11,
+          "font-size": 12,
           "font-weight": paciente.esCasoActual ? "700" : "400",
           "text-anchor": "middle",
         },
@@ -6985,6 +7021,8 @@ function crearSeccionPatrones(caso, alAbrirCaso) {
       })
     );
 
+  /* El gráfico ocupa la mitad izquierda y los casos con desviación
+     semejante acompañan a la derecha, donde antes quedaban debajo. */
   const bloqueDesviacion = crear("div", {
     hijos: [
       crear("div", {
@@ -6999,27 +7037,59 @@ function crearSeccionPatrones(caso, alAbrirCaso) {
           }),
         ],
       }),
-      crearGraficoDesviacion({
-        poblacion: poblacionHistorica,
-        atipicos: casosAtipicos,
-        promedioReferencia: desviacion.promedio,
-        alElegirCaso: alAbrirCaso,
-      }),
       crear("div", {
-        clase: "no-imprimir",
+        clase: "patron-doble",
         hijos: [
-          crear("p", {
-            clase: "hallazgos__grupo-titulo",
-            atributos: { style: "margin-top:2.4rem" },
-            texto: "Casos con desviación similar",
+          crearGraficoDesviacion({
+            poblacion: poblacionHistorica,
+            atipicos: casosAtipicos,
+            promedioReferencia: desviacion.promedio,
+            alElegirCaso: alAbrirCaso,
           }),
-          crear("div", { clase: "relacionados", hijos: relacionados }),
+          crear("div", {
+            clase: ["patron-doble__lado", "no-imprimir"],
+            hijos: [
+              crear("p", {
+                clase: "hallazgos__grupo-titulo",
+                texto: "Casos con desviación similar",
+              }),
+              crear("div", { clase: "relacionados", hijos: relacionados }),
+            ],
+          }),
         ],
       }),
     ],
   });
 
   /* --- Bloque de coalición ------------------------------------------ */
+
+  /* Los demás pacientes de la red, con sus visitas y su monto. */
+  const pacientesRelacionados = redCoalicion.pacientes
+    .filter((paciente) => !paciente.esCasoActual)
+    .map((paciente) =>
+      crear("button", {
+        clase: "relacionado",
+        atributos: { type: "button" },
+        hijos: [
+          icono("flechaDerecha", { tamano: 16 }),
+          crear("span", {
+            clase: "relacionado__datos",
+            hijos: [
+              crear("span", { clase: "relacionado__nombre", texto: paciente.nombre }),
+              crear("span", {
+                clase: "relacionado__meta",
+                texto: `${paciente.rut} · ${paciente.visitas} visitas en ${paciente.dias} días`,
+              }),
+            ],
+          }),
+          crear("span", {
+            clase: "relacionado__monto",
+            texto: comoMoneda(paciente.monto),
+          }),
+        ],
+        eventos: { click: () => alAbrirCaso(paciente.id) },
+      })
+    );
   const bloqueCoalicion = crear("div", {
     atributos: { style: "margin-top:3.2rem" },
     hijos: [
@@ -7035,10 +7105,25 @@ function crearSeccionPatrones(caso, alAbrirCaso) {
           }),
         ],
       }),
-      crearGraficoCoalicion({
-        prestador: redCoalicion.prestador,
-        pacientes: redCoalicion.pacientes,
-        alElegirCaso: alAbrirCaso,
+      crear("div", {
+        clase: "patron-doble",
+        hijos: [
+          crearGraficoCoalicion({
+            prestador: redCoalicion.prestador,
+            pacientes: redCoalicion.pacientes,
+            alElegirCaso: alAbrirCaso,
+          }),
+          crear("div", {
+            clase: ["patron-doble__lado", "no-imprimir"],
+            hijos: [
+              crear("p", {
+                clase: "hallazgos__grupo-titulo",
+                texto: "Pacientes sobre el mismo prestador",
+              }),
+              crear("div", { clase: "relacionados", hijos: pacientesRelacionados }),
+            ],
+          }),
+        ],
       }),
     ],
   });

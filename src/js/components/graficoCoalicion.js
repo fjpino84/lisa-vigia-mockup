@@ -10,12 +10,12 @@ import { comoMoneda } from "../utils/formato.js";
 import { paleta } from "../utils/paleta.js";
 
 const ANCHO = 760;
-const ALTO = 460;
+const ALTO = 400;
 const CENTRO_X = ANCHO / 2;
 /* El centro se sitúa algo por encima del medio: la mitad inferior necesita
    más espacio para los rótulos de los nodos y el cartel del prestador. */
-const CENTRO_Y = 200;
-const RADIO_ORBITA = 150;
+const CENTRO_Y = 176;
+const RADIO_ORBITA = 138;
 
 /**
  * Dibuja la red de coalición entre un prestador y sus pacientes.
@@ -170,7 +170,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x: medioXAjustado + desvioX,
           y: medioYAjustado + desvioY,
           fill: COLOR.textoMedio,
-          "font-size": 10,
+          "font-size": 12,
           "font-family": "monospace",
           "text-anchor": "middle",
           "dominant-baseline": "middle",
@@ -263,7 +263,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
         x: CENTRO_X,
         y: CENTRO_Y + 70,
         fill: COLOR.textoTenue,
-        "font-size": 11,
+        "font-size": 12,
         "font-family": "monospace",
         "text-anchor": "middle",
       },
@@ -328,7 +328,7 @@ export function crearGraficoCoalicion({ prestador, pacientes, alElegirCaso }) {
           x,
           y: y < CENTRO_Y ? y - 32 : y + 40,
           fill: paciente.esCasoActual ? COLOR.critico : COLOR.textoMedio,
-          "font-size": 11,
+          "font-size": 12,
           "font-weight": paciente.esCasoActual ? "700" : "400",
           "text-anchor": "middle",
         },

@@ -786,3 +786,31 @@
 .volver:hover {
   color: var(--color-texto);
 }
+
+/* ------------------------------------------------------------------ */
+/* Bloques de patrón en dos columnas                                   */
+/* ------------------------------------------------------------------ */
+
+/* El gráfico ocupa la mitad izquierda y su información asociada acompaña
+   a la derecha, en lugar de quedar debajo. Así el bloque aprovecha el
+   ancho de la pantalla y el gráfico deja de resultar desproporcionado
+   frente al resto del contenido. */
+.patron-doble {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--espacio-lg);
+  align-items: start;
+  margin-top: var(--espacio-md);
+}
+
+.patron-doble__lado {
+  min-width: 0;
+  padding-top: var(--espacio-sm);
+}
+
+/* Cuando no hay ancho para dos columnas, el lado baja bajo el gráfico. */
+@media (max-width: 1250px) {
+  .patron-doble {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

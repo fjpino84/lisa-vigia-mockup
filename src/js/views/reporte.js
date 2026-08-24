@@ -307,6 +307,8 @@ function crearSeccionPatrones(caso, alAbrirCaso) {
       })
     );
 
+  /* El gráfico ocupa la mitad izquierda y los casos con desviación
+     semejante acompañan a la derecha, donde antes quedaban debajo. */
   const bloqueDesviacion = crear("div", {
     hijos: [
       crear("div", {
@@ -321,27 +323,59 @@ function crearSeccionPatrones(caso, alAbrirCaso) {
           }),
         ],
       }),
-      crearGraficoDesviacion({
-        poblacion: poblacionHistorica,
-        atipicos: casosAtipicos,
-        promedioReferencia: desviacion.promedio,
-        alElegirCaso: alAbrirCaso,
-      }),
       crear("div", {
-        clase: "no-imprimir",
+        clase: "patron-doble",
         hijos: [
-          crear("p", {
-            clase: "hallazgos__grupo-titulo",
-            atributos: { style: "margin-top:2.4rem" },
-            texto: "Casos con desviación similar",
+          crearGraficoDesviacion({
+            poblacion: poblacionHistorica,
+            atipicos: casosAtipicos,
+            promedioReferencia: desviacion.promedio,
+            alElegirCaso: alAbrirCaso,
           }),
-          crear("div", { clase: "relacionados", hijos: relacionados }),
+          crear("div", {
+            clase: ["patron-doble__lado", "no-imprimir"],
+            hijos: [
+              crear("p", {
+                clase: "hallazgos__grupo-titulo",
+                texto: "Casos con desviación similar",
+              }),
+              crear("div", { clase: "relacionados", hijos: relacionados }),
+            ],
+          }),
         ],
       }),
     ],
   });
 
   /* --- Bloque de coalición ------------------------------------------ */
+
+  /* Los demás pacientes de la red, con sus visitas y su monto. */
+  const pacientesRelacionados = redCoalicion.pacientes
+    .filter((paciente) => !paciente.esCasoActual)
+    .map((paciente) =>
+      crear("button", {
+        clase: "relacionado",
+        atributos: { type: "button" },
+        hijos: [
+          icono("flechaDerecha", { tamano: 16 }),
+          crear("span", {
+            clase: "relacionado__datos",
+            hijos: [
+              crear("span", { clase: "relacionado__nombre", texto: paciente.nombre }),
+              crear("span", {
+                clase: "relacionado__meta",
+                texto: `${paciente.rut} · ${paciente.visitas} visitas en ${paciente.dias} días`,
+              }),
+            ],
+          }),
+          crear("span", {
+            clase: "relacionado__monto",
+            texto: comoMoneda(paciente.monto),
+          }),
+        ],
+        eventos: { click: () => alAbrirCaso(paciente.id) },
+      })
+    );
   const bloqueCoalicion = crear("div", {
     atributos: { style: "margin-top:3.2rem" },
     hijos: [
@@ -357,10 +391,25 @@ function crearSeccionPatrones(caso, alAbrirCaso) {
           }),
         ],
       }),
-      crearGraficoCoalicion({
-        prestador: redCoalicion.prestador,
-        pacientes: redCoalicion.pacientes,
-        alElegirCaso: alAbrirCaso,
+      crear("div", {
+        clase: "patron-doble",
+        hijos: [
+          crearGraficoCoalicion({
+            prestador: redCoalicion.prestador,
+            pacientes: redCoalicion.pacientes,
+            alElegirCaso: alAbrirCaso,
+          }),
+          crear("div", {
+            clase: ["patron-doble__lado", "no-imprimir"],
+            hijos: [
+              crear("p", {
+                clase: "hallazgos__grupo-titulo",
+                texto: "Pacientes sobre el mismo prestador",
+              }),
+              crear("div", { clase: "relacionados", hijos: pacientesRelacionados }),
+            ],
+          }),
+        ],
       }),
     ],
   });

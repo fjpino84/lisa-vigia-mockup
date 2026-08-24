@@ -127,7 +127,7 @@ export function crearGraficoDesviacion({
         x: 6,
         y: escalaY(media) - 8,
         fill: COLOR.bajo,
-        "font-size": 11,
+        "font-size": 12,
         "font-family": "monospace",
       },
     })
@@ -163,7 +163,7 @@ export function crearGraficoDesviacion({
           x: -12,
           y: y + 4,
           fill: COLOR.textoTenue,
-          "font-size": 11,
+          "font-size": 12,
           "font-family": "monospace",
           "text-anchor": "end",
         },
