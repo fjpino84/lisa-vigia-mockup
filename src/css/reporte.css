@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   gap: var(--espacio-lg);
-  padding: var(--espacio-lg) var(--espacio-lg) var(--espacio-lg) var(--espacio-xl);
+  padding: var(--espacio-xl) var(--espacio-xl) var(--espacio-xl) 4rem;
   background-color: var(--color-panel-datos);
   border: 0.1rem solid var(--color-borde);
   border-radius: var(--radio-lg);
@@ -45,8 +45,8 @@
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  font-size: 3.2rem;
-  letter-spacing: -0.02em;
+  font-size: 3.6rem;
+  letter-spacing: -0.04em;
 }
 
 .ficha__rut {
@@ -71,7 +71,10 @@
 /* Cuadrícula de datos del siniestro. */
 .ficha__datos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  /* Los cinco datos del siniestro caben en una fila; al estrecharse la
+     pantalla pasan a dos y luego a una, sin estados intermedios que
+     dejen una tarjeta suelta. */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--espacio-md);
   margin-top: var(--espacio-lg);
 }
@@ -161,7 +164,7 @@
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  padding: var(--espacio-md) var(--espacio-lg);
+  padding: var(--espacio-lg) var(--espacio-xl);
   border-bottom: 0.1rem solid var(--color-borde-suave);
   background-color: var(--color-superficie-alta);
 }
@@ -185,12 +188,18 @@
 }
 
 .seccion__columna {
-  padding: var(--espacio-lg);
+  padding: var(--espacio-xl);
   min-width: 0;
 }
 
 .seccion__columna + .seccion__columna {
   border-left: 0.1rem solid var(--color-borde-suave);
+}
+
+@media (max-width: 1250px) {
+  .ficha__datos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1000px) {
@@ -213,6 +222,10 @@
 }
 
 @media (max-width: 620px) {
+  .ficha__datos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   /* Las acciones de cierre pasan a ocupar el ancho completo, en columna. */
   .decision__acciones {
     width: 100%;
@@ -402,11 +415,11 @@
   display: flex;
   align-items: flex-start;
   gap: 1.2rem;
-  padding: 1.4rem;
+  padding: var(--espacio-md);
   background-color: var(--color-superficie-alta);
   border: 0.1rem solid var(--color-borde-suave);
   border-radius: var(--radio-md);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   color: var(--color-texto-medio);
 }
 
@@ -677,7 +690,7 @@
 .relacionado__nombre {
   display: block;
   font-family: var(--fuente-mono);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 600;
   color: var(--color-texto);
 }

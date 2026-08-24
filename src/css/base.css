@@ -97,9 +97,11 @@
   --espacio-lg: 2.4rem;
   --espacio-xl: 3.2rem;
 
-  --radio-sm: 0.4rem;
-  --radio-md: 0.8rem;
-  --radio-lg: 1.2rem;
+  --radio-sm: 0.8rem;
+  --radio-md: 1.4rem;
+  --radio-lg: 2.4rem;
+  /* Píldora completa, la forma que el sitio da a sus botones. */
+  --radio-pildora: 30rem;
 
   --ancho-sidebar: 26rem;
   --alto-topbar: 7rem;
@@ -183,8 +185,8 @@ body {
   background-color: var(--color-fondo);
   color: var(--color-texto);
   font-family: var(--fuente-base);
-  font-size: 1.4rem;
-  line-height: 1.5;
+  font-size: 1.6rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   /* Ningún contenido ancho debe desplazar la página en horizontal: los
      bloques que lo necesitan gestionan su propio scroll interno. */
@@ -197,9 +199,9 @@ h2,
 h3,
 h4 {
   font-family: var(--fuente-titulo);
-  line-height: 1.2;
+  line-height: 1.1;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.04em;
 }
 
 ul,

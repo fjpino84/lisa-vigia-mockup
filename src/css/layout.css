@@ -109,13 +109,13 @@
   justify-content: center;
   gap: var(--espacio-sm);
   width: 100%;
-  padding: 1.2rem;
+  padding: 1.4rem;
   background-color: var(--color-accion);
   color: var(--color-sobre-accion);
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  border-radius: var(--radio-md);
+  letter-spacing: 0.02em;
+  border-radius: var(--radio-pildora);
   transition: filter var(--transicion);
 }
 
@@ -224,7 +224,7 @@
   /* El campo se apoya en la superficie para separarse de la franja. */
   background-color: var(--color-superficie);
   border: 0.1rem solid var(--color-borde);
-  border-radius: var(--radio-md);
+  border-radius: var(--radio-pildora);
   transition: border-color var(--transicion);
 }
 

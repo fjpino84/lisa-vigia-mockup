@@ -101,9 +101,11 @@
   --espacio-lg: 2.4rem;
   --espacio-xl: 3.2rem;
 
-  --radio-sm: 0.4rem;
-  --radio-md: 0.8rem;
-  --radio-lg: 1.2rem;
+  --radio-sm: 0.8rem;
+  --radio-md: 1.4rem;
+  --radio-lg: 2.4rem;
+  /* Píldora completa, la forma que el sitio da a sus botones. */
+  --radio-pildora: 30rem;
 
   --ancho-sidebar: 26rem;
   --alto-topbar: 7rem;
@@ -187,8 +189,8 @@ body {
   background-color: var(--color-fondo);
   color: var(--color-texto);
   font-family: var(--fuente-base);
-  font-size: 1.4rem;
-  line-height: 1.5;
+  font-size: 1.6rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   /* Ningún contenido ancho debe desplazar la página en horizontal: los
      bloques que lo necesitan gestionan su propio scroll interno. */
@@ -201,9 +203,9 @@ h2,
 h3,
 h4 {
   font-family: var(--fuente-titulo);
-  line-height: 1.2;
+  line-height: 1.1;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.04em;
 }
 
 ul,
@@ -379,13 +381,13 @@ table {
   justify-content: center;
   gap: var(--espacio-sm);
   width: 100%;
-  padding: 1.2rem;
+  padding: 1.4rem;
   background-color: var(--color-accion);
   color: var(--color-sobre-accion);
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  border-radius: var(--radio-md);
+  letter-spacing: 0.02em;
+  border-radius: var(--radio-pildora);
   transition: filter var(--transicion);
 }
 
@@ -494,7 +496,7 @@ table {
   /* El campo se apoya en la superficie para separarse de la franja. */
   background-color: var(--color-superficie);
   border: 0.1rem solid var(--color-borde);
-  border-radius: var(--radio-md);
+  border-radius: var(--radio-pildora);
   transition: border-color var(--transicion);
 }
 
@@ -806,7 +808,7 @@ table {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  border-radius: var(--radio-sm);
+  border-radius: var(--radio-pildora);
   white-space: nowrap;
 }
 
@@ -847,10 +849,11 @@ table {
   align-items: center;
   justify-content: center;
   gap: var(--espacio-sm);
-  padding: 1.2rem 2rem;
-  font-size: 1.4rem;
+  padding: 1.3rem 2.6rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  border-radius: var(--radio-md);
+  /* Píldora completa, como los botones del sitio de LISA. */
+  border-radius: var(--radio-pildora);
   border: 0.1rem solid transparent;
   transition: background-color var(--transicion), border-color var(--transicion),
     filter var(--transicion);
@@ -1422,7 +1425,7 @@ table {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: var(--espacio-lg);
-  padding: var(--espacio-lg) var(--espacio-lg) var(--espacio-lg) var(--espacio-xl);
+  padding: var(--espacio-xl) var(--espacio-xl) var(--espacio-xl) 4rem;
   background-color: var(--color-panel-datos);
   border: 0.1rem solid var(--color-borde);
   border-radius: var(--radio-lg);
@@ -1455,8 +1458,8 @@ table {
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  font-size: 3.2rem;
-  letter-spacing: -0.02em;
+  font-size: 3.6rem;
+  letter-spacing: -0.04em;
 }
 
 .ficha__rut {
@@ -1481,7 +1484,10 @@ table {
 /* Cuadrícula de datos del siniestro. */
 .ficha__datos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  /* Los cinco datos del siniestro caben en una fila; al estrecharse la
+     pantalla pasan a dos y luego a una, sin estados intermedios que
+     dejen una tarjeta suelta. */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--espacio-md);
   margin-top: var(--espacio-lg);
 }
@@ -1571,7 +1577,7 @@ table {
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  padding: var(--espacio-md) var(--espacio-lg);
+  padding: var(--espacio-lg) var(--espacio-xl);
   border-bottom: 0.1rem solid var(--color-borde-suave);
   background-color: var(--color-superficie-alta);
 }
@@ -1595,12 +1601,18 @@ table {
 }
 
 .seccion__columna {
-  padding: var(--espacio-lg);
+  padding: var(--espacio-xl);
   min-width: 0;
 }
 
 .seccion__columna + .seccion__columna {
   border-left: 0.1rem solid var(--color-borde-suave);
+}
+
+@media (max-width: 1250px) {
+  .ficha__datos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1000px) {
@@ -1623,6 +1635,10 @@ table {
 }
 
 @media (max-width: 620px) {
+  .ficha__datos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   /* Las acciones de cierre pasan a ocupar el ancho completo, en columna. */
   .decision__acciones {
     width: 100%;
@@ -1812,11 +1828,11 @@ table {
   display: flex;
   align-items: flex-start;
   gap: 1.2rem;
-  padding: 1.4rem;
+  padding: var(--espacio-md);
   background-color: var(--color-superficie-alta);
   border: 0.1rem solid var(--color-borde-suave);
   border-radius: var(--radio-md);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   color: var(--color-texto-medio);
 }
 
@@ -2087,7 +2103,7 @@ table {
 .relacionado__nombre {
   display: block;
   font-family: var(--fuente-mono);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 600;
   color: var(--color-texto);
 }
