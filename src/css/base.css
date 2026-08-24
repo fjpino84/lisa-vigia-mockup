@@ -34,26 +34,26 @@
 
 :root {
   /* --- Superficies -------------------------------------------------- */
-  --color-fondo: #0a0a0c;
-  --color-superficie: #121215;
-  --color-superficie-alta: #17171c;
-  --color-superficie-suave: #1c1c22;
-  --color-panel-datos: #1a2130;
+  --color-fondo: #0a1836;
+  --color-superficie: #101f42;
+  --color-superficie-alta: #16274f;
+  --color-superficie-suave: #1c2f5c;
+  --color-panel-datos: #16294f;
 
   /* --- Bordes y separadores ----------------------------------------- */
-  --color-borde: #26262e;
-  --color-borde-suave: #1e1e24;
-  --color-borde-acento: #3a3a46;
+  --color-borde: #24386b;
+  --color-borde-suave: #1a2c58;
+  --color-borde-acento: #3d5490;
 
   /* Franjas de navegación. En el tema nocturno se confunden con el fondo,
      que es justo el efecto buscado allí. */
-  --color-cromo: #0a0a0c;
-  --color-cromo-borde: #1e1e24;
+  --color-cromo: #081330;
+  --color-cromo-borde: #1a2c58;
 
   /* --- Texto --------------------------------------------------------- */
-  --color-texto: #f2f2f5;
-  --color-texto-medio: #a0a0ae;
-  --color-texto-tenue: #6e6e7c;
+  --color-texto: #eef2fb;
+  --color-texto-medio: #a3b0cc;
+  --color-texto-tenue: #7b8cb0;
 
   /* --- Semáforo de riesgo -------------------------------------------- */
   --color-critico: #f2857f;
@@ -69,20 +69,20 @@
   /* Turquesa de la onda de LISA, reservado a la serie de precisión de los
      gráficos. Se mantiene aparte de --color-ok porque aquel comunica un
      estado correcto y este es identidad de marca. */
-  --color-precision: #4fbab9;
+  --color-precision: #00e5c2;
   /* Realce de la fila destacada en los listados. */
   --color-fila-critica: rgba(242, 133, 127, 0.07);
   --color-fila-critica-fuerte: rgba(242, 133, 127, 0.12);
   --color-borde-alerta: rgba(242, 133, 127, 0.35);
 
   /* --- Marca LISA ----------------------------------------------------- */
-  --color-marca-turquesa: #3aa9b8;
-  --color-marca-azul: #2f8fc7;
-  --color-marca-violeta: #4a3a99;
-  --color-accion: #c3cbf0;
+  --color-marca-turquesa: #00e5c2;
+  --color-marca-azul: #36d9ff;
+  --color-marca-violeta: #9b7cff;
+  --color-accion: #9b7cff;
   /* Texto que se apoya sobre el color de acento. Cada tema lo define según
      la luminosidad de su propio acento: aquí es lavanda claro. */
-  --color-sobre-accion: #14141a;
+  --color-sobre-accion: #0a0a1a;
 
   /* --- Tipografía ------------------------------------------------------ */
   --fuente-base: "Assistant", "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -104,7 +104,7 @@
   --ancho-sidebar: 26rem;
   --alto-topbar: 7rem;
 
-  --sombra-panel: 0 0.2rem 1.6rem rgba(0, 0, 0, 0.45);
+  --sombra-panel: 0 0.2rem 1.6rem rgba(3, 8, 22, 0.55);
   --transicion: 160ms ease;
 }
 

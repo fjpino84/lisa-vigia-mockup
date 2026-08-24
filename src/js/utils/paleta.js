@@ -16,28 +16,28 @@ const NOCTURNA = {
   /* Turquesa tomado de la onda de LISA, reservado a la serie de precisión.
      Sobre el fondo nocturno rinde de sobra (contraste 8,5), así que se usa
      el tono del logotipo sin ajustar. */
-  precision: "#4fbab9",
-  acento: "#c3cbf0",
-  violeta: "#7c6ce0",
-  violetaClaro: "#b9aef5",
+  precision: "#00e5c2",
+  acento: "#9b7cff",
+  violeta: "#9b7cff",
+  violetaClaro: "#c4aeff",
 
-  texto: "#f2f2f5",
-  textoMedio: "#a0a0ae",
-  textoTenue: "#6e6e7c",
+  texto: "#eef2fb",
+  textoMedio: "#a3b0cc",
+  textoTenue: "#7b8cb0",
 
-  fondo: "#0a0a0c",
-  rejilla: "#26262e",
-  trazoTenue: "#3a3a46",
+  fondo: "#0a1836",
+  rejilla: "#24386b",
+  trazoTenue: "#3d5490",
 
   /* Rellenos de nodo, más oscuros que su trazo. */
-  nodoNeutro: "#2a2a34",
-  nodoBorde: "#4a4a58",
-  nodoVioleta: "#1d1b2e",
-  nodoCritico: "#3a1f22",
-  nodoPrestador: "#241f3d",
-  nucleo: "#16161c",
-  puntoPoblacion: "#3d4a5c",
-  barraLiberados: "#2f4f45",
+  nodoNeutro: "#1c2f5c",
+  nodoBorde: "#3d5490",
+  nodoVioleta: "#221a4d",
+  nodoCritico: "#3d1f2e",
+  nodoPrestador: "#261c56",
+  nucleo: "#101f42",
+  puntoPoblacion: "#2c4272",
+  barraLiberados: "#1d4f52",
 };
 
 /* La paleta diurna se apoya en los colores de los logotipos: el violeta y el
