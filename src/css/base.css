@@ -2,7 +2,27 @@
    LISA vigIA — Fundaciones: reset, tokens de diseño y tipografía base.
    El font-size raíz es 62.5% para que 1rem = 10px y las medidas del
    maquetado se lean directamente en decenas de píxel.
+
+   La tipografía y la paleta provienen del sitio de LISA
+   (lisainsurtech.com): Assistant para el texto y una geométrica para los
+   títulos, en lugar de la Futura del sitio, que es de licencia cerrada.
+   Los archivos se sirven desde el propio proyecto, sin acudir a terceros.
    ========================================================================= */
+
+@font-face {
+  font-family: "Assistant";
+  src: url("../../assets/fuentes/assistant-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Jost";
+  src: url("../../assets/fuentes/jost-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 
 *,
 *::before,
@@ -65,7 +85,9 @@
   --color-sobre-accion: #14141a;
 
   /* --- Tipografía ------------------------------------------------------ */
-  --fuente-base: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --fuente-base: "Assistant", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* Geométrica para titulares, en el lugar que la Futura ocupa en el sitio. */
+  --fuente-titulo: "Jost", "Futura", "Century Gothic", var(--fuente-base);
   --fuente-mono: "Cascadia Mono", "Consolas", "SF Mono", "Menlo", monospace;
 
   /* --- Ritmo espacial --------------------------------------------------- */
@@ -100,26 +122,26 @@
 
 :root[data-tema="claro"] {
   /* --- Superficies, teñidas con el azul de marca --------------------- */
-  --color-fondo: #eaeef7;
+  --color-fondo: #eeecf7;
   --color-superficie: #ffffff;
-  --color-superficie-alta: #f3f6fc;
-  --color-superficie-suave: #e2e8f5;
-  --color-panel-datos: #e1e9f7;
+  --color-superficie-alta: #f6f4fc;
+  --color-superficie-suave: #e6e2f5;
+  --color-panel-datos: #e7e3f7;
 
   /* Franjas de navegación: llevan el azul de marca más marcado, para que
      el armazón de la aplicación se distinga del área de trabajo. */
-  --color-cromo: #e3e9f6;
-  --color-cromo-borde: #ccd6e9;
+  --color-cromo: #e8e4f6;
+  --color-cromo-borde: #d5cce9;
 
   /* --- Bordes y separadores ----------------------------------------- */
-  --color-borde: #ccd6e6;
-  --color-borde-suave: #dde4f0;
-  --color-borde-acento: #a8b6cd;
+  --color-borde: #d4cce6;
+  --color-borde-suave: #e2ddf0;
+  --color-borde-acento: #b0a8cd;
 
   /* --- Texto: azul muy oscuro en lugar de negro ---------------------- */
-  --color-texto: #16233a;
-  --color-texto-medio: #48576f;
-  --color-texto-tenue: #64728c;
+  --color-texto: #1a1633;
+  --color-texto-medio: #4d4869;
+  --color-texto-tenue: #6a6484;
 
   /* --- Semáforo de riesgo. Ajeno a la marca: comunica estado. -------- */
   --color-critico: #c8322f;
@@ -132,21 +154,24 @@
   --color-ok: #157a56;
   --color-ok-fondo: rgba(21, 122, 86, 0.1);
   --color-ok-fondo-fuerte: rgba(21, 122, 86, 0.18);
-  --color-precision: #177f82;
+  --color-precision: #1e798d;
   --color-fila-critica: rgba(200, 50, 47, 0.05);
   --color-fila-critica-fuerte: rgba(200, 50, 47, 0.09);
   --color-borde-alerta: rgba(200, 50, 47, 0.3);
 
   /* --- Marca LISA ----------------------------------------------------- */
-  --color-marca-turquesa: #2f8f92;
+  --color-marca-turquesa: #1e798d;
   --color-marca-azul: #2b7ea6;
-  --color-marca-violeta: #4f439b;
-  --color-accion: #4f439b;
+  --color-marca-violeta: #4a00c5;
+  --color-accion: #4a00c5;
+  /* Turquesa vivo del sitio. Con 1,6 de contraste sobre blanco solo sirve
+     como adorno: los datos usan la variante oscura de arriba. */
+  --color-marca-brillo: #00e5c2;
   /* El acento diurno es el violeta oscuro de LISA, así que el texto que se
      apoya sobre él va en blanco. */
   --color-sobre-accion: #ffffff;
 
-  --sombra-panel: 0 0.2rem 1.6rem rgba(22, 35, 58, 0.1);
+  --sombra-panel: 0 0.2rem 1.6rem rgba(26, 22, 51, 0.1);
 }
 
 html {
@@ -171,8 +196,10 @@ h1,
 h2,
 h3,
 h4 {
+  font-family: var(--fuente-titulo);
   line-height: 1.2;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 ul,

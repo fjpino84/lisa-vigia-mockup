@@ -191,8 +191,21 @@ Element.prototype.setAttribute = function (nombre, valor) {
 /* Composición del archivo                                             */
 /* ------------------------------------------------------------------ */
 
+/* Las fuentes se referencian desde el CSS con una ruta relativa, que en un
+   archivo único no resuelve: se sustituyen por su contenido incrustado. */
+const FUENTES = ["assets/fuentes/assistant-latin.woff2", "assets/fuentes/jost-latin.woff2"];
+
+function incrustarFuentes(hoja) {
+  return FUENTES.reduce((texto, relativa) => {
+    const binario = fs.readFileSync(path.join(RAIZ, relativa));
+    const datos = `data:font/woff2;base64,${binario.toString("base64")}`;
+    const nombre = path.basename(relativa);
+    return texto.split(`../../assets/fuentes/${nombre}`).join(datos);
+  }, hoja);
+}
+
 const css = ESTILOS.map(
-  (relativa) => `/* ===== ${relativa} ===== */\n${leer(relativa)}`
+  (relativa) => `/* ===== ${relativa} ===== */\n${incrustarFuentes(leer(relativa))}`
 ).join("\n\n");
 
 const js = ordenados

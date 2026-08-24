@@ -51,25 +51,25 @@ const DIURNA = {
   ok: "#157a56",
   /* El mismo turquesa, oscurecido para que rinda sobre fondo claro: el tono
      del logotipo daría 2,3 de contraste, y este alcanza 4,8. */
-  precision: "#177f82",
-  acento: "#4f439b",
-  violeta: "#4f439b",
-  violetaClaro: "#3a3178",
+  precision: "#1e798d",
+  acento: "#4a00c5",
+  violeta: "#4a00c5",
+  violetaClaro: "#35008c",
 
-  texto: "#16233a",
-  textoMedio: "#48576f",
-  textoTenue: "#64728c",
+  texto: "#1a1633",
+  textoMedio: "#4d4869",
+  textoTenue: "#6a6484",
 
   fondo: "#ffffff",
-  rejilla: "#dde4f0",
-  trazoTenue: "#a8b6cd",
+  rejilla: "#e2ddf0",
+  trazoTenue: "#b0a8cd",
 
   /* En tema claro los rellenos son tintes suaves del propio color. */
-  nodoNeutro: "#e4ebf6",
-  nodoBorde: "#a2b1c9",
-  nodoVioleta: "#e9e6f8",
+  nodoNeutro: "#e7e3f7",
+  nodoBorde: "#aaa2c9",
+  nodoVioleta: "#e8e0fa",
   nodoCritico: "#fbe9e8",
-  nodoPrestador: "#e5e1f6",
+  nodoPrestador: "#e3daf8",
   nucleo: "#ffffff",
   puntoPoblacion: "#c7dcea",
   barraLiberados: "#a7d4c2",
